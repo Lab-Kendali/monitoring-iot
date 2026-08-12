@@ -1,452 +1,431 @@
 <!DOCTYPE html>
 <html lang="id">
-
 <head>
-    <meta charset="UTF-8">
-
-    <meta name="viewport"
-          content="width=device-width, initial-scale=1.0">
-
-    <title>Monitoring IoT ESP32</title>
-
-    <!-- Chart.js -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
-    <style>
-
-        * {
-            box-sizing: border-box;
-        }
-
-        body {
-            margin: 0;
-            font-family: Arial, Helvetica, sans-serif;
-            background: #eef2f7;
-            color: #1f2937;
-        }
-
-        /* ==============================
-           HEADER
-        ============================== */
-
-        .header {
-            background:
-                linear-gradient(
-                    135deg,
-                    #172554,
-                    #2563eb
-                );
-
-            color: white;
-            padding: 30px 20px;
-            text-align: center;
-        }
-
-        .header h1 {
-            margin: 0;
-            font-size: 32px;
-        }
-
-        .header p {
-            margin: 8px 0 0;
-            font-size: 17px;
-            opacity: 0.9;
-        }
-
-        .status {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-
-            margin-top: 17px;
-            padding: 8px 18px;
-
-            border-radius: 30px;
-
-            background:
-                rgba(
-                    255,
-                    255,
-                    255,
-                    0.16
-                );
-
-            font-size: 14px;
-            font-weight: 600;
-        }
-
-        .status-dot {
-            width: 10px;
-            height: 10px;
-
-            border-radius: 50%;
-
-            background: #22c55e;
-
-            box-shadow:
-                0 0 8px
-                rgba(
-                    34,
-                    197,
-                    94,
-                    0.8
-                );
-        }
-
-        /* ==============================
-           CONTAINER
-        ============================== */
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-        .container {
-            width: 100%;
-            max-width: 1250px;
+<title>Monitoring IoT ESP32</title>
 
-            margin: auto;
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-            padding:
-                30px 20px;
-        }
+<style>
 
-        /* ==============================
-           GAUGE GRID
-        ============================== */
+* {
+    box-sizing: border-box;
+}
 
-        .gauge-grid {
-            display: grid;
+body {
+    margin: 0;
+    font-family: Arial, Helvetica, sans-serif;
+    background: #eef2f7;
+    color: #1f2937;
+}
 
-            grid-template-columns:
-                repeat(
-                    2,
-                    minmax(
-                        300px,
-                        1fr
-                    )
-                );
+/* =====================================================
+   HEADER
+   ===================================================== */
 
-            gap: 25px;
-        }
+.header {
+    background: linear-gradient(135deg, #1e3a8a, #2563eb);
+    color: white;
+    text-align: center;
+    padding: 35px 20px 30px;
+}
 
-        /* ==============================
-           CARD
-        ============================== */
+.header h1 {
+    margin: 0;
+    font-size: 38px;
+    font-weight: 700;
+}
 
-        .card {
-            background: white;
+.header p {
+    margin: 10px 0 18px;
+    font-size: 20px;
+}
 
-            border-radius: 22px;
+.status {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
 
-            padding:
-                25px
-                20px
-                20px;
+    background: rgba(255,255,255,0.15);
 
-            text-align: center;
+    padding: 10px 20px;
 
-            box-shadow:
-                0 8px 25px
-                rgba(
-                    0,
-                    0,
-                    0,
-                    0.08
-                );
-        }
+    border-radius: 30px;
 
-        .card h2 {
-            margin:
-                0 0 5px;
+    font-size: 16px;
+    font-weight: bold;
+}
 
-            font-size: 22px;
-        }
+.status-dot {
+    width: 13px;
+    height: 13px;
 
-        .card-description {
-            font-size: 13px;
-            color: #6b7280;
+    border-radius: 50%;
 
-            margin-bottom: 2px;
-        }
+    background: #22c55e;
 
-        /* ==============================
-           GAUGE
-        ============================== */
+    box-shadow: 0 0 10px #22c55e;
+}
 
-        .gauge {
-            position: relative;
+/* =====================================================
+   CONTAINER
+   ===================================================== */
 
-            width: 100%;
-            max-width: 410px;
+.container {
+    width: 92%;
+    max-width: 1400px;
 
-            height: 285px;
+    margin: 35px auto;
+}
 
-            margin:
-                0 auto;
-        }
+/* =====================================================
+   SENSOR GRID
+   ===================================================== */
 
-        .gauge svg {
-            width: 100%;
-            height: 100%;
+.sensor-grid {
+    display: grid;
 
-            overflow: visible;
-        }
+    grid-template-columns:
+        repeat(2, minmax(300px, 1fr));
 
-        .gauge-track {
-            fill: none;
+    gap: 30px;
+}
 
-            stroke: #e5e7eb;
+/* =====================================================
+   CARD
+   ===================================================== */
 
-            stroke-width: 20;
+.card {
+    background: white;
 
-            stroke-linecap: round;
-        }
+    border-radius: 22px;
 
-        .gauge-progress {
-            fill: none;
+    padding: 30px;
 
-            stroke: #2563eb;
+    text-align: center;
 
-            stroke-width: 20;
+    box-shadow:
+        0 8px 25px rgba(0,0,0,0.08);
 
-            stroke-linecap: round;
+    transition: transform 0.25s ease;
+}
 
-            stroke-dasharray:
-                0 100;
+.card:hover {
+    transform: translateY(-3px);
+}
 
-            transition:
-                stroke-dasharray
-                0.7s
-                cubic-bezier(
-                    0.25,
-                    0.8,
-                    0.25,
-                    1
-                );
-        }
+.card h2 {
+    margin: 0 0 20px;
 
-        /* ==============================
-           NEEDLE
-        ============================== */
+    font-size: 26px;
+}
 
-        .needle {
-            stroke: #111827;
+/* =====================================================
+   GAUGE
+   ===================================================== */
 
-            stroke-width: 5;
+.gauge {
+    position: relative;
 
-            stroke-linecap: round;
+    width: 280px;
+    height: 280px;
 
-            transform-origin:
-                140px 140px;
+    margin: 0 auto 15px;
+}
 
-            transform:
-                rotate(-90deg);
+/*
+   Lingkaran gauge
+*/
 
-            transition:
-                transform
-                0.7s
-                cubic-bezier(
-                    0.25,
-                    0.8,
-                    0.25,
-                    1
-                );
-        }
+.gauge-ring {
+    position: absolute;
 
-        .needle-center {
-            fill: #111827;
-        }
+    width: 100%;
+    height: 100%;
 
-        /* ==============================
-           SCALE
-        ============================== */
+    border-radius: 50%;
 
-        .scale-number {
-            fill: #6b7280;
+    background:
+        conic-gradient(
+            from 225deg,
+            #2563eb 0deg,
+            #2563eb var(--progress),
+            #e5e7eb var(--progress),
+            #e5e7eb 270deg,
+            transparent 270deg
+        );
 
-            font-size: 11px;
+    transform: rotate(0deg);
+}
 
-            font-weight: bold;
+/*
+   Lubang tengah
+*/
 
-            text-anchor: middle;
+.gauge-ring::after {
+    content: "";
 
-            dominant-baseline: middle;
-        }
+    position: absolute;
 
-        /* ==============================
-           VALUE
-        ============================== */
+    width: 72%;
 
-        .gauge-value {
-            position: absolute;
+    height: 72%;
 
-            left: 50%;
-            top: 49%;
+    left: 14%;
+    top: 14%;
 
-            transform:
-                translate(
-                    -50%,
-                    -50%
-                );
+    border-radius: 50%;
 
-            font-size: 38px;
+    background: white;
+}
 
-            font-weight: bold;
+/* =====================================================
+   NILAI TENGAH
+   ===================================================== */
 
-            color: #111827;
+.gauge-value {
+    position: absolute;
 
-            white-space: nowrap;
-        }
+    top: 70%;
+    left: 50%;
 
-        .gauge-unit {
-            position: absolute;
+    transform: translate(-50%, -45%);
 
-            left: 50%;
-            top: 62%;
+    z-index: 5;
 
-            transform:
-                translateX(-50%);
+    text-align: center;
 
-            font-size: 16px;
+    width: 160px;
+}
 
-            color: #6b7280;
-        }
+.value-number {
+    font-size: 45px;
 
-        .last-update {
-            margin-top: -7px;
+    font-weight: 700;
 
-            font-size: 13px;
+    line-height: 1;
+}
 
-            color: #6b7280;
-        }
+.value-unit {
+    margin-top: 8px;
 
-        /* ==============================
-           TABLE
-        ============================== */
+    font-size: 19px;
 
-        .table-card {
-            margin-top: 30px;
+    color: #64748b;
+}
 
-            background: white;
+/* =====================================================
+   JARUM
+   ===================================================== */
 
-            border-radius: 22px;
+.needle {
+    position: absolute;
 
-            padding: 25px;
+    width: 5px;
+    height: 105px;
 
-            box-shadow:
-                0 8px 25px
-                rgba(
-                    0,
-                    0,
-                    0,
-                    0.08
-                );
-        }
+    background: #1f2937;
 
-        .table-card h2 {
-            margin:
-                0 0 20px;
+    left: calc(50% - 2.5px);
 
-            font-size: 21px;
-        }
+    top: calc(50% - 105px);
 
-        .table-wrapper {
-            overflow-x: auto;
-        }
+    transform-origin: 50% 100%;
 
-        table {
-            width: 100%;
+    transform:
+        rotate(var(--needle-angle));
 
-            border-collapse: collapse;
+    border-radius: 5px;
 
-            min-width: 850px;
-        }
+    z-index: 7;
 
-        th {
-            background: #f3f4f6;
+    transition:
+        transform 0.8s cubic-bezier(.4,2,.6,1);
+}
 
-            padding:
-                13px 10px;
+/* Titik tengah jarum */
 
-            text-align: center;
+.needle-center {
+    position: absolute;
 
-            font-size: 14px;
-        }
+    width: 22px;
+    height: 22px;
 
-        td {
-            padding:
-                12px 10px;
+    border-radius: 50%;
 
-            border-bottom:
-                1px solid #e5e7eb;
+    background: #1f2937;
 
-            text-align: center;
+    left: calc(50% - 11px);
+    top: calc(50% - 11px);
 
-            font-size: 14px;
-        }
+    z-index: 8;
+}
 
-        tr:hover {
-            background: #f9fafb;
-        }
+/* =====================================================
+   UPDATE TIME
+   ===================================================== */
 
-        /* ==============================
-           GRAPH
-        ============================== */
+.update {
+    color: #64748b;
 
-        .chart-container {
-            position: relative;
+    font-size: 16px;
 
-            height: 330px;
+    margin-top: 10px;
+}
 
-            margin-bottom: 45px;
-        }
+/* =====================================================
+   TABEL
+   ===================================================== */
 
-        .chart-container:last-child {
-            margin-bottom: 0;
-        }
+.table-card {
+    margin-top: 35px;
 
-        /* ==============================
-           RESPONSIVE
-        ============================== */
+    background: white;
 
-        @media (
-            max-width: 750px
-        ) {
+    border-radius: 22px;
 
-            .gauge-grid {
-                grid-template-columns:
-                    1fr;
-            }
+    padding: 30px;
 
-            .header h1 {
-                font-size: 26px;
-            }
+    box-shadow:
+        0 8px 25px rgba(0,0,0,0.08);
+}
 
-            .header p {
-                font-size: 15px;
-            }
+.table-card h2 {
+    margin-top: 0;
 
-            .gauge {
-                max-width: 360px;
-                height: 265px;
-            }
+    text-align: center;
 
-        }
+    font-size: 28px;
+}
 
-    </style>
+.table-wrapper {
+    width: 100%;
+
+    overflow-x: auto;
+
+    max-height: 600px;
+
+    overflow-y: auto;
+}
+
+table {
+    width: 100%;
+
+    border-collapse: collapse;
+
+    min-width: 850px;
+}
+
+thead {
+    position: sticky;
+
+    top: 0;
+
+    z-index: 10;
+}
+
+th {
+    background: #1e3a8a;
+
+    color: white;
+
+    padding: 15px;
+
+    font-size: 15px;
+}
+
+td {
+    padding: 14px;
+
+    text-align: center;
+
+    border-bottom: 1px solid #e5e7eb;
+
+    font-size: 15px;
+}
+
+tbody tr:hover {
+    background: #f8fafc;
+}
+
+/* =====================================================
+   GRAFIK
+   ===================================================== */
+
+.chart-card {
+    margin-top: 35px;
+
+    background: white;
+
+    border-radius: 22px;
+
+    padding: 30px;
+
+    box-shadow:
+        0 8px 25px rgba(0,0,0,0.08);
+}
+
+.chart-card h2 {
+    text-align: center;
+
+    margin-top: 0;
+
+    font-size: 28px;
+}
+
+.chart-container {
+    position: relative;
+
+    width: 100%;
+
+    height: 420px;
+}
+
+canvas {
+    width: 100% !important;
+
+    height: 100% !important;
+}
+
+/* =====================================================
+   RESPONSIVE
+   ===================================================== */
+
+@media (max-width: 850px) {
+
+    .sensor-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .header h1 {
+        font-size: 30px;
+    }
+
+    .header p {
+        font-size: 17px;
+    }
+
+    .gauge {
+        width: 250px;
+        height: 250px;
+    }
+}
+
+</style>
 
 </head>
 
-
 <body>
 
-
-<!-- ==================================
+<!-- =====================================================
      HEADER
-================================== -->
+     ===================================================== -->
 
-<header class="header">
+<div class="header">
 
-    <h1>
-        Monitoring IoT ESP32
-    </h1>
+    <h1>Monitoring IoT ESP32</h1>
 
     <p>
         Monitoring Sensor Secara Real-Time
@@ -459,1246 +438,1129 @@
             id="statusDot">
         </span>
 
-        <span id="status">
-            Menghubungkan...
+        <span id="statusText">
+            MENGHUBUNGKAN...
         </span>
 
     </div>
 
-</header>
+</div>
 
 
-
-<main class="container">
-
-
-    <!-- ==================================
-         GAUGE
-    ================================== -->
-
-    <div class="gauge-grid">
+<div class="container">
 
 
-        <!-- ==============================
-             JARAK
-        ============================== -->
+<!-- =====================================================
+     SENSOR
+     ===================================================== -->
 
-        <div class="card">
-
-            <h2>
-                Jarak
-            </h2>
-
-            <div class="card-description">
-                Rentang 0–500 cm
-            </div>
+<div class="sensor-grid">
 
 
-            <div class="gauge">
+<!-- =====================================================
+     VOLUME
+     ===================================================== -->
 
-                <svg viewBox="0 0 280 180">
+<div class="card">
 
-                    <path
-                        class="gauge-track"
-                        d="
-                            M 30 140
-                            A 110 110 0 0 1 250 140
-                        "
-                        pathLength="100">
-                    </path>
+    <h2>Volume</h2>
 
-                    <path
-                        class="gauge-progress"
-                        id="progressJarak"
-                        d="
-                            M 30 140
-                            A 110 110 0 0 1 250 140
-                        "
-                        pathLength="100">
-                    </path>
+    <div
+        class="gauge"
+        id="gaugeVolume"
+        style="
+            --progress: 0deg;
+            --needle-angle: -135deg;
+        "
+    >
 
-                    <line
-                        class="needle"
-                        id="needleJarak"
-                        x1="140"
-                        y1="140"
-                        x2="140"
-                        y2="48">
-                    </line>
+        <div class="gauge-ring"></div>
 
-                    <circle
-                        class="needle-center"
-                        cx="140"
-                        cy="140"
-                        r="9">
-                    </circle>
+        <div class="needle"></div>
 
-                    <text
-                        class="scale-number"
-                        x="30"
-                        y="158">
-                        0
-                    </text>
+        <div class="needle-center"></div>
 
-                    <text
-                        class="scale-number"
-                        x="58"
-                        y="83">
-                        100
-                    </text>
-
-                    <text
-                        class="scale-number"
-                        x="92"
-                        y="47">
-                        200
-                    </text>
-
-                    <text
-                        class="scale-number"
-                        x="188"
-                        y="47">
-                        300
-                    </text>
-
-                    <text
-                        class="scale-number"
-                        x="222"
-                        y="83">
-                        400
-                    </text>
-
-                    <text
-                        class="scale-number"
-                        x="250"
-                        y="158">
-                        500
-                    </text>
-
-                </svg>
-
-
-                <div
-                    class="gauge-value"
-                    id="jarak">
-                    --
-                </div>
-
-                <div class="gauge-unit">
-                    cm
-                </div>
-
-            </div>
-
+        <div class="gauge-value">
 
             <div
-                class="last-update"
-                id="waktuJarak">
-                Menunggu data...
+                class="value-number"
+                id="volumeValue"
+            >
+                0.0
             </div>
 
-        </div>
-
-
-
-        <!-- ==============================
-             SUHU
-        ============================== -->
-
-        <div class="card">
-
-            <h2>
-                Suhu
-            </h2>
-
-            <div class="card-description">
-                Rentang 0–50 °C
-            </div>
-
-
-            <div class="gauge">
-
-                <svg viewBox="0 0 280 180">
-
-                    <path
-                        class="gauge-track"
-                        d="
-                            M 30 140
-                            A 110 110 0 0 1 250 140
-                        "
-                        pathLength="100">
-                    </path>
-
-                    <path
-                        class="gauge-progress"
-                        id="progressSuhu"
-                        d="
-                            M 30 140
-                            A 110 110 0 0 1 250 140
-                        "
-                        pathLength="100">
-                    </path>
-
-                    <line
-                        class="needle"
-                        id="needleSuhu"
-                        x1="140"
-                        y1="140"
-                        x2="140"
-                        y2="48">
-                    </line>
-
-                    <circle
-                        class="needle-center"
-                        cx="140"
-                        cy="140"
-                        r="9">
-                    </circle>
-
-                    <text
-                        class="scale-number"
-                        x="30"
-                        y="158">
-                        0
-                    </text>
-
-                    <text
-                        class="scale-number"
-                        x="58"
-                        y="83">
-                        10
-                    </text>
-
-                    <text
-                        class="scale-number"
-                        x="92"
-                        y="47">
-                        20
-                    </text>
-
-                    <text
-                        class="scale-number"
-                        x="188"
-                        y="47">
-                        30
-                    </text>
-
-                    <text
-                        class="scale-number"
-                        x="222"
-                        y="83">
-                        40
-                    </text>
-
-                    <text
-                        class="scale-number"
-                        x="250"
-                        y="158">
-                        50
-                    </text>
-
-                </svg>
-
-
-                <div
-                    class="gauge-value"
-                    id="suhu">
-                    --
-                </div>
-
-                <div class="gauge-unit">
-                    °C
-                </div>
-
-            </div>
-
-
-            <div
-                class="last-update"
-                id="waktuSuhu">
-                Menunggu data...
-            </div>
-
-        </div>
-
-
-
-        <!-- ==============================
-             KELEMBAPAN UDARA
-        ============================== -->
-
-        <div class="card">
-
-            <h2>
-                Kelembapan Udara
-            </h2>
-
-            <div class="card-description">
-                Rentang 0–100 %
-            </div>
-
-
-            <div class="gauge">
-
-                <svg viewBox="0 0 280 180">
-
-                    <path
-                        class="gauge-track"
-                        d="
-                            M 30 140
-                            A 110 110 0 0 1 250 140
-                        "
-                        pathLength="100">
-                    </path>
-
-                    <path
-                        class="gauge-progress"
-                        id="progressUdara"
-                        d="
-                            M 30 140
-                            A 110 110 0 0 1 250 140
-                        "
-                        pathLength="100">
-                    </path>
-
-                    <line
-                        class="needle"
-                        id="needleUdara"
-                        x1="140"
-                        y1="140"
-                        x2="140"
-                        y2="48">
-                    </line>
-
-                    <circle
-                        class="needle-center"
-                        cx="140"
-                        cy="140"
-                        r="9">
-                    </circle>
-
-                    <text
-                        class="scale-number"
-                        x="30"
-                        y="158">
-                        0
-                    </text>
-
-                    <text
-                        class="scale-number"
-                        x="58"
-                        y="83">
-                        20
-                    </text>
-
-                    <text
-                        class="scale-number"
-                        x="92"
-                        y="47">
-                        40
-                    </text>
-
-                    <text
-                        class="scale-number"
-                        x="188"
-                        y="47">
-                        60
-                    </text>
-
-                    <text
-                        class="scale-number"
-                        x="222"
-                        y="83">
-                        80
-                    </text>
-
-                    <text
-                        class="scale-number"
-                        x="250"
-                        y="158">
-                        100
-                    </text>
-
-                </svg>
-
-
-                <div
-                    class="gauge-value"
-                    id="kelembapanUdara">
-                    --
-                </div>
-
-                <div class="gauge-unit">
-                    %
-                </div>
-
-            </div>
-
-
-            <div
-                class="last-update"
-                id="waktuUdara">
-                Menunggu data...
-            </div>
-
-        </div>
-
-
-
-        <!-- ==============================
-             KELEMBAPAN TANAH
-        ============================== -->
-
-        <div class="card">
-
-            <h2>
-                Kelembapan Tanah
-            </h2>
-
-            <div class="card-description">
-                ADC 0–4095 → 0–100 %
-            </div>
-
-
-            <div class="gauge">
-
-                <svg viewBox="0 0 280 180">
-
-                    <path
-                        class="gauge-track"
-                        d="
-                            M 30 140
-                            A 110 110 0 0 1 250 140
-                        "
-                        pathLength="100">
-                    </path>
-
-                    <path
-                        class="gauge-progress"
-                        id="progressTanah"
-                        d="
-                            M 30 140
-                            A 110 110 0 0 1 250 140
-                        "
-                        pathLength="100">
-                    </path>
-
-                    <line
-                        class="needle"
-                        id="needleTanah"
-                        x1="140"
-                        y1="140"
-                        x2="140"
-                        y2="48">
-                    </line>
-
-                    <circle
-                        class="needle-center"
-                        cx="140"
-                        cy="140"
-                        r="9">
-                    </circle>
-
-                    <text
-                        class="scale-number"
-                        x="30"
-                        y="158">
-                        0
-                    </text>
-
-                    <text
-                        class="scale-number"
-                        x="58"
-                        y="83">
-                        20
-                    </text>
-
-                    <text
-                        class="scale-number"
-                        x="92"
-                        y="47">
-                        40
-                    </text>
-
-                    <text
-                        class="scale-number"
-                        x="188"
-                        y="47">
-                        60
-                    </text>
-
-                    <text
-                        class="scale-number"
-                        x="222"
-                        y="83">
-                        80
-                    </text>
-
-                    <text
-                        class="scale-number"
-                        x="250"
-                        y="158">
-                        100
-                    </text>
-
-                </svg>
-
-
-                <div
-                    class="gauge-value"
-                    id="kelembapanTanah">
-                    --
-                </div>
-
-                <div class="gauge-unit">
-                    %
-                </div>
-
-            </div>
-
-
-            <div
-                class="last-update"
-                id="waktuTanah">
-                Menunggu data...
+            <div class="value-unit">
+                L
             </div>
 
         </div>
 
     </div>
 
+    <div
+        class="update"
+        id="volumeUpdate"
+    >
+        Update: -
+    </div>
+
+</div>
 
 
-    <!-- ==================================
-         TABEL
-    ================================== -->
+<!-- =====================================================
+     SUHU
+     ===================================================== -->
 
-    <div class="table-card">
+<div class="card">
 
-        <h2>
-            Riwayat Data Sensor
-        </h2>
+    <h2>Suhu</h2>
 
+    <div
+        class="gauge"
+        id="gaugeSuhu"
+        style="
+            --progress: 0deg;
+            --needle-angle: -135deg;
+        "
+    >
 
-        <div class="table-wrapper">
+        <div class="gauge-ring"></div>
 
-            <table>
+        <div class="needle"></div>
 
-                <thead>
+        <div class="needle-center"></div>
 
-                    <tr>
+        <div class="gauge-value">
 
-                        <th>No</th>
+            <div
+                class="value-number"
+                id="suhuValue"
+            >
+                0.0
+            </div>
 
-                        <th>Waktu</th>
-
-                        <th>Jarak</th>
-
-                        <th>Suhu</th>
-
-                        <th>
-                            Kelembapan Udara
-                        </th>
-
-                        <th>
-                            Kelembapan Tanah
-                        </th>
-
-                    </tr>
-
-                </thead>
-
-
-                <tbody
-                    id="dataTable">
-                </tbody>
-
-            </table>
+            <div class="value-unit">
+                °C
+            </div>
 
         </div>
 
     </div>
 
+    <div
+        class="update"
+        id="suhuUpdate"
+    >
+        Update: -
+    </div>
+
+</div>
 
 
-    <!-- ==================================
-         GRAFIK
-    ================================== -->
+<!-- =====================================================
+     KELEMBAPAN UDARA
+     ===================================================== -->
 
-    <div class="table-card">
+<div class="card">
 
-        <h2>
-            Grafik Riwayat Sensor
-        </h2>
+    <h2>Kelembapan Udara</h2>
 
+    <div
+        class="gauge"
+        id="gaugeUdara"
+        style="
+            --progress: 0deg;
+            --needle-angle: -135deg;
+        "
+    >
 
-        <div class="chart-container">
+        <div class="gauge-ring"></div>
 
-            <canvas
-                id="chartJarak">
-            </canvas>
+        <div class="needle"></div>
 
-        </div>
+        <div class="needle-center"></div>
 
+        <div class="gauge-value">
 
-        <div class="chart-container">
+            <div
+                class="value-number"
+                id="udaraValue"
+            >
+                0.0
+            </div>
 
-            <canvas
-                id="chartSuhu">
-            </canvas>
-
-        </div>
-
-
-        <div class="chart-container">
-
-            <canvas
-                id="chartUdara">
-            </canvas>
-
-        </div>
-
-
-        <div class="chart-container">
-
-            <canvas
-                id="chartTanah">
-            </canvas>
+            <div class="value-unit">
+                %
+            </div>
 
         </div>
 
     </div>
 
+    <div
+        class="update"
+        id="udaraUpdate"
+    >
+        Update: -
+    </div>
 
-</main>
+</div>
 
 
+<!-- =====================================================
+     KELEMBAPAN TANAH
+     ===================================================== -->
 
-<script type="module">
+<div class="card">
+
+    <h2>Kelembapan Tanah</h2>
+
+    <div
+        class="gauge"
+        id="gaugeTanah"
+        style="
+            --progress: 0deg;
+            --needle-angle: -135deg;
+        "
+    >
+
+        <div class="gauge-ring"></div>
+
+        <div class="needle"></div>
+
+        <div class="needle-center"></div>
+
+        <div class="gauge-value">
+
+            <div
+                class="value-number"
+                id="tanahValue"
+            >
+                0.0
+            </div>
+
+            <div class="value-unit">
+                %
+            </div>
+
+        </div>
+
+    </div>
+
+    <div
+        class="update"
+        id="tanahUpdate"
+    >
+        Update: -
+    </div>
+
+</div>
 
 
-    /* ==================================
-       SUPABASE
-    ================================== */
+</div>
 
-    import {
-        createClient
+
+<!-- =====================================================
+     GRAFIK
+     ===================================================== -->
+
+<div class="chart-card">
+
+    <h2>Grafik Data Sensor</h2>
+
+    <div class="chart-container">
+
+        <canvas id="sensorChart"></canvas>
+
+    </div>
+
+</div>
+
+
+<!-- =====================================================
+     TABEL
+     ===================================================== -->
+
+<div class="table-card">
+
+    <h2>Data Sensor</h2>
+
+    <div class="table-wrapper">
+
+        <table>
+
+            <thead>
+
+                <tr>
+
+                    <th>No</th>
+
+                    <th>Waktu</th>
+
+                    <th>Volume (L)</th>
+
+                    <th>Suhu (°C)</th>
+
+                    <th>Kelembapan Udara (%)</th>
+
+                    <th>Kelembapan Tanah (%)</th>
+
+                </tr>
+
+            </thead>
+
+            <tbody id="dataTable">
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>
+
+
+</div>
+
+
+<!-- =====================================================
+     CHART.JS
+     ===================================================== -->
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+
+<script>
+
+/* =====================================================
+   SUPABASE
+   ===================================================== */
+
+const SUPABASE_URL =
+    "https://dbodgclttbalohgpanpk.supabase.co";
+
+const SUPABASE_KEY =
+    "sb_publishable_0b3vY7OTUEoI5nyM0wmvVQ_V0CUS4HA";
+
+const supabaseClient =
+    window.supabase.createClient(
+        SUPABASE_URL,
+        SUPABASE_KEY
+    );
+
+
+/* =====================================================
+   KONFIGURASI
+   ===================================================== */
+
+const VOLUME_MAX = 30;
+
+const SUHU_MIN = 0;
+const SUHU_MAX = 50;
+
+const HUM_MIN = 0;
+const HUM_MAX = 100;
+
+const SOIL_ADC_MAX = 4095;
+
+
+/* =====================================================
+   DATA GRAFIK
+   ===================================================== */
+
+let chartData = [];
+
+
+/* =====================================================
+   FORMAT WAKTU WITA
+   ===================================================== */
+
+function formatWITA(waktu) {
+
+    if (!waktu) return "-";
+
+    const date = new Date(waktu);
+
+    return date.toLocaleString(
+        "id-ID",
+        {
+            timeZone: "Asia/Makassar",
+
+            day: "2-digit",
+            month: "2-digit",
+            year: "numeric",
+
+            hour: "2-digit",
+            minute: "2-digit",
+            second: "2-digit",
+
+            hour12: false
+        }
+    );
+
+}
+
+
+/* =====================================================
+   KONVERSI ADC → PERSEN
+   ===================================================== */
+
+function adcKePersen(adc) {
+
+    adc = Number(adc);
+
+    if (!Number.isFinite(adc)) {
+
+        return 0;
     }
-    from
-    "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
 
+    adc = Math.max(
+        0,
+        Math.min(
+            SOIL_ADC_MAX,
+            adc
+        )
+    );
+
+    let persen =
+        ((SOIL_ADC_MAX - adc)
+        / SOIL_ADC_MAX) * 100;
+
+    return Math.max(
+        0,
+        Math.min(
+            100,
+            persen
+        )
+    );
+
+}
+
+
+/* =====================================================
+   AMBIL NILAI KELEMBAPAN TANAH
+   ===================================================== */
+
+function getSoilPercent(data) {
+
+    let nilai =
+        data["Kelembapan Tanah (%)"];
+
+    nilai = Number(nilai);
+
+    if (!Number.isFinite(nilai)) {
+
+        return 0;
+    }
 
     /*
-     * ==================================
-     * MASUKKAN DATA SUPABASE ANDA
-     * ==================================
-     */
+       Karena ESP32 mengirim soilADC 0–4095,
+       maka jika nilainya > 100 dianggap ADC.
+    */
 
-    const SUPABASE_URL =
-        "https://dbodgclttbalohgpanpk.supabase.co";
+    if (nilai > 100) {
+
+        return adcKePersen(nilai);
+    }
+
+    /*
+       Jika suatu saat ESP32 mengirim
+       langsung dalam persen, nilai tersebut
+       tetap bisa digunakan.
+    */
+
+    return Math.max(
+        0,
+        Math.min(
+            100,
+            nilai
+        )
+    );
+
+}
 
 
-    const SUPABASE_KEY =
-        "sb_publishable_0b3vY7OTUEoI5nyM0wmvVQ_V0CUS4HA";
+/* =====================================================
+   GAUGE
+   ===================================================== */
 
+function updateGauge(
+    id,
+    value,
+    min,
+    max
+) {
 
-    const supabase =
-        createClient(
-            SUPABASE_URL,
-            SUPABASE_KEY
+    const gauge =
+        document.getElementById(id);
+
+    if (!gauge) return;
+
+    value = Number(value);
+
+    if (!Number.isFinite(value)) {
+
+        value = min;
+    }
+
+    value =
+        Math.max(
+            min,
+            Math.min(
+                max,
+                value
+            )
         );
 
+    const persen =
+        (value - min) /
+        (max - min);
+
+    /*
+       Gauge 270 derajat
+    */
+
+    const progress =
+        persen * 270;
+
+    /*
+       Jarum:
+       -135° sampai +135°
+    */
+
+    const angle =
+        -135 + (persen * 270);
+
+    gauge.style.setProperty(
+        "--progress",
+        progress + "deg"
+    );
+
+    gauge.style.setProperty(
+        "--needle-angle",
+        angle + "deg"
+    );
+
+}
 
 
-    /* ==================================
-       ELEMENT HTML
-    ================================== */
+/* =====================================================
+   UPDATE GAUGE VOLUME
+   ===================================================== */
 
-    const status =
-        document.getElementById(
-            "status"
-        );
+function updateVolume(value) {
+
+    updateGauge(
+        "gaugeVolume",
+        value,
+        0,
+        VOLUME_MAX
+    );
+
+    document.getElementById(
+        "volumeValue"
+    ).textContent =
+        Number(value).toFixed(1);
+
+}
 
 
-    const statusDot =
-        document.getElementById(
-            "statusDot"
-        );
+/* =====================================================
+   UPDATE GAUGE SUHU
+   ===================================================== */
+
+function updateSuhu(value) {
+
+    updateGauge(
+        "gaugeSuhu",
+        value,
+        SUHU_MIN,
+        SUHU_MAX
+    );
+
+    document.getElementById(
+        "suhuValue"
+    ).textContent =
+        Number(value).toFixed(1);
+
+}
 
 
-    const jarak =
-        document.getElementById(
-            "jarak"
+/* =====================================================
+   UPDATE GAUGE UDARA
+   ===================================================== */
+
+function updateUdara(value) {
+
+    updateGauge(
+        "gaugeUdara",
+        value,
+        0,
+        100
+    );
+
+    document.getElementById(
+        "udaraValue"
+    ).textContent =
+        Number(value).toFixed(1);
+
+}
+
+
+/* =====================================================
+   UPDATE GAUGE TANAH
+   ===================================================== */
+
+function updateTanah(value) {
+
+    updateGauge(
+        "gaugeTanah",
+        value,
+        0,
+        100
+    );
+
+    document.getElementById(
+        "tanahValue"
+    ).textContent =
+        Number(value).toFixed(1);
+
+}
+
+
+/* =====================================================
+   UPDATE MONITORING
+   ===================================================== */
+
+function updateMonitoring(data) {
+
+    if (!data) return;
+
+
+    const volume =
+        Number(
+            data["Volume (L)"]
         );
 
 
     const suhu =
+        Number(
+            data["Suhu (°C)"]
+        );
+
+
+    const udara =
+        Number(
+            data["Kelembapan Udara (%)"]
+        );
+
+
+    const tanah =
+        getSoilPercent(data);
+
+
+    /* Volume */
+
+    if (Number.isFinite(volume)) {
+
+        updateVolume(volume);
+    }
+
+
+    /* Suhu */
+
+    if (Number.isFinite(suhu)) {
+
+        updateSuhu(suhu);
+    }
+
+
+    /* Udara */
+
+    if (Number.isFinite(udara)) {
+
+        updateUdara(udara);
+    }
+
+
+    /* Tanah */
+
+    updateTanah(tanah);
+
+
+    /* Waktu */
+
+    const waktu =
+        formatWITA(data.Waktu);
+
+
+    document.getElementById(
+        "volumeUpdate"
+    ).textContent =
+        "Update: " + waktu;
+
+
+    document.getElementById(
+        "suhuUpdate"
+    ).textContent =
+        "Update: " + waktu;
+
+
+    document.getElementById(
+        "udaraUpdate"
+    ).textContent =
+        "Update: " + waktu;
+
+
+    document.getElementById(
+        "tanahUpdate"
+    ).textContent =
+        "Update: " + waktu;
+
+}
+
+
+/* =====================================================
+   STATUS
+   ===================================================== */
+
+function setStatus(
+    online,
+    text
+) {
+
+    const dot =
         document.getElementById(
-            "suhu"
+            "statusDot"
         );
 
-
-    const kelembapanUdara =
+    const statusText =
         document.getElementById(
-            "kelembapanUdara"
+            "statusText"
         );
 
+    statusText.textContent =
+        text;
 
-    const kelembapanTanah =
+    if (online) {
+
+        dot.style.background =
+            "#22c55e";
+
+        dot.style.boxShadow =
+            "0 0 10px #22c55e";
+
+    } else {
+
+        dot.style.background =
+            "#ef4444";
+
+        dot.style.boxShadow =
+            "0 0 10px #ef4444";
+    }
+
+}
+
+
+/* =====================================================
+   TABEL
+   ===================================================== */
+
+function renderTable(data) {
+
+    const tbody =
         document.getElementById(
-            "kelembapanTanah"
+            "dataTable"
         );
 
+    tbody.innerHTML = "";
 
 
-    /* ==================================
-       VARIABLE GRAFIK
-    ================================== */
+    data.forEach(
+        function(row) {
 
-    let chartJarak = null;
-
-    let chartSuhu = null;
-
-    let chartUdara = null;
-
-    let chartTanah = null;
-
-
-
-    /* ==================================
-       FORMAT WAKTU WITA
-    ================================== */
-
-    function formatWaktu(
-        waktu
-    ) {
-
-        if (!waktu) {
-            return "-";
-        }
-
-
-        return new Date(
-            waktu
-        ).toLocaleString(
-            "id-ID",
-            {
-
-                timeZone:
-                    "Asia/Makassar",
-
-                day:
-                    "2-digit",
-
-                month:
-                    "2-digit",
-
-                year:
-                    "numeric",
-
-                hour:
-                    "2-digit",
-
-                minute:
-                    "2-digit",
-
-                second:
-                    "2-digit"
-
-            }
-        );
-
-    }
-
-
-
-    /* ==================================
-       FORMAT WAKTU GRAFIK
-    ================================== */
-
-    function formatLabelGrafik(
-        waktu
-    ) {
-
-        if (!waktu) {
-            return "";
-        }
-
-
-        return new Date(
-            waktu
-        ).toLocaleTimeString(
-            "id-ID",
-            {
-
-                timeZone:
-                    "Asia/Makassar",
-
-                hour:
-                    "2-digit",
-
-                minute:
-                    "2-digit",
-
-                second:
-                    "2-digit"
-
-            }
-        );
-
-    }
-
-
-
-    /* ==================================
-       KONVERSI ADC TANAH → PERSEN
-    ================================== */
-
-    function adcTanahKePersen(
-        adc
-    ) {
-
-        let persen =
-            (
-                Number(adc)
-                /
-                4095
-            ) * 100;
-
-
-        persen =
-            Math.max(
-                0,
-                Math.min(
-                    100,
-                    persen
-                )
-            );
-
-
-        return persen;
-
-    }
-
-
-
-    /* ==================================
-       UPDATE GAUGE
-    ================================== */
-
-    function updateGauge(
-
-        progressId,
-
-        needleId,
-
-        value,
-
-        min,
-
-        max
-
-    ) {
-
-
-        let persen =
-            (
-                (value - min)
-                /
-                (max - min)
-            ) * 100;
-
-
-        persen =
-            Math.max(
-                0,
-                Math.min(
-                    100,
-                    persen
-                )
-            );
-
-
-        const progress =
-            document.getElementById(
-                progressId
-            );
-
-
-        if (progress) {
-
-            progress.style.strokeDasharray =
-                `${persen} 100`;
-
-        }
-
-
-        /*
-         * 0%   = -90°
-         * 50%  = 0°
-         * 100% = 90°
-         */
-
-        const sudut =
-            -90 +
-            (
-                persen * 1.8
-            );
-
-
-        const needle =
-            document.getElementById(
-                needleId
-            );
-
-
-        if (needle) {
-
-            needle.style.transform =
-                `rotate(${sudut}deg)`;
-
-        }
-
-    }
-
-
-
-    /* ==================================
-       TAMPILKAN DATA TERBARU
-    ================================== */
-
-    function tampilkanData(
-        sensor
-    ) {
-
-
-        if (!sensor) {
-            return;
-        }
-
-
-        /* ==============================
-           JARAK
-        ============================== */
-
-        const nilaiJarak =
-            Number(
-                sensor.Jarak
-            );
-
-
-        if (
-            !isNaN(
-                nilaiJarak
-            )
-        ) {
-
-            jarak.textContent =
-                nilaiJarak.toFixed(1);
-
-
-            updateGauge(
-
-                "progressJarak",
-
-                "needleJarak",
-
-                nilaiJarak,
-
-                0,
-
-                500
-
-            );
-
-        }
-
-
-        /* ==============================
-           SUHU
-        ============================== */
-
-        const nilaiSuhu =
-            Number(
-                sensor.Suhu
-            );
-
-
-        if (
-            !isNaN(
-                nilaiSuhu
-            )
-        ) {
-
-            suhu.textContent =
-                nilaiSuhu.toFixed(1);
-
-
-            updateGauge(
-
-                "progressSuhu",
-
-                "needleSuhu",
-
-                nilaiSuhu,
-
-                0,
-
-                50
-
-            );
-
-        }
-
-
-        /* ==============================
-           KELEMBAPAN UDARA
-        ============================== */
-
-        const nilaiUdara =
-            Number(
-                sensor[
-                    "Kelembapan Udara"
-                ]
-            );
-
-
-        if (
-            !isNaN(
-                nilaiUdara
-            )
-        ) {
-
-            kelembapanUdara.textContent =
-                nilaiUdara.toFixed(1);
-
-
-            updateGauge(
-
-                "progressUdara",
-
-                "needleUdara",
-
-                nilaiUdara,
-
-                0,
-
-                100
-
-            );
-
-        }
-
-
-        /* ==============================
-           KELEMBAPAN TANAH
-
-           ADC 0–4095
-           WEB 0–100%
-        ============================== */
-
-        const nilaiTanahADC =
-            Number(
-                sensor[
-                    "Kelembapan Tanah"
-                ]
-            );
-
-
-        if (
-            !isNaN(
-                nilaiTanahADC
-            )
-        ) {
-
-
-            const nilaiTanahPersen =
-                adcTanahKePersen(
-                    nilaiTanahADC
+            const tr =
+                document.createElement(
+                    "tr"
                 );
 
 
-            kelembapanTanah.textContent =
-                nilaiTanahPersen.toFixed(1);
+            const volume =
+                Number(
+                    row["Volume (L)"]
+                );
 
 
-            updateGauge(
+            const suhu =
+                Number(
+                    row["Suhu (°C)"]
+                );
 
-                "progressTanah",
 
-                "needleTanah",
+            const udara =
+                Number(
+                    row["Kelembapan Udara (%)"]
+                );
 
-                nilaiTanahADC,
 
-                0,
+            const tanah =
+                getSoilPercent(row);
 
-                4095
 
-            );
+            tr.innerHTML = `
+
+                <td>
+                    ${row.No ?? "-"}
+                </td>
+
+                <td>
+                    ${formatWITA(row.Waktu)}
+                </td>
+
+                <td>
+                    ${Number.isFinite(volume)
+                        ? volume.toFixed(2)
+                        : "-"} L
+                </td>
+
+                <td>
+                    ${Number.isFinite(suhu)
+                        ? suhu.toFixed(1)
+                        : "-"} °C
+                </td>
+
+                <td>
+                    ${Number.isFinite(udara)
+                        ? udara.toFixed(1)
+                        : "-"} %
+                </td>
+
+                <td>
+                    ${tanah.toFixed(1)} %
+                </td>
+
+            `;
+
+
+            tbody.appendChild(tr);
 
         }
+    );
+
+}
 
 
-        /* ==============================
-           WAKTU
-        ============================== */
+/* =====================================================
+   CHART
+   ===================================================== */
 
-        const waktu =
-            formatWaktu(
-                sensor.Waktu
-            );
-
-
-        document.getElementById(
-            "waktuJarak"
-        ).textContent =
-            "Update: " + waktu;
+const ctx =
+    document.getElementById(
+        "sensorChart"
+    );
 
 
-        document.getElementById(
-            "waktuSuhu"
-        ).textContent =
-            "Update: " + waktu;
+const sensorChart =
+    new Chart(
+        ctx,
+        {
+
+            type: "line",
+
+            data: {
+
+                labels: [],
+
+                datasets: [
+
+                    {
+                        label: "Volume (L)",
+
+                        data: [],
+
+                        borderWidth: 2,
+
+                        tension: 0.3,
+
+                        pointRadius: 2
+                    },
+
+                    {
+                        label: "Suhu (°C)",
+
+                        data: [],
+
+                        borderWidth: 2,
+
+                        tension: 0.3,
+
+                        pointRadius: 2
+                    },
+
+                    {
+                        label: "Kelembapan Udara (%)",
+
+                        data: [],
+
+                        borderWidth: 2,
+
+                        tension: 0.3,
+
+                        pointRadius: 2
+                    },
+
+                    {
+                        label: "Kelembapan Tanah (%)",
+
+                        data: [],
+
+                        borderWidth: 2,
+
+                        tension: 0.3,
+
+                        pointRadius: 2
+                    }
+
+                ]
+
+            },
+
+            options: {
+
+                responsive: true,
+
+                maintainAspectRatio: false,
+
+                animation: false,
+
+                interaction: {
+
+                    mode: "index",
+
+                    intersect: false
+
+                },
+
+                scales: {
+
+                    y: {
+
+                        beginAtZero: true
+
+                    }
+
+                }
+
+            }
+
+        }
+    );
 
 
-        document.getElementById(
-            "waktuUdara"
-        ).textContent =
-            "Update: " + waktu;
+/* =====================================================
+   UPDATE CHART
+   ===================================================== */
+
+function updateChart(data) {
+
+    /*
+       Data ditampilkan dari yang lama
+       ke yang terbaru.
+    */
+
+    const sorted =
+        [...data].sort(
+            (a,b) =>
+                new Date(a.Waktu)
+                -
+                new Date(b.Waktu)
+        );
 
 
-        document.getElementById(
-            "waktuTanah"
-        ).textContent =
-            "Update: " + waktu;
+    sensorChart.data.labels =
+        sorted.map(
+            row =>
+                formatWITA(row.Waktu)
+        );
 
+
+    sensorChart.data.datasets[0].data =
+        sorted.map(
+            row =>
+                Number(
+                    row["Volume (L)"]
+                )
+        );
+
+
+    sensorChart.data.datasets[1].data =
+        sorted.map(
+            row =>
+                Number(
+                    row["Suhu (°C)"]
+                )
+        );
+
+
+    sensorChart.data.datasets[2].data =
+        sorted.map(
+            row =>
+                Number(
+                    row["Kelembapan Udara (%)"]
+                )
+        );
+
+
+    sensorChart.data.datasets[3].data =
+        sorted.map(
+            row =>
+                getSoilPercent(row)
+        );
+
+
+    sensorChart.update(
+        "none"
+    );
+
+}
+
+
+/* =====================================================
+   AMBIL DATA AWAL
+   ===================================================== */
+
+async function loadData() {
+
+    setStatus(
+        false,
+        "MENGAMBIL DATA..."
+    );
+
+
+    const {
+        data,
+        error
+    } = await supabaseClient
+
+        .from("Data_Sensor")
+
+        .select(
+            '"No",Waktu,"Volume (L)","Suhu (°C)","Kelembapan Udara (%)","Kelembapan Tanah (%)"'
+        )
+
+        .order(
+            "No",
+            {
+                ascending: false
+            }
+        )
+
+        .limit(100);
+
+
+    if (error) {
+
+        console.error(
+            "Error mengambil data:",
+            error
+        );
+
+        setStatus(
+            false,
+            "ERROR DATABASE"
+        );
+
+        return;
     }
 
 
+    if (!data || data.length === 0) {
 
-    /* ==================================
-       DATA TERBARU
-    ================================== */
+        setStatus(
+            false,
+            "BELUM ADA DATA"
+        );
 
-    async function ambilDataTerbaru() {
-
-
-        const {
-            data,
-            error
-        } = await supabase
-
-            .from(
-                "Data_Sensor"
-            )
-
-            .select("*")
-
-            .order(
-                "No",
-                {
-                    ascending: false
-                }
-            )
-
-            .limit(1);
-
-
-        if (error) {
-
-            console.error(
-                "Gagal mengambil data terbaru:",
-                error
-            );
-
-
-            status.textContent =
-                "Gagal membaca database";
-
-
-            statusDot.style.background =
-                "#ef4444";
-
-
-            return;
-
-        }
-
-
-        if (
-            data &&
-            data.length > 0
-        ) {
-
-            tampilkanData(
-                data[0]
-            );
-
-        }
-
-
-        status.textContent =
-            "● ONLINE • REALTIME";
-
-
-        statusDot.style.background =
-            "#22c55e";
-
+        return;
     }
 
 
+    /*
+       Data terbaru berada di index pertama.
+    */
 
-    /* ==================================
-       RIWAYAT TABEL
-    ================================== */
-
-    async function ambilRiwayat() {
-
-
-        const {
-            data,
-            error
-        } = await supabase
-
-            .from(
-                "Data_Sensor"
-            )
-
-            .select("*")
-
-            .order(
-                "No",
-                {
-                    ascending: false
-                }
-            )
-
-            .limit(20);
+    updateMonitoring(
+        data[0]
+    );
 
 
-        if (error) {
-
-            console.error(
-                "Gagal mengambil riwayat:",
-                error
-            );
-
-            return;
-
-        }
+    renderTable(
+        data
+    );
 
 
-        const table =
-            document.getElementById(
-                "dataTable"
-            );
+    updateChart(
+        data
+    );
 
 
-        table.innerHTML = "";
+    setStatus(
+        true,
+        "DATA REALTIME TERHUBUNG"
+    );
+
+}
 
 
-        data.forEach(
-            row => {
+/* =====================================================
+   REALTIME SUPABASE
+   ===================================================== */
+
+function startRealtime() {
+
+    supabaseClient
+
+        .channel(
+            "monitoring-data"
+        )
+
+        .on(
+            "postgres_changes",
+            {
+                event: "INSERT",
+                schema: "public",
+                table: "Data_Sensor"
+            },
+
+            function(payload) {
+
+                console.log(
+                    "Data baru diterima:",
+                    payload.new
+                );
+
+
+                const newData =
+                    payload.new;
+
+
+                /* =============================
+                   UPDATE GAUGE
+                   ============================= */
+
+                updateMonitoring(
+                    newData
+                );
+
+
+                /* =============================
+                   UPDATE TABEL
+                   ============================= */
+
+                const tbody =
+                    document.getElementById(
+                        "dataTable"
+                    );
 
 
                 const tr =
@@ -1707,1037 +1569,202 @@
                     );
 
 
-                let tanahPersen =
-                    "-";
+                const volume =
+                    Number(
+                        newData["Volume (L)"]
+                    );
 
 
-                if (
-                    row[
-                        "Kelembapan Tanah"
-                    ] != null
-                ) {
+                const suhu =
+                    Number(
+                        newData["Suhu (°C)"]
+                    );
 
-                    tanahPersen =
-                        adcTanahKePersen(
-                            row[
-                                "Kelembapan Tanah"
-                            ]
-                        ).toFixed(1)
-                        + " %";
 
-                }
+                const udara =
+                    Number(
+                        newData["Kelembapan Udara (%)"]
+                    );
+
+
+                const tanah =
+                    getSoilPercent(
+                        newData
+                    );
 
 
                 tr.innerHTML = `
 
                     <td>
-                        ${row.No ?? "-"}
+                        ${newData.No ?? "-"}
                     </td>
 
                     <td>
-                        ${formatWaktu(
-                            row.Waktu
+                        ${formatWITA(
+                            newData.Waktu
                         )}
                     </td>
 
                     <td>
-                        ${
-                            row.Jarak != null
-                            ?
-                            Number(
-                                row.Jarak
-                            ).toFixed(1)
-                            + " cm"
-                            :
-                            "-"
-                        }
+                        ${Number.isFinite(volume)
+                            ? volume.toFixed(2)
+                            : "-"} L
                     </td>
 
                     <td>
-                        ${
-                            row.Suhu != null
-                            ?
-                            Number(
-                                row.Suhu
-                            ).toFixed(1)
-                            + " °C"
-                            :
-                            "-"
-                        }
+                        ${Number.isFinite(suhu)
+                            ? suhu.toFixed(1)
+                            : "-"} °C
                     </td>
 
                     <td>
-                        ${
-                            row[
-                                "Kelembapan Udara"
-                            ] != null
-                            ?
-                            Number(
-                                row[
-                                    "Kelembapan Udara"
-                                ]
-                            ).toFixed(1)
-                            + " %"
-                            :
-                            "-"
-                        }
+                        ${Number.isFinite(udara)
+                            ? udara.toFixed(1)
+                            : "-"} %
                     </td>
 
                     <td>
-                        ${tanahPersen}
+                        ${tanah.toFixed(1)} %
                     </td>
 
                 `;
 
 
-                table.appendChild(
+                /*
+                   Data terbaru di paling atas.
+                */
+
+                tbody.prepend(
                     tr
                 );
 
-            }
-        );
 
-    }
-
-
-
-    /* ==================================
-       AMBIL DATA AWAL GRAFIK
-       
-       HANYA 50 DATA TERBARU
-    ================================== */
-
-    async function ambilDataGrafik() {
-
-
-        const {
-            data,
-            error
-        } = await supabase
-
-            .from(
-                "Data_Sensor"
-            )
-
-            .select(`
-                Waktu,
-                Jarak,
-                Suhu,
-                "Kelembapan Udara",
-                "Kelembapan Tanah"
-            `)
-
-            .order(
-                "Waktu",
-                {
-                    ascending: false
-                }
-            )
-
-            .limit(50);
-
-
-        if (error) {
-
-            console.error(
-                "Gagal mengambil data grafik:",
-                error
-            );
-
-            return;
-
-        }
-
-
-        if (
-            !data ||
-            data.length === 0
-        ) {
-
-            return;
-
-        }
-
-
-        /*
-         * Karena data diambil
-         * descending, balik urutannya
-         * agar grafik dari lama → baru.
-         */
-
-        data.reverse();
-
-
-        const labels =
-            data.map(
-                row =>
-                    formatLabelGrafik(
-                        row.Waktu
-                    )
-            );
-
-
-        const dataJarak =
-            data.map(
-                row =>
-                    Number(
-                        row.Jarak
-                    ) || 0
-            );
-
-
-        const dataSuhu =
-            data.map(
-                row =>
-                    Number(
-                        row.Suhu
-                    ) || 0
-            );
-
-
-        const dataUdara =
-            data.map(
-                row =>
-                    Number(
-                        row[
-                            "Kelembapan Udara"
-                        ]
-                    ) || 0
-            );
-
-
-        const dataTanah =
-            data.map(
-                row =>
-                    adcTanahKePersen(
-                        Number(
-                            row[
-                                "Kelembapan Tanah"
-                            ]
-                        ) || 0
-                    )
-            );
-
-
-        buatGrafikJarak(
-            labels,
-            dataJarak
-        );
-
-
-        buatGrafikSuhu(
-            labels,
-            dataSuhu
-        );
-
-
-        buatGrafikUdara(
-            labels,
-            dataUdara
-        );
-
-
-        buatGrafikTanah(
-            labels,
-            dataTanah
-        );
-
-    }
-
-
-
-    /* ==================================
-       GRAFIK JARAK
-    ================================== */
-
-    function buatGrafikJarak(
-        labels,
-        values
-    ) {
-
-
-        const ctx =
-            document
-                .getElementById(
-                    "chartJarak"
-                )
-                .getContext(
-                    "2d"
-                );
-
-
-        if (chartJarak) {
-            chartJarak.destroy();
-        }
-
-
-        chartJarak =
-            new Chart(
-                ctx,
-                {
-
-                    type:
-                        "line",
-
-                    data: {
-
-                        labels:
-                            labels,
-
-                        datasets: [
-
-                            {
-
-                                label:
-                                    "Jarak (cm)",
-
-                                data:
-                                    values,
-
-                                tension:
-                                    0.3,
-
-                                fill:
-                                    true
-
-                            }
-
-                        ]
-
-                    },
-
-                    options: {
-
-                        responsive:
-                            true,
-
-                        maintainAspectRatio:
-                            false,
-
-                        animation:
-                            false,
-
-                        plugins: {
-
-                            title: {
-
-                                display:
-                                    true,
-
-                                text:
-                                    "Grafik Jarak"
-
-                            }
-
-                        },
-
-                        scales: {
-
-                            y: {
-
-                                min:
-                                    0,
-
-                                max:
-                                    500,
-
-                                title: {
-
-                                    display:
-                                        true,
-
-                                    text:
-                                        "Jarak (cm)"
-
-                                }
-
-                            }
-
-                        }
-
-                    }
+                /*
+                   Batasi tabel menjadi
+                   100 data terbaru.
+                */
+
+                while (
+                    tbody.children.length > 100
+                ) {
+
+                    tbody.removeChild(
+                        tbody.lastChild
+                    );
 
                 }
-            );
 
-    }
 
+                /* =============================
+                   UPDATE GRAFIK
+                   ============================= */
 
-
-    /* ==================================
-       GRAFIK SUHU
-    ================================== */
-
-    function buatGrafikSuhu(
-        labels,
-        values
-    ) {
-
-
-        const ctx =
-            document
-                .getElementById(
-                    "chartSuhu"
-                )
-                .getContext(
-                    "2d"
-                );
-
-
-        if (chartSuhu) {
-            chartSuhu.destroy();
-        }
-
-
-        chartSuhu =
-            new Chart(
-                ctx,
-                {
-
-                    type:
-                        "line",
-
-                    data: {
-
-                        labels:
-                            labels,
-
-                        datasets: [
-
-                            {
-
-                                label:
-                                    "Suhu (°C)",
-
-                                data:
-                                    values,
-
-                                tension:
-                                    0.3,
-
-                                fill:
-                                    true
-
-                            }
-
-                        ]
-
-                    },
-
-                    options: {
-
-                        responsive:
-                            true,
-
-                        maintainAspectRatio:
-                            false,
-
-                        animation:
-                            false,
-
-                        plugins: {
-
-                            title: {
-
-                                display:
-                                    true,
-
-                                text:
-                                    "Grafik Suhu"
-
-                            }
-
-                        },
-
-                        scales: {
-
-                            y: {
-
-                                min:
-                                    0,
-
-                                max:
-                                    50,
-
-                                title: {
-
-                                    display:
-                                        true,
-
-                                    text:
-                                        "Suhu (°C)"
-
-                                }
-
-                            }
-
-                        }
-
-                    }
-
-                }
-            );
-
-    }
-
-
-
-    /* ==================================
-       GRAFIK KELEMBAPAN UDARA
-    ================================== */
-
-    function buatGrafikUdara(
-        labels,
-        values
-    ) {
-
-
-        const ctx =
-            document
-                .getElementById(
-                    "chartUdara"
-                )
-                .getContext(
-                    "2d"
-                );
-
-
-        if (chartUdara) {
-            chartUdara.destroy();
-        }
-
-
-        chartUdara =
-            new Chart(
-                ctx,
-                {
-
-                    type:
-                        "line",
-
-                    data: {
-
-                        labels:
-                            labels,
-
-                        datasets: [
-
-                            {
-
-                                label:
-                                    "Kelembapan Udara (%)",
-
-                                data:
-                                    values,
-
-                                tension:
-                                    0.3,
-
-                                fill:
-                                    true
-
-                            }
-
-                        ]
-
-                    },
-
-                    options: {
-
-                        responsive:
-                            true,
-
-                        maintainAspectRatio:
-                            false,
-
-                        animation:
-                            false,
-
-                        plugins: {
-
-                            title: {
-
-                                display:
-                                    true,
-
-                                text:
-                                    "Grafik Kelembapan Udara"
-
-                            }
-
-                        },
-
-                        scales: {
-
-                            y: {
-
-                                min:
-                                    0,
-
-                                max:
-                                    100,
-
-                                title: {
-
-                                    display:
-                                        true,
-
-                                    text:
-                                        "Kelembapan (%)"
-
-                                }
-
-                            }
-
-                        }
-
-                    }
-
-                }
-            );
-
-    }
-
-
-
-    /* ==================================
-       GRAFIK KELEMBAPAN TANAH
-    ================================== */
-
-    function buatGrafikTanah(
-        labels,
-        values
-    ) {
-
-
-        const ctx =
-            document
-                .getElementById(
-                    "chartTanah"
-                )
-                .getContext(
-                    "2d"
-                );
-
-
-        if (chartTanah) {
-            chartTanah.destroy();
-        }
-
-
-        chartTanah =
-            new Chart(
-                ctx,
-                {
-
-                    type:
-                        "line",
-
-                    data: {
-
-                        labels:
-                            labels,
-
-                        datasets: [
-
-                            {
-
-                                label:
-                                    "Kelembapan Tanah (%)",
-
-                                data:
-                                    values,
-
-                                tension:
-                                    0.3,
-
-                                fill:
-                                    true
-
-                            }
-
-                        ]
-
-                    },
-
-                    options: {
-
-                        responsive:
-                            true,
-
-                        maintainAspectRatio:
-                            false,
-
-                        animation:
-                            false,
-
-                        plugins: {
-
-                            title: {
-
-                                display:
-                                    true,
-
-                                text:
-                                    "Grafik Kelembapan Tanah"
-
-                            }
-
-                        },
-
-                        scales: {
-
-                            y: {
-
-                                min:
-                                    0,
-
-                                max:
-                                    100,
-
-                                title: {
-
-                                    display:
-                                        true,
-
-                                    text:
-                                        "Kelembapan (%)"
-
-                                }
-
-                            }
-
-                        }
-
-                    }
-
-                }
-            );
-
-    }
-
-
-
-    /* ==================================
-       TAMBAH DATA BARU KE GRAFIK
-       
-       INI BAGIAN PENTING
-       
-       Tidak membuat ulang grafik.
-       Hanya menambahkan 1 titik baru.
-    ================================== */
-
-    function tambahDataGrafik(
-        sensor
-    ) {
-
-
-        if (!sensor) {
-            return;
-        }
-
-
-        const waktu =
-            formatLabelGrafik(
-                sensor.Waktu
-            );
-
-
-        const nilaiJarak =
-            Number(
-                sensor.Jarak
-            ) || 0;
-
-
-        const nilaiSuhu =
-            Number(
-                sensor.Suhu
-            ) || 0;
-
-
-        const nilaiUdara =
-            Number(
-                sensor[
-                    "Kelembapan Udara"
-                ]
-            ) || 0;
-
-
-        const nilaiTanah =
-            adcTanahKePersen(
-                Number(
-                    sensor[
-                        "Kelembapan Tanah"
-                    ]
-                ) || 0
-            );
-
-
-
-        /* ==============================
-           JARAK
-        ============================== */
-
-        if (chartJarak) {
-
-            chartJarak.data.labels.push(
-                waktu
-            );
-
-            chartJarak.data.datasets[0].data.push(
-                nilaiJarak
-            );
-
-
-            while (
-                chartJarak.data.labels.length
-                > 50
-            ) {
-
-                chartJarak.data.labels.shift();
-
-                chartJarak.data.datasets[0].data.shift();
-
-            }
-
-
-            chartJarak.update(
-                "none"
-            );
-
-        }
-
-
-
-        /* ==============================
-           SUHU
-        ============================== */
-
-        if (chartSuhu) {
-
-            chartSuhu.data.labels.push(
-                waktu
-            );
-
-            chartSuhu.data.datasets[0].data.push(
-                nilaiSuhu
-            );
-
-
-            while (
-                chartSuhu.data.labels.length
-                > 50
-            ) {
-
-                chartSuhu.data.labels.shift();
-
-                chartSuhu.data.datasets[0].data.shift();
-
-            }
-
-
-            chartSuhu.update(
-                "none"
-            );
-
-        }
-
-
-
-        /* ==============================
-           KELEMBAPAN UDARA
-        ============================== */
-
-        if (chartUdara) {
-
-            chartUdara.data.labels.push(
-                waktu
-            );
-
-            chartUdara.data.datasets[0].data.push(
-                nilaiUdara
-            );
-
-
-            while (
-                chartUdara.data.labels.length
-                > 50
-            ) {
-
-                chartUdara.data.labels.shift();
-
-                chartUdara.data.datasets[0].data.shift();
-
-            }
-
-
-            chartUdara.update(
-                "none"
-            );
-
-        }
-
-
-
-        /* ==============================
-           KELEMBAPAN TANAH
-        ============================== */
-
-        if (chartTanah) {
-
-            chartTanah.data.labels.push(
-                waktu
-            );
-
-            chartTanah.data.datasets[0].data.push(
-                nilaiTanah
-            );
-
-
-            while (
-                chartTanah.data.labels.length
-                > 50
-            ) {
-
-                chartTanah.data.labels.shift();
-
-                chartTanah.data.datasets[0].data.shift();
-
-            }
-
-
-            chartTanah.update(
-                "none"
-            );
-
-        }
-
-    }
-
-
-
-    /* ==================================
-       REALTIME SUPABASE
-    ================================== */
-
-    supabase
-
-        .channel(
-            "monitoring-realtime"
-        )
-
-        .on(
-
-            "postgres_changes",
-
-            {
-
-                event:
-                    "INSERT",
-
-                schema:
-                    "public",
-
-                table:
-                    "Data_Sensor"
-
-            },
-
-            payload => {
-
-
-                console.log(
-                    "Data baru diterima:",
-                    payload.new
+                chartData.push(
+                    newData
                 );
 
 
                 /*
-                 * UPDATE GAUGE
-                 */
+                   Maksimal 100 titik grafik.
+                */
 
-                tampilkanData(
-                    payload.new
+                if (
+                    chartData.length > 100
+                ) {
+
+                    chartData.shift();
+
+                }
+
+
+                updateChart(
+                    chartData
                 );
-
-
-                /*
-                 * UPDATE TABEL
-                 */
-
-                ambilRiwayat();
-
-
-                /*
-                 * UPDATE GRAFIK
-                 *
-                 * Tidak mengambil ulang
-                 * data dari database.
-                 *
-                 * Langsung tambah titik baru.
-                 */
-
-                tambahDataGrafik(
-                    payload.new
-                );
-
-
-                status.textContent =
-                    "● DATA REALTIME DITERIMA";
-
-
-                statusDot.style.background =
-                    "#22c55e";
 
             }
 
         )
 
         .subscribe(
-
-            realtimeStatus => {
-
+            function(status) {
 
                 console.log(
                     "Status Realtime:",
-                    realtimeStatus
+                    status
                 );
 
 
                 if (
-                    realtimeStatus ===
+                    status ===
                     "SUBSCRIBED"
                 ) {
 
-                    status.textContent =
-                        "● ONLINE • REALTIME";
-
-
-                    statusDot.style.background =
-                        "#22c55e";
+                    setStatus(
+                        true,
+                        "DATA REALTIME TERHUBUNG"
+                    );
 
                 }
 
             }
-
         );
 
+}
 
 
-    /* ==================================
-       START
-    ================================== */
+/* =====================================================
+   MULAI
+   ===================================================== */
 
-    ambilDataTerbaru();
+async function mulai() {
 
-    ambilRiwayat();
+    await loadData();
 
-    ambilDataGrafik();
 
+    /*
+       Simpan data awal untuk grafik.
+       Ambil lagi agar chartData memiliki
+       data yang sama dengan grafik.
+    */
+
+    const {
+        data
+    } = await supabaseClient
+
+        .from("Data_Sensor")
+
+        .select(
+            '"No",Waktu,"Volume (L)","Suhu (°C)","Kelembapan Udara (%)","Kelembapan Tanah (%)"'
+        )
+
+        .order(
+            "No",
+            {
+                ascending: false
+            }
+        )
+
+        .limit(100);
+
+
+    chartData =
+        data
+        ? [...data]
+        : [];
+
+
+    startRealtime();
+
+}
+
+
+/* =====================================================
+   JALANKAN
+   ===================================================== */
+
+mulai();
 
 </script>
 
-
 </body>
-
 </html>
