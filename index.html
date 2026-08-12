@@ -10,7 +10,17 @@
 
 <title>Monitoring IoT ESP32</title>
 
+
+<!-- =====================================================
+     SUPABASE
+===================================================== -->
+
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+
+<!-- =====================================================
+     CHART.JS
+===================================================== -->
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
@@ -18,12 +28,17 @@
 <style>
 
 /* =====================================================
-   GLOBAL
-   ===================================================== */
+   RESET
+===================================================== */
 
 * {
     box-sizing: border-box;
 }
+
+
+/* =====================================================
+   BODY
+===================================================== */
 
 body {
 
@@ -36,51 +51,52 @@ body {
 
     background: #eef2f7;
 
-    color: #1f2937;
+    color: #172033;
 }
 
 
 /* =====================================================
    HEADER
-   ===================================================== */
+===================================================== */
 
 .header {
 
     background:
         linear-gradient(
             135deg,
-            #1e3a8a,
-            #2563eb
+            #172d69,
+            #2864df
         );
 
     color: white;
 
     text-align: center;
 
-    padding:
-        35px
-        20px
-        30px;
+    padding: 35px 20px 30px;
 }
+
 
 .header h1 {
 
     margin: 0;
 
     font-size: 38px;
-
-    font-weight: 700;
 }
+
 
 .header p {
 
-    margin:
-        10px
-        0
-        18px;
+    margin-top: 10px;
 
     font-size: 20px;
+
+    opacity: 0.95;
 }
+
+
+/* =====================================================
+   STATUS
+===================================================== */
 
 .status {
 
@@ -90,30 +106,24 @@ body {
 
     gap: 10px;
 
-    background:
-        rgba(
-            255,
-            255,
-            255,
-            0.15
-        );
+    margin-top: 18px;
 
-    padding:
-        10px
-        20px;
+    padding: 10px 20px;
 
     border-radius: 30px;
 
-    font-size: 16px;
+    background:
+        rgba(255,255,255,0.15);
 
     font-weight: bold;
 }
 
+
 .status-dot {
 
-    width: 13px;
+    width: 12px;
 
-    height: 13px;
+    height: 12px;
 
     border-radius: 50%;
 
@@ -121,41 +131,37 @@ body {
 
     box-shadow:
         0 0 10px #f59e0b;
+
+    transition:
+        background 0.3s ease,
+        box-shadow 0.3s ease;
 }
 
 
 /* =====================================================
    CONTAINER
-   ===================================================== */
+===================================================== */
 
 .container {
 
-    width: 92%;
+    width: 94%;
 
-    max-width: 1400px;
+    max-width: 1450px;
 
-    margin:
-        35px
-        auto;
+    margin: 35px auto;
 }
 
 
 /* =====================================================
-   SENSOR GRID
-   ===================================================== */
+   GAUGE GRID
+===================================================== */
 
-.sensor-grid {
+.gauge-grid {
 
     display: grid;
 
     grid-template-columns:
-        repeat(
-            2,
-            minmax(
-                300px,
-                1fr
-            )
-        );
+        repeat(2, 1fr);
 
     gap: 30px;
 }
@@ -163,102 +169,89 @@ body {
 
 /* =====================================================
    CARD
-   ===================================================== */
+===================================================== */
 
 .card {
 
     background: white;
 
-    border-radius: 22px;
+    border-radius: 25px;
 
     padding: 30px;
 
-    text-align: center;
-
     box-shadow:
-        0 8px 25px
-        rgba(
-            0,
-            0,
-            0,
-            0.08
-        );
+        0 8px 30px
+        rgba(0,0,0,0.08);
 
-    transition:
-        transform 0.25s ease;
+    text-align: center;
 }
 
-.card:hover {
-
-    transform:
-        translateY(-3px);
-}
 
 .card h2 {
 
-    margin:
-        0
-        0
-        20px;
+    margin-top: 0;
 
-    font-size: 26px;
+    font-size: 27px;
 }
 
 
 /* =====================================================
    GAUGE
-   ===================================================== */
+   3/4 LINGKARAN
+===================================================== */
 
 .gauge {
 
     position: relative;
 
-    width: 280px;
+    width: 320px;
 
-    height: 280px;
+    height: 290px;
 
-    margin:
-        0
-        auto
-        15px;
+    margin: 5px auto 10px;
 
-    --progress: 0deg;
-
-    --needle-angle: -135deg;
+    overflow: visible;
 }
 
 
 /* =====================================================
-   GAUGE RING
-   ===================================================== */
+   RING GAUGE
+===================================================== */
 
 .gauge-ring {
-
     position: absolute;
 
-    width: 100%;
+    width: 270px;
+    height: 270px;
 
-    height: 100%;
+    top: 0;
+    left: 25px;
 
     border-radius: 50%;
 
-    background:
+    /*
+       3/4 lingkaran
+       BAGIAN KOSONG DI BAWAH
+    */
 
+    background:
         conic-gradient(
             from 225deg,
-
-            #2563eb 0deg,
-
-            #2563eb var(--progress),
-
-            #e5e7eb var(--progress),
-
-            #e5e7eb 270deg,
-
-            transparent 270deg
+            #2864df 0deg,
+            #e3e7ed 0deg,
+            #e3e7ed 270deg,
+            transparent 270deg,
+            transparent 360deg
         );
+
+    transition:
+        background 0.8s ease;
 }
 
+
+/* =====================================================
+   BAGIAN TENGAH GAUGE
+===================================================== */
 
 .gauge-ring::after {
 
@@ -266,235 +259,236 @@ body {
 
     position: absolute;
 
-    width: 72%;
+    width: 205px;
 
-    height: 72%;
+    height: 205px;
 
-    left: 14%;
-
-    top: 14%;
+    background: white;
 
     border-radius: 50%;
 
-    background: white;
-}
+    top: 32.5px;
 
-
-/* =====================================================
-   NILAI TENGAH
-   ===================================================== */
-
-.gauge-value {
-
-    position: absolute;
-
-    top: 70%;
-
-    left: 50%;
-
-    transform:
-        translate(
-            -50%,
-            -45%
-        );
-
-    z-index: 5;
-
-    text-align: center;
-
-    width: 190px;
-}
-
-.value-number {
-
-    font-size: 42px;
-
-    font-weight: 700;
-
-    line-height: 1;
-
-    white-space: nowrap;
-}
-
-.value-unit {
-
-    margin-top: 8px;
-
-    font-size: 18px;
-
-    color: #64748b;
+    left: 32.5px;
 }
 
 
 /* =====================================================
    JARUM
-   ===================================================== */
+===================================================== */
 
 .needle {
 
     position: absolute;
 
-    width: 5px;
+    width: 115px;
 
-    height: 105px;
+    height: 5px;
 
-    background: #1f2937;
-
-    left:
-        calc(
-            50% - 2.5px
-        );
-
-    top:
-        calc(
-            50% - 105px
-        );
-
-    transform-origin:
-        50%
-        100%;
-
-    transform:
-        rotate(
-            var(--needle-angle)
-        );
+    background: #172033;
 
     border-radius: 5px;
 
-    z-index: 7;
+    /*
+       Titik pusat gauge
+    */
+
+    top: 135px;
+
+    left: 160px;
+
+    /*
+       Posisi awal = minimum
+    */
+
+    transform-origin: 0% 50%;
+
+    transform:
+        rotate(-135deg);
 
     transition:
-        transform
-        0.8s
-        cubic-bezier(
-            .4,
-            2,
-            .6,
-            1
-        );
+        transform 0.8s ease;
+
+    z-index: 5;
+}
+
+
+/* =====================================================
+   UJUNG JARUM
+===================================================== */
+
+.needle::after {
+
+    content: "";
+
+    position: absolute;
+
+    right: -4px;
+
+    top: -4px;
+
+    width: 13px;
+
+    height: 13px;
+
+    border-radius: 50%;
+
+    background: #172033;
 }
 
 
 /* =====================================================
    TITIK TENGAH
-   ===================================================== */
+===================================================== */
 
 .needle-center {
 
     position: absolute;
 
-    width: 22px;
+    width: 24px;
 
-    height: 22px;
+    height: 24px;
+
+    background: #172033;
 
     border-radius: 50%;
 
-    background: #1f2937;
+    top: 123px;
 
-    left:
-        calc(
-            50% - 11px
-        );
+    left: 148px;
 
-    top:
-        calc(
-            50% - 11px
-        );
-
-    z-index: 8;
+    z-index: 10;
 }
 
 
 /* =====================================================
-   MIN MAX GAUGE
-   ===================================================== */
+   NILAI AKTUAL
+===================================================== */
 
-.gauge-min,
+.gauge-value {
+
+    position: absolute;
+
+    width: 100%;
+
+    /*
+       Diturunkan sekitar 20%
+       dari posisi tengah sebelumnya
+    */
+
+    top: 160px;
+
+    left: 0;
+
+    z-index: 8;
+
+    text-align: center;
+}
+
+
+.gauge-number {
+
+    font-size: 38px;
+
+    font-weight: bold;
+
+    color: #172033;
+
+    line-height: 1.1;
+}
+
+
+.gauge-unit {
+
+    font-size: 17px;
+
+    color: #667085;
+
+    margin-top: 4px;
+}
+
+
+/* =====================================================
+   MINIMUM
+===================================================== */
+
+.gauge-min {
+
+    position: absolute;
+
+    left: 25px;
+
+    bottom: 0;
+
+    font-size: 15px;
+
+    font-weight: bold;
+
+    color: #667085;
+
+    z-index: 10;
+
+    text-align: left;
+}
+
+
+/* =====================================================
+   MAKSIMUM
+===================================================== */
+
 .gauge-max {
 
     position: absolute;
 
-    bottom: 18px;
+    right: 25px;
 
-    z-index: 10;
-
-    text-align: center;
-
-    line-height: 1.2;
-}
-
-.gauge-min {
-
-    left: 15px;
-}
-
-.gauge-max {
-
-    right: 15px;
-}
-
-.gauge-min span,
-.gauge-max span {
-
-    display: block;
-
-    font-size: 11px;
-
-    color: #94a3b8;
-
-    font-weight: 600;
-}
-
-.gauge-min b,
-.gauge-max b {
-
-    display: block;
-
-    margin-top: 3px;
-
-    font-size: 13px;
-
-    color: #334155;
-}
-
-
-/* =====================================================
-   UPDATE
-   ===================================================== */
-
-.update {
-
-    color: #64748b;
+    bottom: 0;
 
     font-size: 15px;
 
-    margin-top: 10px;
+    font-weight: bold;
+
+    color: #667085;
+
+    z-index: 10;
+
+    text-align: right;
 }
 
 
 /* =====================================================
-   GRAFIK
-   ===================================================== */
+   UPDATE TIME
+===================================================== */
+
+.update-time {
+
+    color: #667085;
+
+    font-size: 15px;
+
+    margin-top: 5px;
+}
+
+
+/* =====================================================
+   CHART CARD
+===================================================== */
 
 .chart-card {
 
-    margin-top: 35px;
+    margin-top: 30px;
 
     background: white;
 
-    border-radius: 22px;
+    border-radius: 25px;
 
     padding: 30px;
 
     box-shadow:
-        0 8px 25px
-        rgba(
-            0,
-            0,
-            0,
-            0.08
-        );
+        0 8px 30px
+        rgba(0,0,0,0.08);
 }
+
 
 .chart-card h2 {
 
@@ -502,62 +496,57 @@ body {
 
     margin-top: 0;
 
-    font-size: 28px;
+    font-size: 27px;
 }
+
+
+/* =====================================================
+   CHART
+===================================================== */
 
 .chart-container {
 
     position: relative;
-
-    width: 100%;
 
     height: 450px;
 }
 
 
 /* =====================================================
-   TABEL
-   ===================================================== */
+   TABLE CARD
+===================================================== */
 
 .table-card {
 
-    margin-top: 35px;
+    margin-top: 30px;
 
     background: white;
 
-    border-radius: 22px;
+    border-radius: 25px;
 
     padding: 30px;
 
     box-shadow:
-        0 8px 25px
-        rgba(
-            0,
-            0,
-            0,
-            0.08
-        );
+        0 8px 30px
+        rgba(0,0,0,0.08);
+
+    overflow-x: auto;
 }
+
 
 .table-card h2 {
 
-    margin-top: 0;
-
     text-align: center;
 
-    font-size: 28px;
+    margin-top: 0;
+
+    font-size: 27px;
 }
 
-.table-wrapper {
 
-    width: 100%;
-
-    overflow-x: auto;
-
-    max-height: 600px;
-
-    overflow-y: auto;
-}
+/* =====================================================
+   TABLE
+===================================================== */
 
 table {
 
@@ -568,18 +557,10 @@ table {
     min-width: 900px;
 }
 
-thead {
-
-    position: sticky;
-
-    top: 0;
-
-    z-index: 10;
-}
 
 th {
 
-    background: #1e3a8a;
+    background: #1f3d88;
 
     color: white;
 
@@ -588,50 +569,82 @@ th {
     font-size: 15px;
 }
 
+
 td {
 
-    padding: 14px;
-
-    text-align: center;
+    padding: 13px;
 
     border-bottom:
         1px solid #e5e7eb;
 
-    font-size: 15px;
+    text-align: center;
 }
 
-tbody tr:hover {
 
-    background: #f8fafc;
+tr:hover {
+
+    background: #f5f7fb;
 }
 
 
 /* =====================================================
    RESPONSIVE
-   ===================================================== */
+===================================================== */
 
-@media (max-width: 850px) {
+@media(max-width: 900px) {
 
-    .sensor-grid {
+    .gauge-grid {
 
         grid-template-columns: 1fr;
     }
+
 
     .header h1 {
 
         font-size: 30px;
     }
 
-    .header p {
 
-        font-size: 17px;
+    .chart-container {
+
+        height: 350px;
     }
+}
+
+
+@media(max-width: 500px) {
+
+    .container {
+
+        width: 96%;
+    }
+
+
+    .card {
+
+        padding:
+            20px 5px;
+    }
+
 
     .gauge {
 
-        width: 250px;
+        transform:
+            scale(0.88);
 
-        height: 250px;
+        margin-top:
+            -10px;
+
+        margin-bottom:
+            -10px;
+    }
+
+
+    .chart-card,
+    .table-card {
+
+        padding:
+            20px 10px;
     }
 
 }
@@ -646,47 +659,53 @@ tbody tr:hover {
 
 <!-- =====================================================
      HEADER
-     ===================================================== -->
+===================================================== -->
 
-<div class="header">
+<header class="header">
 
     <h1>
         Monitoring IoT ESP32
     </h1>
 
+
     <p>
         Monitoring Sensor Secara Real-Time
     </p>
 
+
     <div class="status">
 
         <span
-            class="status-dot"
-            id="statusDot">
+            id="statusDot"
+            class="status-dot">
         </span>
 
+
         <span id="statusText">
-            MENGHUBUNGKAN...
+
+            Menghubungkan...
+
         </span>
 
     </div>
 
-</div>
+</header>
+
 
 
 <div class="container">
 
 
 <!-- =====================================================
-     GAUGE SENSOR
-     ===================================================== -->
+     GAUGE GRID
+===================================================== -->
 
-<div class="sensor-grid">
+<div class="gauge-grid">
 
 
 <!-- =====================================================
      VOLUME
-     ===================================================== -->
+===================================================== -->
 
 <div class="card">
 
@@ -694,29 +713,42 @@ tbody tr:hover {
         Volume
     </h2>
 
-    <div
-        class="gauge"
-        id="gaugeVolume"
-    >
 
-        <div class="gauge-ring"></div>
+    <div class="gauge">
 
-        <div class="needle"></div>
 
-        <div class="needle-center"></div>
+        <div
+            id="gaugeVolume"
+            class="gauge-ring">
+        </div>
+
+
+        <div
+            id="needleVolume"
+            class="needle">
+        </div>
+
+
+        <div
+            class="needle-center">
+        </div>
 
 
         <div class="gauge-value">
 
             <div
-                class="value-number"
                 id="volumeValue"
-            >
+                class="gauge-number">
+
                 0
+
             </div>
 
-            <div class="value-unit">
+
+            <div class="gauge-unit">
+
                 cm³
+
             </div>
 
         </div>
@@ -724,26 +756,14 @@ tbody tr:hover {
 
         <div class="gauge-min">
 
-            <span>
-                MIN
-            </span>
-
-            <b>
-                0 cm³
-            </b>
+            0 cm³
 
         </div>
 
 
         <div class="gauge-max">
 
-            <span>
-                MAX
-            </span>
-
-            <b>
-                27.000 cm³
-            </b>
+            27.000 cm³
 
         </div>
 
@@ -751,18 +771,20 @@ tbody tr:hover {
 
 
     <div
-        class="update"
         id="volumeUpdate"
-    >
+        class="update-time">
+
         Update: -
+
     </div>
 
 </div>
 
 
+
 <!-- =====================================================
      SUHU
-     ===================================================== -->
+===================================================== -->
 
 <div class="card">
 
@@ -770,29 +792,42 @@ tbody tr:hover {
         Suhu
     </h2>
 
-    <div
-        class="gauge"
-        id="gaugeSuhu"
-    >
 
-        <div class="gauge-ring"></div>
+    <div class="gauge">
 
-        <div class="needle"></div>
 
-        <div class="needle-center"></div>
+        <div
+            id="gaugeSuhu"
+            class="gauge-ring">
+        </div>
+
+
+        <div
+            id="needleSuhu"
+            class="needle">
+        </div>
+
+
+        <div
+            class="needle-center">
+        </div>
 
 
         <div class="gauge-value">
 
             <div
-                class="value-number"
                 id="suhuValue"
-            >
-                0.0
+                class="gauge-number">
+
+                0
+
             </div>
 
-            <div class="value-unit">
+
+            <div class="gauge-unit">
+
                 °C
+
             </div>
 
         </div>
@@ -800,26 +835,14 @@ tbody tr:hover {
 
         <div class="gauge-min">
 
-            <span>
-                MIN
-            </span>
-
-            <b>
-                0 °C
-            </b>
+            0 °C
 
         </div>
 
 
         <div class="gauge-max">
 
-            <span>
-                MAX
-            </span>
-
-            <b>
-                50 °C
-            </b>
+            100 °C
 
         </div>
 
@@ -827,18 +850,20 @@ tbody tr:hover {
 
 
     <div
-        class="update"
         id="suhuUpdate"
-    >
+        class="update-time">
+
         Update: -
+
     </div>
 
 </div>
 
 
+
 <!-- =====================================================
      KELEMBAPAN UDARA
-     ===================================================== -->
+===================================================== -->
 
 <div class="card">
 
@@ -846,29 +871,42 @@ tbody tr:hover {
         Kelembapan Udara
     </h2>
 
-    <div
-        class="gauge"
-        id="gaugeUdara"
-    >
 
-        <div class="gauge-ring"></div>
+    <div class="gauge">
 
-        <div class="needle"></div>
 
-        <div class="needle-center"></div>
+        <div
+            id="gaugeUdara"
+            class="gauge-ring">
+        </div>
+
+
+        <div
+            id="needleUdara"
+            class="needle">
+        </div>
+
+
+        <div
+            class="needle-center">
+        </div>
 
 
         <div class="gauge-value">
 
             <div
-                class="value-number"
                 id="udaraValue"
-            >
-                0.0
+                class="gauge-number">
+
+                0
+
             </div>
 
-            <div class="value-unit">
+
+            <div class="gauge-unit">
+
                 %
+
             </div>
 
         </div>
@@ -876,26 +914,14 @@ tbody tr:hover {
 
         <div class="gauge-min">
 
-            <span>
-                MIN
-            </span>
-
-            <b>
-                0 %
-            </b>
+            0%
 
         </div>
 
 
         <div class="gauge-max">
 
-            <span>
-                MAX
-            </span>
-
-            <b>
-                100 %
-            </b>
+            100%
 
         </div>
 
@@ -903,18 +929,20 @@ tbody tr:hover {
 
 
     <div
-        class="update"
         id="udaraUpdate"
-    >
+        class="update-time">
+
         Update: -
+
     </div>
 
 </div>
 
 
+
 <!-- =====================================================
      KELEMBAPAN TANAH
-     ===================================================== -->
+===================================================== -->
 
 <div class="card">
 
@@ -922,29 +950,42 @@ tbody tr:hover {
         Kelembapan Tanah
     </h2>
 
-    <div
-        class="gauge"
-        id="gaugeTanah"
-    >
 
-        <div class="gauge-ring"></div>
+    <div class="gauge">
 
-        <div class="needle"></div>
 
-        <div class="needle-center"></div>
+        <div
+            id="gaugeTanah"
+            class="gauge-ring">
+        </div>
+
+
+        <div
+            id="needleTanah"
+            class="needle">
+        </div>
+
+
+        <div
+            class="needle-center">
+        </div>
 
 
         <div class="gauge-value">
 
             <div
-                class="value-number"
                 id="tanahValue"
-            >
-                0.0
+                class="gauge-number">
+
+                0
+
             </div>
 
-            <div class="value-unit">
+
+            <div class="gauge-unit">
+
                 %
+
             </div>
 
         </div>
@@ -952,26 +993,14 @@ tbody tr:hover {
 
         <div class="gauge-min">
 
-            <span>
-                MIN
-            </span>
-
-            <b>
-                0 %
-            </b>
+            0%
 
         </div>
 
 
         <div class="gauge-max">
 
-            <span>
-                MAX
-            </span>
-
-            <b>
-                100 %
-            </b>
+            100%
 
         </div>
 
@@ -979,10 +1008,11 @@ tbody tr:hover {
 
 
     <div
-        class="update"
         id="tanahUpdate"
-    >
+        class="update-time">
+
         Update: -
+
     </div>
 
 </div>
@@ -991,15 +1021,17 @@ tbody tr:hover {
 </div>
 
 
+
 <!-- =====================================================
      GRAFIK
-     ===================================================== -->
+===================================================== -->
 
 <div class="chart-card">
 
     <h2>
         Grafik Data Sensor
     </h2>
+
 
     <div class="chart-container">
 
@@ -1012,9 +1044,10 @@ tbody tr:hover {
 </div>
 
 
+
 <!-- =====================================================
      TABEL
-     ===================================================== -->
+===================================================== -->
 
 <div class="table-card">
 
@@ -1022,105 +1055,118 @@ tbody tr:hover {
         Data Sensor
     </h2>
 
-    <div class="table-wrapper">
 
-        <table>
+    <table>
 
-            <thead>
+        <thead>
 
-                <tr>
+            <tr>
 
-                    <th>
-                        No
-                    </th>
+                <th>
+                    No
+                </th>
 
-                    <th>
-                        Waktu
-                    </th>
 
-                    <th>
-                        Volume (cm³)
-                    </th>
+                <th>
+                    Waktu
+                </th>
 
-                    <th>
-                        Suhu (°C)
-                    </th>
 
-                    <th>
-                        Kelembapan Udara (%)
-                    </th>
+                <th>
+                    Volume (cm³)
+                </th>
 
-                    <th>
-                        Kelembapan Tanah (%)
-                    </th>
 
-                </tr>
+                <th>
+                    Suhu (°C)
+                </th>
 
-            </thead>
 
-            <tbody
-                id="dataTable">
-            </tbody>
+                <th>
+                    Kelembapan Udara (%)
+                </th>
 
-        </table>
 
-    </div>
+                <th>
+                    Kelembapan Tanah (%)
+                </th>
+
+            </tr>
+
+        </thead>
+
+
+        <tbody
+            id="dataTable">
+
+        </tbody>
+
+    </table>
 
 </div>
 
 
 </div>
+
 
 
 <script>
 
 /* =====================================================
-   SUPABASE
-   ===================================================== */
+   KONFIGURASI SUPABASE
+===================================================== */
 
 const SUPABASE_URL =
     "https://dbodgclttbalohgpanpk.supabase.co";
+
 
 const SUPABASE_KEY =
     "sb_publishable_0b3vY7OTUEoI5nyM0wmvVQ_V0CUS4HA";
 
 
 const supabaseClient =
-    window.supabase.createClient(
+    supabase.createClient(
         SUPABASE_URL,
         SUPABASE_KEY
     );
 
 
 /* =====================================================
-   RANGE
-   ===================================================== */
+   BATAS SENSOR
+===================================================== */
 
-const VOLUME_MAX = 27000;
+const MAX_VOLUME = 27000;
 
-const SUHU_MIN = 0;
+const MAX_SUHU = 100;
 
-const SUHU_MAX = 50;
-
-const HUM_MIN = 0;
-
-const HUM_MAX = 100;
-
-const SOIL_ADC_MAX = 4095;
+const MAX_KELEMBAPAN = 100;
 
 
 /* =====================================================
-   DATA
-   ===================================================== */
+   JUMLAH DATA
+===================================================== */
 
-let chartData = [];
+const JUMLAH_DATA_GRAFIK = 50;
+
+const JUMLAH_DATA_TABEL = 50;
+
+const MAKS_DATA_BROWSER = 1000;
 
 
 /* =====================================================
-   FORMAT WITA
-   ===================================================== */
+   VARIABEL
+===================================================== */
 
-function formatWITA(waktu) {
+let sensorData = [];
+
+let chart = null;
+
+
+/* =====================================================
+   FORMAT WAKTU WITA
+===================================================== */
+
+function formatWaktu(waktu) {
 
     if (!waktu) {
 
@@ -1128,11 +1174,15 @@ function formatWITA(waktu) {
 
     }
 
-    const date =
+
+    const tanggal =
         new Date(waktu);
 
-    return date.toLocaleString(
+
+    return tanggal.toLocaleString(
+
         "id-ID",
+
         {
 
             timeZone:
@@ -1154,386 +1204,56 @@ function formatWITA(waktu) {
                 "2-digit",
 
             second:
-                "2-digit",
-
-            hour12:
-                false
+                "2-digit"
 
         }
+
     );
-
-}
-
-
-/* =====================================================
-   ADC KE PERSEN
-   ===================================================== */
-
-function adcKePersen(adc) {
-
-    adc =
-        Number(adc);
-
-    if (
-        !Number.isFinite(adc)
-    ) {
-
-        return 0;
-
-    }
-
-    adc =
-        Math.max(
-            0,
-            Math.min(
-                SOIL_ADC_MAX,
-                adc
-            )
-        );
-
-    /*
-       ADC 0    = 100%
-       ADC 4095 = 0%
-    */
-
-    const persen =
-        (
-            (
-                SOIL_ADC_MAX
-                -
-                adc
-            )
-            /
-            SOIL_ADC_MAX
-        )
-        *
-        100;
-
-    return Math.max(
-        0,
-        Math.min(
-            100,
-            persen
-        )
-    );
-
-}
-
-
-/* =====================================================
-   KELEMBAPAN TANAH
-   ===================================================== */
-
-function getSoilPercent(data) {
-
-    let nilai =
-        data[
-            "Kelembapan Tanah (%)"
-        ];
-
-    nilai =
-        Number(nilai);
-
-    if (
-        !Number.isFinite(nilai)
-    ) {
-
-        return 0;
-
-    }
-
-    /*
-       Jika ESP32 mengirim
-       ADC 0–4095
-    */
-
-    if (
-        nilai > 100
-    ) {
-
-        return adcKePersen(
-            nilai
-        );
-
-    }
-
-    /*
-       Jika sudah persen
-    */
-
-    return Math.max(
-        0,
-        Math.min(
-            100,
-            nilai
-        )
-    );
-
-}
-
-
-/* =====================================================
-   UPDATE GAUGE
-   ===================================================== */
-
-function updateGauge(
-    id,
-    value,
-    min,
-    max
-) {
-
-    const gauge =
-        document.getElementById(
-            id
-        );
-
-    if (!gauge) {
-
-        return;
-
-    }
-
-    value =
-        Number(value);
-
-    if (
-        !Number.isFinite(value)
-    ) {
-
-        value = min;
-
-    }
-
-    value =
-        Math.max(
-            min,
-            Math.min(
-                max,
-                value
-            )
-        );
-
-    const persen =
-        (
-            value
-            -
-            min
-        )
-        /
-        (
-            max
-            -
-            min
-        );
-
-    const progress =
-        persen * 270;
-
-    const angle =
-        -135
-        +
-        (
-            persen * 270
-        );
-
-    gauge.style.setProperty(
-        "--progress",
-        progress + "deg"
-    );
-
-    gauge.style.setProperty(
-        "--needle-angle",
-        angle + "deg"
-    );
-
-}
-
-
-/* =====================================================
-   UPDATE MONITORING
-   ===================================================== */
-
-function updateMonitoring(data) {
-
-    if (!data) {
-
-        return;
-
-    }
-
-    const volume =
-        Number(
-            data[
-                "Volume (cm³)"
-            ]
-        );
-
-    const suhu =
-        Number(
-            data[
-                "Suhu (°C)"
-            ]
-        );
-
-    const udara =
-        Number(
-            data[
-                "Kelembapan Udara (%)"
-            ]
-        );
-
-    const tanah =
-        getSoilPercent(
-            data
-        );
-
-
-    if (
-        Number.isFinite(volume)
-    ) {
-
-        updateGauge(
-            "gaugeVolume",
-            volume,
-            0,
-            VOLUME_MAX
-        );
-
-        document.getElementById(
-            "volumeValue"
-        ).textContent =
-            volume.toLocaleString(
-                "id-ID",
-                {
-                    maximumFractionDigits: 0
-                }
-            );
-
-    }
-
-
-    if (
-        Number.isFinite(suhu)
-    ) {
-
-        updateGauge(
-            "gaugeSuhu",
-            suhu,
-            SUHU_MIN,
-            SUHU_MAX
-        );
-
-        document.getElementById(
-            "suhuValue"
-        ).textContent =
-            suhu.toFixed(1);
-
-    }
-
-
-    if (
-        Number.isFinite(udara)
-    ) {
-
-        updateGauge(
-            "gaugeUdara",
-            udara,
-            HUM_MIN,
-            HUM_MAX
-        );
-
-        document.getElementById(
-            "udaraValue"
-        ).textContent =
-            udara.toFixed(1);
-
-    }
-
-
-    updateGauge(
-        "gaugeTanah",
-        tanah,
-        0,
-        100
-    );
-
-    document.getElementById(
-        "tanahValue"
-    ).textContent =
-        tanah.toFixed(1);
-
-
-    const waktu =
-        formatWITA(
-            data.Waktu
-        );
-
-
-    document.getElementById(
-        "volumeUpdate"
-    ).textContent =
-        "Update: " + waktu;
-
-
-    document.getElementById(
-        "suhuUpdate"
-    ).textContent =
-        "Update: " + waktu;
-
-
-    document.getElementById(
-        "udaraUpdate"
-    ).textContent =
-        "Update: " + waktu;
-
-
-    document.getElementById(
-        "tanahUpdate"
-    ).textContent =
-        "Update: " + waktu;
 
 }
 
 
 /* =====================================================
    STATUS
-   ===================================================== */
+===================================================== */
 
-function setStatus(
-    online,
-    text
+function updateStatus(
+    text,
+    online = true
 ) {
-
-    const dot =
-        document.getElementById(
-            "statusDot"
-        );
 
     const statusText =
         document.getElementById(
             "statusText"
         );
 
+
+    const statusDot =
+        document.getElementById(
+            "statusDot"
+        );
+
+
     statusText.textContent =
         text;
 
+
     if (online) {
 
-        dot.style.background =
+        statusDot.style.background =
             "#22c55e";
 
-        dot.style.boxShadow =
+        statusDot.style.boxShadow =
             "0 0 10px #22c55e";
 
     }
 
     else {
 
-        dot.style.background =
+        statusDot.style.background =
             "#ef4444";
 
-        dot.style.boxShadow =
+        statusDot.style.boxShadow =
             "0 0 10px #ef4444";
 
     }
@@ -1542,386 +1262,598 @@ function setStatus(
 
 
 /* =====================================================
-   TABEL
-   ===================================================== */
+   UPDATE GAUGE
+   3/4 LINGKARAN
+===================================================== */
 
-function renderTable(data) {
+function updateGauge(
+    ringId,
+    needleId,
+    value,
+    maksimum
+) {
 
-    const tbody =
-        document.getElementById(
-            "dataTable"
+    let persen =
+        (value / maksimum) * 100;
+
+    persen =
+        Math.max(
+            0,
+            Math.min(
+                100,
+                persen
+            )
         );
 
-    tbody.innerHTML =
-        "";
+    /*
+       Gauge:
 
-    data.forEach(
-        function(row) {
+       0%   = 135°
+       50%  = 270°
+       100% = 405°
 
-            const tr =
-                document.createElement(
-                    "tr"
-                );
+       Artinya:
+       minimum berada di kiri bawah
+       maksimum berada di kanan bawah
 
-            const volume =
-                Number(
-                    row[
-                        "Volume (cm³)"
-                    ]
-                );
+       Bagian kosong = bawah
+    */
 
-            const suhu =
-                Number(
-                    row[
-                        "Suhu (°C)"
-                    ]
-                );
+    const sudut =
+        135 +
+        (persen * 2.7);
 
-            const udara =
-                Number(
-                    row[
-                        "Kelembapan Udara (%)"
-                    ]
-                );
+    const derajat =
+        persen * 2.7;
 
-            const tanah =
-                getSoilPercent(
-                    row
-                );
+    const ring =
+        document.getElementById(
+            ringId
+        );
+
+    const needle =
+        document.getElementById(
+            needleId
+        );
 
 
-            tr.innerHTML = `
+    /*
+       Progress gauge
+    */
 
-                <td>
-                    ${row.No ?? "-"}
-                </td>
+    ring.style.background =
+        `conic-gradient(
+            from 225deg,
 
-                <td>
-                    ${formatWITA(
-                        row.Waktu
-                    )}
-                </td>
+            #2864df 0deg,
 
-                <td>
-                    ${
-                        Number.isFinite(
-                            volume
-                        )
-                        ?
-                        volume.toLocaleString(
-                            "id-ID"
-                        )
-                        :
-                        "-"
-                    }
-                </td>
+            #2864df ${derajat}deg,
 
-                <td>
-                    ${
-                        Number.isFinite(
-                            suhu
-                        )
-                        ?
-                        suhu.toFixed(1)
-                        :
-                        "-"
-                    }
-                </td>
+            #e3e7ed ${derajat}deg,
 
-                <td>
-                    ${
-                        Number.isFinite(
-                            udara
-                        )
-                        ?
-                        udara.toFixed(1)
-                        :
-                        "-"
-                    }
-                </td>
+            #e3e7ed 270deg,
 
-                <td>
-                    ${tanah.toFixed(1)}
-                </td>
+            transparent 270deg,
 
-            `;
+            transparent 360deg
+        )`;
 
-            tbody.appendChild(
-                tr
-            );
 
-        }
+    /*
+       Posisi jarum
+    */
+
+    needle.style.transform =
+        `rotate(${sudut}deg)`;
+}
+
+/* =====================================================
+   UPDATE NILAI GAUGE
+===================================================== */
+
+function updateDisplay(data) {
+
+
+    /* =================================================
+       VOLUME
+    ================================================= */
+
+    const volume =
+        Number(
+            data["Volume (cm3)"]
+        ) || 0;
+
+
+    document.getElementById(
+        "volumeValue"
+    ).textContent =
+
+        volume.toLocaleString(
+            "id-ID"
+        );
+
+
+    updateGauge(
+
+        "gaugeVolume",
+
+        "needleVolume",
+
+        volume,
+
+        MAX_VOLUME
+
     );
+
+
+    /* =================================================
+       SUHU
+    ================================================= */
+
+    const suhu =
+        Number(
+            data["Suhu (°C)"]
+        ) || 0;
+
+
+    document.getElementById(
+        "suhuValue"
+    ).textContent =
+
+        suhu.toFixed(1);
+
+
+    updateGauge(
+
+        "gaugeSuhu",
+
+        "needleSuhu",
+
+        suhu,
+
+        MAX_SUHU
+
+    );
+
+
+    /* =================================================
+       KELEMBAPAN UDARA
+    ================================================= */
+
+    const udara =
+        Number(
+            data[
+                "Kelembapan Udara (%)"
+            ]
+        ) || 0;
+
+
+    document.getElementById(
+        "udaraValue"
+    ).textContent =
+
+        udara.toFixed(1);
+
+
+    updateGauge(
+
+        "gaugeUdara",
+
+        "needleUdara",
+
+        udara,
+
+        MAX_KELEMBAPAN
+
+    );
+
+
+    /* =================================================
+       KELEMBAPAN TANAH
+    ================================================= */
+
+    const tanah =
+        Number(
+            data[
+                "Kelembapan Tanah (%)"
+            ]
+        ) || 0;
+
+
+    document.getElementById(
+        "tanahValue"
+    ).textContent =
+
+        tanah.toFixed(0);
+
+
+    updateGauge(
+
+        "gaugeTanah",
+
+        "needleTanah",
+
+        tanah,
+
+        MAX_KELEMBAPAN
+
+    );
+
+
+    /* =================================================
+       WAKTU
+    ================================================= */
+
+    const waktu =
+        formatWaktu(
+            data.Waktu
+        );
+
+
+    document.getElementById(
+        "volumeUpdate"
+    ).textContent =
+
+        "Update: " + waktu;
+
+
+    document.getElementById(
+        "suhuUpdate"
+    ).textContent =
+
+        "Update: " + waktu;
+
+
+    document.getElementById(
+        "udaraUpdate"
+    ).textContent =
+
+        "Update: " + waktu;
+
+
+    document.getElementById(
+        "tanahUpdate"
+    ).textContent =
+
+        "Update: " + waktu;
 
 }
 
 
 /* =====================================================
-   CHART
-   ===================================================== */
+   BUAT GRAFIK
+===================================================== */
 
-const ctx =
-    document.getElementById(
-        "sensorChart"
-    );
+function buatChart() {
 
 
-const sensorChart =
-    new Chart(
-        ctx,
-        {
+    const ctx =
+        document
+            .getElementById(
+                "sensorChart"
+            )
+            .getContext(
+                "2d"
+            );
 
-            type: "line",
 
+    chart =
+        new Chart(
 
-            data: {
+            ctx,
 
-                labels: [],
+            {
 
+                type:
+                    "line",
 
-                datasets: [
 
-                    /* =====================
-                       VOLUME
-                       SUMBU KANAN
-                       ===================== */
+                data:
+                {
 
-                    {
+                    labels:
+                        [],
 
-                        label:
-                            "Volume (cm³)",
 
-                        data: [],
+                    datasets:
+                    [
 
-                        borderWidth: 2,
+                        /* =================================
+                           VOLUME
+                        ================================= */
 
-                        tension: 0.3,
+                        {
 
-                        pointRadius: 2,
+                            label:
+                                "Volume (cm³)",
 
-                        yAxisID:
-                            "yVolume"
+                            data:
+                                [],
 
-                    },
+                            yAxisID:
+                                "yVolume",
 
+                            borderWidth:
+                                2,
 
-                    /* =====================
-                       SUHU
-                       SUMBU KIRI
-                       ===================== */
+                            tension:
+                                0.3,
 
-                    {
+                            pointRadius:
+                                2,
 
-                        label:
-                            "Suhu (°C)",
-
-                        data: [],
-
-                        borderWidth: 2,
-
-                        tension: 0.3,
-
-                        pointRadius: 2,
-
-                        yAxisID:
-                            "y"
-
-                    },
-
-
-                    /* =====================
-                       KELEMBAPAN UDARA
-                       SUMBU KIRI
-                       ===================== */
-
-                    {
-
-                        label:
-                            "Kelembapan Udara (%)",
-
-                        data: [],
-
-                        borderWidth: 2,
-
-                        tension: 0.3,
-
-                        pointRadius: 2,
-
-                        yAxisID:
-                            "y"
-
-                    },
-
-
-                    /* =====================
-                       KELEMBAPAN TANAH
-                       SUMBU KIRI
-                       ===================== */
-
-                    {
-
-                        label:
-                            "Kelembapan Tanah (%)",
-
-                        data: [],
-
-                        borderWidth: 2,
-
-                        tension: 0.3,
-
-                        pointRadius: 2,
-
-                        yAxisID:
-                            "y"
-
-                    }
-
-                ]
-
-            },
-
-
-            /* =================================================
-               OPTIONS
-               ================================================= */
-
-            options: {
-
-                responsive: true,
-
-                maintainAspectRatio: false,
-
-                animation: false,
-
-
-                interaction: {
-
-                    mode:
-                        "index",
-
-                    intersect:
-                        false
-
-                },
-
-
-                scales: {
-
-
-                    /* ==========================================
-                       SUMBU Y KIRI
-                       SUHU + KELEMBAPAN
-                       0–100
-                       ========================================== */
-
-                    y: {
-
-                        type:
-                            "linear",
-
-                        position:
-                            "left",
-
-                        min:
-                            0,
-
-                        max:
-                            100,
-
-
-                        ticks: {
-
-                            stepSize:
-                                10
+                            fill:
+                                false
 
                         },
 
 
-                        title: {
+                        /* =================================
+                           SUHU
+                        ================================= */
 
-                            display:
-                                true,
+                        {
 
-                            text:
-                                "Suhu & Kelembapan"
+                            label:
+                                "Suhu (°C)",
 
-                        }
+                            data:
+                                [],
 
-                    },
+                            yAxisID:
+                                "yPersen",
 
+                            borderWidth:
+                                2,
 
-                    /* ==========================================
-                       SUMBU Y KANAN
-                       VOLUME
-                       0–27.000
-                       ========================================== */
+                            tension:
+                                0.3,
 
-                    yVolume: {
+                            pointRadius:
+                                2,
 
-                        type:
-                            "linear",
-
-                        position:
-                            "right",
-
-                        min:
-                            0,
-
-                        max:
-                            27000,
-
-
-                        ticks: {
-
-                            stepSize:
-                                3000,
-
-
-                            callback:
-                                function(value) {
-
-                                    return value
-                                        .toLocaleString(
-                                            "id-ID"
-                                        );
-
-                                }
+                            fill:
+                                false
 
                         },
 
 
-                        title: {
+                        /* =================================
+                           KELEMBAPAN UDARA
+                        ================================= */
 
-                            display:
-                                true,
+                        {
 
-                            text:
-                                "Volume (cm³)"
+                            label:
+                                "Kelembapan Udara (%)",
+
+                            data:
+                                [],
+
+                            yAxisID:
+                                "yPersen",
+
+                            borderWidth:
+                                2,
+
+                            tension:
+                                0.3,
+
+                            pointRadius:
+                                2,
+
+                            fill:
+                                false
 
                         },
 
 
-                        grid: {
+                        /* =================================
+                           KELEMBAPAN TANAH
+                        ================================= */
 
-                            drawOnChartArea:
+                        {
+
+                            label:
+                                "Kelembapan Tanah (%)",
+
+                            data:
+                                [],
+
+                            yAxisID:
+                                "yPersen",
+
+                            borderWidth:
+                                2,
+
+                            tension:
+                                0.3,
+
+                            pointRadius:
+                                2,
+
+                            fill:
                                 false
 
                         }
 
-                    }
+                    ]
 
                 },
 
 
-                plugins: {
+                options:
+                {
 
-                    legend: {
+                    responsive:
+                        true,
 
-                        display:
-                            true,
 
-                        position:
-                            "top"
+                    maintainAspectRatio:
+                        false,
+
+
+                    animation:
+                    {
+
+                        duration:
+                            500
+
+                    },
+
+
+                    interaction:
+                    {
+
+                        intersect:
+                            false,
+
+                        mode:
+                            "index"
+
+                    },
+
+
+                    plugins:
+                    {
+
+                        legend:
+                        {
+
+                            display:
+                                true,
+
+                            position:
+                                "top"
+
+                        },
+
+
+                        tooltip:
+                        {
+
+                            enabled:
+                                true
+
+                        }
+
+                    },
+
+
+                    scales:
+                    {
+
+                        /* =================================
+                           Y KIRI
+                           VOLUME
+                        ================================= */
+
+                        yVolume:
+                        {
+
+                            type:
+                                "linear",
+
+                            position:
+                                "left",
+
+                            min:
+                                0,
+
+                            max:
+                                27000,
+
+                            title:
+                            {
+
+                                display:
+                                    true,
+
+                                text:
+                                    "Volume (cm³)"
+
+                            },
+
+                            ticks:
+                            {
+
+                                stepSize:
+                                    5000
+
+                            }
+
+                        },
+
+
+                        /* =================================
+                           Y KANAN
+                           SUHU + KELEMBAPAN
+                        ================================= */
+
+                        yPersen:
+                        {
+
+                            type:
+                                "linear",
+
+                            position:
+                                "right",
+
+                            min:
+                                0,
+
+                            max:
+                                100,
+
+                            title:
+                            {
+
+                                display:
+                                    true,
+
+                                text:
+                                    "Suhu / Kelembapan"
+
+                            },
+
+                            ticks:
+                            {
+
+                                stepSize:
+                                    10
+
+                            },
+
+                            grid:
+                            {
+
+                                drawOnChartArea:
+                                    false
+
+                            }
+
+                        },
+
+
+                        /* =================================
+                           X
+                        ================================= */
+
+                        x:
+                        {
+
+                            title:
+                            {
+
+                                display:
+                                    true,
+
+                                text:
+                                    "Waktu"
+
+                            }
+
+                        }
 
                     }
 
@@ -1929,471 +1861,624 @@ const sensorChart =
 
             }
 
-        }
-    );
+        );
+
+}
 
 
 /* =====================================================
-   UPDATE CHART
-   ===================================================== */
+   UPDATE GRAFIK
+===================================================== */
 
-function updateChart(data) {
+function updateChart() {
 
-    const sorted =
-        [
-            ...data
-        ].sort(
-            (a, b) =>
-                new Date(
-                    a.Waktu
-                )
-                -
-                new Date(
-                    b.Waktu
-                )
+
+    if (!chart) {
+
+        return;
+
+    }
+
+
+    /*
+       Ambil 50 data terakhir
+    */
+
+    const dataGrafik =
+        sensorData.slice(
+            -JUMLAH_DATA_GRAFIK
         );
 
 
-    sensorChart.data.labels =
-        sorted.map(
-            row =>
-                formatWITA(
-                    row.Waktu
+    /*
+       LABEL WAKTU
+    */
+
+    chart.data.labels =
+
+        dataGrafik.map(
+
+            item =>
+
+                formatWaktu(
+                    item.Waktu
                 )
+
         );
 
 
-    /* =========================
+    /*
        VOLUME
-       ========================= */
+    */
 
-    sensorChart
-        .data
-        .datasets[0]
-        .data =
-        sorted.map(
-            row =>
+    chart.data.datasets[0].data =
+
+        dataGrafik.map(
+
+            item =>
+
                 Number(
-                    row[
-                        "Volume (cm³)"
-                    ]
-                )
+                    item["Volume (cm3)"]
+                ) || 0
+
         );
 
 
-    /* =========================
+    /*
        SUHU
-       ========================= */
+    */
 
-    sensorChart
-        .data
-        .datasets[1]
-        .data =
-        sorted.map(
-            row =>
+    chart.data.datasets[1].data =
+
+        dataGrafik.map(
+
+            item =>
+
                 Number(
-                    row[
-                        "Suhu (°C)"
-                    ]
-                )
+                    item["Suhu (°C)"]
+                ) || 0
+
         );
 
 
-    /* =========================
+    /*
        KELEMBAPAN UDARA
-       ========================= */
+    */
 
-    sensorChart
-        .data
-        .datasets[2]
-        .data =
-        sorted.map(
-            row =>
+    chart.data.datasets[2].data =
+
+        dataGrafik.map(
+
+            item =>
+
                 Number(
-                    row[
+                    item[
                         "Kelembapan Udara (%)"
                     ]
-                )
+                ) || 0
+
         );
 
 
-    /* =========================
+    /*
        KELEMBAPAN TANAH
-       ========================= */
+    */
 
-    sensorChart
-        .data
-        .datasets[3]
-        .data =
-        sorted.map(
-            row =>
-                getSoilPercent(
-                    row
-                )
+    chart.data.datasets[3].data =
+
+        dataGrafik.map(
+
+            item =>
+
+                Number(
+                    item[
+                        "Kelembapan Tanah (%)"
+                    ]
+                ) || 0
+
         );
 
 
-    sensorChart.update(
-        "none"
+    chart.update();
+
+}
+
+
+/* =====================================================
+   UPDATE TABEL
+===================================================== */
+
+function updateTable() {
+
+
+    const table =
+        document.getElementById(
+            "dataTable"
+        );
+
+
+    table.innerHTML = "";
+
+
+    /*
+       Data terbaru paling atas
+    */
+
+    const dataTabel =
+
+        [...sensorData]
+
+            .reverse()
+
+            .slice(
+                0,
+                JUMLAH_DATA_TABEL
+            );
+
+
+    dataTabel.forEach(
+
+        (data, index) => {
+
+
+            const row =
+                document.createElement(
+                    "tr"
+                );
+
+
+            const nomor =
+                data.No ??
+                (
+                    sensorData.length -
+                    index
+                );
+
+
+            const volume =
+                Number(
+                    data["Volume (cm3)"]
+                ) || 0;
+
+
+            const suhu =
+                Number(
+                    data["Suhu (°C)"]
+                ) || 0;
+
+
+            const udara =
+                Number(
+                    data[
+                        "Kelembapan Udara (%)"
+                    ]
+                ) || 0;
+
+
+            const tanah =
+                Number(
+                    data[
+                        "Kelembapan Tanah (%)"
+                    ]
+                ) || 0;
+
+
+            row.innerHTML = `
+
+                <td>
+                    ${nomor}
+                </td>
+
+                <td>
+                    ${formatWaktu(
+                        data.Waktu
+                    )}
+                </td>
+
+                <td>
+                    ${volume.toLocaleString(
+                        "id-ID"
+                    )}
+                    cm³
+                </td>
+
+                <td>
+                    ${suhu.toFixed(1)}
+                    °C
+                </td>
+
+                <td>
+                    ${udara.toFixed(1)}
+                    %
+                </td>
+
+                <td>
+                    ${tanah.toFixed(0)}
+                    %
+                </td>
+
+            `;
+
+
+            table.appendChild(
+                row
+            );
+
+        }
+
     );
 
 }
 
 
 /* =====================================================
-   LOAD DATA AWAL
-   ===================================================== */
+   PROSES DATA
+===================================================== */
 
-async function loadData() {
+function prosesData(data) {
 
-    setStatus(
-        false,
-        "MENGAMBIL DATA..."
+
+    if (
+        !data ||
+        data.length === 0
+    ) {
+
+        return;
+
+    }
+
+
+    /*
+       Urutkan berdasarkan waktu
+    */
+
+    sensorData =
+
+        [...data].sort(
+
+            (a, b) =>
+
+                new Date(
+                    a.Waktu
+                ) -
+
+                new Date(
+                    b.Waktu
+                )
+
+        );
+
+
+    /*
+       Batasi data browser
+    */
+
+    if (
+        sensorData.length >
+        MAKS_DATA_BROWSER
+    ) {
+
+        sensorData =
+
+            sensorData.slice(
+                -MAKS_DATA_BROWSER
+            );
+
+    }
+
+
+    /*
+       Data terbaru
+    */
+
+    const terbaru =
+
+        sensorData[
+            sensorData.length - 1
+        ];
+
+
+    /*
+       Gauge
+    */
+
+    updateDisplay(
+        terbaru
     );
 
 
-    const {
-        data,
-        error
-    } =
+    /*
+       Grafik
+    */
+
+    updateChart();
+
+
+    /*
+       Tabel
+    */
+
+    updateTable();
+
+
+    /*
+       Status
+    */
+
+    updateStatus(
+        "DATA REALTIME TERHUBUNG",
+        true
+    );
+
+}
+
+
+/* =====================================================
+   AMBIL DATA SUPABASE
+===================================================== */
+
+async function ambilData() {
+
+
+    console.log(
+        "Mengambil data dari Supabase..."
+    );
+
+
+    const hasil =
+
         await supabaseClient
 
-        .from(
-            "Data_Sensor"
-        )
+            .from(
+                "Data_Sensor"
+            )
 
-        .select(
-            '"No",Waktu,"Volume (cm³)","Suhu (°C)","Kelembapan Udara (%)","Kelembapan Tanah (%)"'
-        )
+            .select(
 
-        .order(
-            "No",
-            {
-                ascending:
-                    false
-            }
-        )
+                'No,Waktu,"Volume (cm3)","Suhu (°C)","Kelembapan Udara (%)","Kelembapan Tanah (%)"'
 
-        .limit(
-            100
-        );
+            )
+
+            .order(
+
+                "Waktu",
+
+                {
+                    ascending:
+                        true
+                }
+
+            )
+
+            .limit(
+                1000
+            );
+
+
+    const data =
+        hasil.data;
+
+
+    const error =
+        hasil.error;
 
 
     if (error) {
 
+
         console.error(
-            "Error mengambil data:",
+            "Error Supabase:",
             error
         );
 
 
-        setStatus(
-            false,
-            "ERROR DATABASE"
+        updateStatus(
+            "ERROR DATABASE",
+            false
         );
 
 
-        return [];
+        return;
 
     }
+
+
+    console.log(
+        "Jumlah data:",
+        data.length
+    );
 
 
     if (
-        !data
-        ||
-        data.length === 0
+        data.length > 0
     ) {
 
-        setStatus(
-            false,
-            "BELUM ADA DATA"
+
+        prosesData(
+            data
         );
 
 
-        return [];
-
     }
 
-
-    updateMonitoring(
-        data[0]
-    );
+    else {
 
 
-    renderTable(
-        data
-    );
+        updateStatus(
+            "BELUM ADA DATA",
+            false
+        );
 
-
-    updateChart(
-        data
-    );
-
-
-    setStatus(
-        true,
-        "DATA REALTIME TERHUBUNG"
-    );
-
-
-    return data;
+    }
 
 }
 
 
 /* =====================================================
    REALTIME SUPABASE
-   ===================================================== */
+===================================================== */
 
-function startRealtime() {
-
-    supabaseClient
-
-        .channel(
-            "monitoring-data"
-        )
-
-        .on(
-
-            "postgres_changes",
-
-            {
-
-                event:
-                    "INSERT",
-
-                schema:
-                    "public",
-
-                table:
-                    "Data_Sensor"
-
-            },
-
-            function(payload) {
-
-                console.log(
-                    "Data baru:",
-                    payload.new
-                );
+function aktifkanRealtime() {
 
 
-                const newData =
-                    payload.new;
+    const channel =
+
+        supabaseClient
+
+            .channel(
+                "monitoring-data"
+            )
 
 
-                /* =========================
-                   UPDATE GAUGE
-                   ========================= */
+            .on(
 
-                updateMonitoring(
-                    newData
-                );
+                "postgres_changes",
+
+                {
+
+                    event:
+                        "INSERT",
+
+                    schema:
+                        "public",
+
+                    table:
+                        "Data_Sensor"
+
+                },
 
 
-                /* =========================
-                   UPDATE TABEL
-                   ========================= */
+                payload => {
 
-                const tbody =
-                    document.getElementById(
-                        "dataTable"
+
+                    console.log(
+                        "Data baru:",
+                        payload.new
                     );
 
 
-                const tr =
-                    document.createElement(
-                        "tr"
+                    /*
+                       Tambahkan data baru
+                    */
+
+                    sensorData.push(
+                        payload.new
                     );
 
 
-                const volume =
-                    Number(
-                        newData[
-                            "Volume (cm³)"
-                        ]
-                    );
+                    /*
+                       Urutkan
+                    */
 
+                    sensorData.sort(
 
-                const suhu =
-                    Number(
-                        newData[
-                            "Suhu (°C)"
-                        ]
-                    );
+                        (a, b) =>
 
+                            new Date(
+                                a.Waktu
+                            ) -
 
-                const udara =
-                    Number(
-                        newData[
-                            "Kelembapan Udara (%)"
-                        ]
-                    );
-
-
-                const tanah =
-                    getSoilPercent(
-                        newData
-                    );
-
-
-                tr.innerHTML = `
-
-                    <td>
-                        ${newData.No ?? "-"}
-                    </td>
-
-                    <td>
-                        ${formatWITA(
-                            newData.Waktu
-                        )}
-                    </td>
-
-                    <td>
-                        ${
-                            Number.isFinite(
-                                volume
+                            new Date(
+                                b.Waktu
                             )
-                            ?
-                            volume.toLocaleString(
-                                "id-ID"
-                            )
-                            :
-                            "-"
-                        }
-                    </td>
 
-                    <td>
-                        ${
-                            Number.isFinite(
-                                suhu
-                            )
-                            ?
-                            suhu.toFixed(1)
-                            :
-                            "-"
-                        }
-                    </td>
-
-                    <td>
-                        ${
-                            Number.isFinite(
-                                udara
-                            )
-                            ?
-                            udara.toFixed(1)
-                            :
-                            "-"
-                        }
-                    </td>
-
-                    <td>
-                        ${tanah.toFixed(1)}
-                    </td>
-
-                `;
+                    );
 
 
-                tbody.prepend(
-                    tr
-                );
+                    /*
+                       Maksimum 1000
+                    */
+
+                    if (
+                        sensorData.length >
+                        MAKS_DATA_BROWSER
+                    ) {
+
+                        sensorData =
+
+                            sensorData.slice(
+                                -MAKS_DATA_BROWSER
+                            );
+
+                    }
 
 
-                /*
-                   Maksimum 100 baris
-                */
+                    /*
+                       Update tampilan
+                    */
 
-                while (
-                    tbody.children.length
-                    >
-                    100
-                ) {
-
-                    tbody.removeChild(
-                        tbody.lastChild
+                    prosesData(
+                        sensorData
                     );
 
                 }
 
-
-                /* =========================
-                   UPDATE GRAFIK
-                   ========================= */
-
-                chartData.push(
-                    newData
-                );
+            )
 
 
-                if (
-                    chartData.length
-                    >
-                    100
-                ) {
+            .subscribe(
 
-                    chartData.shift();
-
-                }
+                status => {
 
 
-                updateChart(
-                    chartData
-                );
-
-            }
-
-        )
-
-        .subscribe(
-            function(status) {
-
-                console.log(
-                    "Status Realtime:",
-                    status
-                );
-
-
-                if (
-                    status
-                    ===
-                    "SUBSCRIBED"
-                ) {
-
-                    setStatus(
-                        true,
-                        "DATA REALTIME TERHUBUNG"
+                    console.log(
+                        "Realtime:",
+                        status
                     );
 
+
+                    if (
+                        status ===
+                        "SUBSCRIBED"
+                    ) {
+
+
+                        updateStatus(
+                            "DATA REALTIME TERHUBUNG",
+                            true
+                        );
+
+                    }
+
                 }
 
-            }
-        );
+            );
+
+
+    return channel;
 
 }
 
 
 /* =====================================================
-   MULAI SISTEM
-   ===================================================== */
+   POLLING CADANGAN
+===================================================== */
 
-async function mulai() {
+setInterval(
 
-    chartData =
-        await loadData();
+    () => {
 
+        ambilData();
 
-    startRealtime();
+    },
 
-}
+    30000
+
+);
 
 
 /* =====================================================
-   JALANKAN
-   ===================================================== */
+   MULAI PROGRAM
+===================================================== */
 
-mulai();
+buatChart();
+
+ambilData();
+
+aktifkanRealtime();
 
 </script>
+
 
 </body>
 
