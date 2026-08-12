@@ -10,6 +10,10 @@
 
 <style>
 
+/* =====================================================
+   GLOBAL
+   ===================================================== */
+
 * {
     box-sizing: border-box;
 }
@@ -20,6 +24,7 @@ body {
     background: #eef2f7;
     color: #1f2937;
 }
+
 
 /* =====================================================
    HEADER
@@ -69,6 +74,7 @@ body {
     box-shadow: 0 0 10px #22c55e;
 }
 
+
 /* =====================================================
    CONTAINER
    ===================================================== */
@@ -76,9 +82,9 @@ body {
 .container {
     width: 92%;
     max-width: 1400px;
-
     margin: 35px auto;
 }
+
 
 /* =====================================================
    SENSOR GRID
@@ -92,6 +98,7 @@ body {
 
     gap: 30px;
 }
+
 
 /* =====================================================
    CARD
@@ -122,6 +129,7 @@ body {
     font-size: 26px;
 }
 
+
 /* =====================================================
    GAUGE
    ===================================================== */
@@ -133,11 +141,15 @@ body {
     height: 280px;
 
     margin: 0 auto 15px;
+
+    --progress: 0deg;
+    --needle-angle: -135deg;
 }
 
-/*
-   Lingkaran gauge
-*/
+
+/* =====================================================
+   GAUGE RING
+   ===================================================== */
 
 .gauge-ring {
     position: absolute;
@@ -156,13 +168,10 @@ body {
             #e5e7eb 270deg,
             transparent 270deg
         );
-
-    transform: rotate(0deg);
 }
 
-/*
-   Lubang tengah
-*/
+
+/* Lubang tengah */
 
 .gauge-ring::after {
     content: "";
@@ -170,7 +179,6 @@ body {
     position: absolute;
 
     width: 72%;
-
     height: 72%;
 
     left: 14%;
@@ -180,6 +188,7 @@ body {
 
     background: white;
 }
+
 
 /* =====================================================
    NILAI TENGAH
@@ -216,6 +225,7 @@ body {
     color: #64748b;
 }
 
+
 /* =====================================================
    JARUM
    ===================================================== */
@@ -229,7 +239,6 @@ body {
     background: #1f2937;
 
     left: calc(50% - 2.5px);
-
     top: calc(50% - 105px);
 
     transform-origin: 50% 100%;
@@ -244,6 +253,7 @@ body {
     transition:
         transform 0.8s cubic-bezier(.4,2,.6,1);
 }
+
 
 /* Titik tengah jarum */
 
@@ -263,6 +273,57 @@ body {
     z-index: 8;
 }
 
+
+/* =====================================================
+   MINIMUM DAN MAKSIMUM
+   ===================================================== */
+
+.gauge-min,
+.gauge-max {
+    position: absolute;
+
+    bottom: 18px;
+
+    z-index: 10;
+
+    text-align: center;
+
+    line-height: 1.2;
+}
+
+.gauge-min {
+    left: 20px;
+}
+
+.gauge-max {
+    right: 20px;
+}
+
+.gauge-min span,
+.gauge-max span {
+    display: block;
+
+    font-size: 11px;
+
+    color: #94a3b8;
+
+    font-weight: 600;
+
+    letter-spacing: 0.5px;
+}
+
+.gauge-min b,
+.gauge-max b {
+    display: block;
+
+    margin-top: 3px;
+
+    font-size: 14px;
+
+    color: #334155;
+}
+
+
 /* =====================================================
    UPDATE TIME
    ===================================================== */
@@ -274,6 +335,45 @@ body {
 
     margin-top: 10px;
 }
+
+
+/* =====================================================
+   GRAFIK
+   ===================================================== */
+
+.chart-card {
+    margin-top: 35px;
+
+    background: white;
+
+    border-radius: 22px;
+
+    padding: 30px;
+
+    box-shadow:
+        0 8px 25px rgba(0,0,0,0.08);
+}
+
+.chart-card h2 {
+    text-align: center;
+
+    margin-top: 0;
+
+    font-size: 28px;
+}
+
+.chart-container {
+    position: relative;
+
+    width: 100%;
+    height: 420px;
+}
+
+canvas {
+    width: 100% !important;
+    height: 100% !important;
+}
+
 
 /* =====================================================
    TABEL
@@ -350,44 +450,6 @@ tbody tr:hover {
     background: #f8fafc;
 }
 
-/* =====================================================
-   GRAFIK
-   ===================================================== */
-
-.chart-card {
-    margin-top: 35px;
-
-    background: white;
-
-    border-radius: 22px;
-
-    padding: 30px;
-
-    box-shadow:
-        0 8px 25px rgba(0,0,0,0.08);
-}
-
-.chart-card h2 {
-    text-align: center;
-
-    margin-top: 0;
-
-    font-size: 28px;
-}
-
-.chart-container {
-    position: relative;
-
-    width: 100%;
-
-    height: 420px;
-}
-
-canvas {
-    width: 100% !important;
-
-    height: 100% !important;
-}
 
 /* =====================================================
    RESPONSIVE
@@ -414,10 +476,11 @@ canvas {
 }
 
 </style>
-
 </head>
 
+
 <body>
+
 
 <!-- =====================================================
      HEADER
@@ -451,7 +514,7 @@ canvas {
 
 
 <!-- =====================================================
-     SENSOR
+     SENSOR GAUGE
      ===================================================== -->
 
 <div class="sensor-grid">
@@ -468,10 +531,6 @@ canvas {
     <div
         class="gauge"
         id="gaugeVolume"
-        style="
-            --progress: 0deg;
-            --needle-angle: -135deg;
-        "
     >
 
         <div class="gauge-ring"></div>
@@ -479,6 +538,7 @@ canvas {
         <div class="needle"></div>
 
         <div class="needle-center"></div>
+
 
         <div class="gauge-value">
 
@@ -495,7 +555,26 @@ canvas {
 
         </div>
 
+
+        <div class="gauge-min">
+
+            <span>MIN</span>
+
+            <b>0 L</b>
+
+        </div>
+
+
+        <div class="gauge-max">
+
+            <span>MAX</span>
+
+            <b>30 L</b>
+
+        </div>
+
     </div>
+
 
     <div
         class="update"
@@ -518,10 +597,6 @@ canvas {
     <div
         class="gauge"
         id="gaugeSuhu"
-        style="
-            --progress: 0deg;
-            --needle-angle: -135deg;
-        "
     >
 
         <div class="gauge-ring"></div>
@@ -529,6 +604,7 @@ canvas {
         <div class="needle"></div>
 
         <div class="needle-center"></div>
+
 
         <div class="gauge-value">
 
@@ -545,7 +621,26 @@ canvas {
 
         </div>
 
+
+        <div class="gauge-min">
+
+            <span>MIN</span>
+
+            <b>0 °C</b>
+
+        </div>
+
+
+        <div class="gauge-max">
+
+            <span>MAX</span>
+
+            <b>50 °C</b>
+
+        </div>
+
     </div>
+
 
     <div
         class="update"
@@ -568,10 +663,6 @@ canvas {
     <div
         class="gauge"
         id="gaugeUdara"
-        style="
-            --progress: 0deg;
-            --needle-angle: -135deg;
-        "
     >
 
         <div class="gauge-ring"></div>
@@ -579,6 +670,7 @@ canvas {
         <div class="needle"></div>
 
         <div class="needle-center"></div>
+
 
         <div class="gauge-value">
 
@@ -595,7 +687,26 @@ canvas {
 
         </div>
 
+
+        <div class="gauge-min">
+
+            <span>MIN</span>
+
+            <b>0 %</b>
+
+        </div>
+
+
+        <div class="gauge-max">
+
+            <span>MAX</span>
+
+            <b>100 %</b>
+
+        </div>
+
     </div>
+
 
     <div
         class="update"
@@ -618,10 +729,6 @@ canvas {
     <div
         class="gauge"
         id="gaugeTanah"
-        style="
-            --progress: 0deg;
-            --needle-angle: -135deg;
-        "
     >
 
         <div class="gauge-ring"></div>
@@ -629,6 +736,7 @@ canvas {
         <div class="needle"></div>
 
         <div class="needle-center"></div>
+
 
         <div class="gauge-value">
 
@@ -645,7 +753,26 @@ canvas {
 
         </div>
 
+
+        <div class="gauge-min">
+
+            <span>MIN</span>
+
+            <b>0 %</b>
+
+        </div>
+
+
+        <div class="gauge-max">
+
+            <span>MAX</span>
+
+            <b>100 %</b>
+
+        </div>
+
     </div>
+
 
     <div
         class="update"
@@ -750,7 +877,7 @@ const supabaseClient =
 
 
 /* =====================================================
-   KONFIGURASI
+   RANGE
    ===================================================== */
 
 const VOLUME_MAX = 30;
@@ -777,9 +904,12 @@ let chartData = [];
 
 function formatWITA(waktu) {
 
-    if (!waktu) return "-";
+    if (!waktu) {
+        return "-";
+    }
 
-    const date = new Date(waktu);
+    const date =
+        new Date(waktu);
 
     return date.toLocaleString(
         "id-ID",
@@ -787,11 +917,15 @@ function formatWITA(waktu) {
             timeZone: "Asia/Makassar",
 
             day: "2-digit",
+
             month: "2-digit",
+
             year: "numeric",
 
             hour: "2-digit",
+
             minute: "2-digit",
+
             second: "2-digit",
 
             hour12: false
@@ -802,7 +936,7 @@ function formatWITA(waktu) {
 
 
 /* =====================================================
-   KONVERSI ADC → PERSEN
+   ADC → PERSEN
    ===================================================== */
 
 function adcKePersen(adc) {
@@ -810,21 +944,23 @@ function adcKePersen(adc) {
     adc = Number(adc);
 
     if (!Number.isFinite(adc)) {
-
         return 0;
     }
 
-    adc = Math.max(
-        0,
-        Math.min(
-            SOIL_ADC_MAX,
-            adc
-        )
-    );
+    adc =
+        Math.max(
+            0,
+            Math.min(
+                SOIL_ADC_MAX,
+                adc
+            )
+        );
 
-    let persen =
-        ((SOIL_ADC_MAX - adc)
-        / SOIL_ADC_MAX) * 100;
+    const persen =
+        (
+            (SOIL_ADC_MAX - adc)
+            / SOIL_ADC_MAX
+        ) * 100;
 
     return Math.max(
         0,
@@ -838,7 +974,7 @@ function adcKePersen(adc) {
 
 
 /* =====================================================
-   AMBIL NILAI KELEMBAPAN TANAH
+   KELEMBAPAN TANAH
    ===================================================== */
 
 function getSoilPercent(data) {
@@ -849,24 +985,26 @@ function getSoilPercent(data) {
     nilai = Number(nilai);
 
     if (!Number.isFinite(nilai)) {
-
         return 0;
     }
 
     /*
-       Karena ESP32 mengirim soilADC 0–4095,
-       maka jika nilainya > 100 dianggap ADC.
+       ESP32 mengirim ADC 0–4095.
+       Jika >100 berarti nilai tersebut ADC.
     */
 
     if (nilai > 100) {
 
-        return adcKePersen(nilai);
+        return adcKePersen(
+            nilai
+        );
+
     }
 
     /*
-       Jika suatu saat ESP32 mengirim
-       langsung dalam persen, nilai tersebut
-       tetap bisa digunakan.
+       Jika suatu saat ESP32
+       mengirim langsung persen,
+       nilai tersebut tetap digunakan.
     */
 
     return Math.max(
@@ -881,7 +1019,7 @@ function getSoilPercent(data) {
 
 
 /* =====================================================
-   GAUGE
+   UPDATE GAUGE
    ===================================================== */
 
 function updateGauge(
@@ -894,12 +1032,13 @@ function updateGauge(
     const gauge =
         document.getElementById(id);
 
-    if (!gauge) return;
+    if (!gauge) {
+        return;
+    }
 
     value = Number(value);
 
     if (!Number.isFinite(value)) {
-
         value = min;
     }
 
@@ -913,23 +1052,25 @@ function updateGauge(
         );
 
     const persen =
-        (value - min) /
+        (value - min)
+        /
         (max - min);
 
     /*
-       Gauge 270 derajat
+       Gauge = 270°
     */
 
     const progress =
         persen * 270;
 
     /*
-       Jarum:
-       -135° sampai +135°
+       Jarum dari -135°
+       sampai +135°
     */
 
     const angle =
-        -135 + (persen * 270);
+        -135 +
+        (persen * 270);
 
     gauge.style.setProperty(
         "--progress",
@@ -945,7 +1086,7 @@ function updateGauge(
 
 
 /* =====================================================
-   UPDATE GAUGE VOLUME
+   VOLUME
    ===================================================== */
 
 function updateVolume(value) {
@@ -966,7 +1107,7 @@ function updateVolume(value) {
 
 
 /* =====================================================
-   UPDATE GAUGE SUHU
+   SUHU
    ===================================================== */
 
 function updateSuhu(value) {
@@ -987,7 +1128,7 @@ function updateSuhu(value) {
 
 
 /* =====================================================
-   UPDATE GAUGE UDARA
+   KELEMBAPAN UDARA
    ===================================================== */
 
 function updateUdara(value) {
@@ -995,8 +1136,8 @@ function updateUdara(value) {
     updateGauge(
         "gaugeUdara",
         value,
-        0,
-        100
+        HUM_MIN,
+        HUM_MAX
     );
 
     document.getElementById(
@@ -1008,7 +1149,7 @@ function updateUdara(value) {
 
 
 /* =====================================================
-   UPDATE GAUGE TANAH
+   KELEMBAPAN TANAH
    ===================================================== */
 
 function updateTanah(value) {
@@ -1034,7 +1175,9 @@ function updateTanah(value) {
 
 function updateMonitoring(data) {
 
-    if (!data) return;
+    if (!data) {
+        return;
+    }
 
 
     const volume =
@@ -1059,36 +1202,29 @@ function updateMonitoring(data) {
         getSoilPercent(data);
 
 
-    /* Volume */
-
     if (Number.isFinite(volume)) {
 
         updateVolume(volume);
+
     }
 
-
-    /* Suhu */
 
     if (Number.isFinite(suhu)) {
 
         updateSuhu(suhu);
+
     }
 
-
-    /* Udara */
 
     if (Number.isFinite(udara)) {
 
         updateUdara(udara);
+
     }
 
 
-    /* Tanah */
-
     updateTanah(tanah);
 
-
-    /* Waktu */
 
     const waktu =
         formatWITA(data.Waktu);
@@ -1139,8 +1275,10 @@ function setStatus(
             "statusText"
         );
 
+
     statusText.textContent =
         text;
+
 
     if (online) {
 
@@ -1157,6 +1295,7 @@ function setStatus(
 
         dot.style.boxShadow =
             "0 0 10px #ef4444";
+
     }
 
 }
@@ -1218,21 +1357,27 @@ function renderTable(data) {
                 </td>
 
                 <td>
-                    ${Number.isFinite(volume)
+                    ${
+                        Number.isFinite(volume)
                         ? volume.toFixed(2)
-                        : "-"} L
+                        : "-"
+                    } L
                 </td>
 
                 <td>
-                    ${Number.isFinite(suhu)
+                    ${
+                        Number.isFinite(suhu)
                         ? suhu.toFixed(1)
-                        : "-"} °C
+                        : "-"
+                    } °C
                 </td>
 
                 <td>
-                    ${Number.isFinite(udara)
+                    ${
+                        Number.isFinite(udara)
                         ? udara.toFixed(1)
-                        : "-"} %
+                        : "-"
+                    } %
                 </td>
 
                 <td>
@@ -1298,7 +1443,8 @@ const sensorChart =
                     },
 
                     {
-                        label: "Kelembapan Udara (%)",
+                        label:
+                            "Kelembapan Udara (%)",
 
                         data: [],
 
@@ -1310,7 +1456,8 @@ const sensorChart =
                     },
 
                     {
-                        label: "Kelembapan Tanah (%)",
+                        label:
+                            "Kelembapan Tanah (%)",
 
                         data: [],
 
@@ -1363,14 +1510,9 @@ const sensorChart =
 
 function updateChart(data) {
 
-    /*
-       Data ditampilkan dari yang lama
-       ke yang terbaru.
-    */
-
     const sorted =
         [...data].sort(
-            (a,b) =>
+            (a, b) =>
                 new Date(a.Waktu)
                 -
                 new Date(b.Waktu)
@@ -1380,7 +1522,9 @@ function updateChart(data) {
     sensorChart.data.labels =
         sorted.map(
             row =>
-                formatWITA(row.Waktu)
+                formatWITA(
+                    row.Waktu
+                )
         );
 
 
@@ -1418,15 +1562,13 @@ function updateChart(data) {
         );
 
 
-    sensorChart.update(
-        "none"
-    );
+    sensorChart.update("none");
 
 }
 
 
 /* =====================================================
-   AMBIL DATA AWAL
+   LOAD DATA AWAL
    ===================================================== */
 
 async function loadData() {
@@ -1440,7 +1582,8 @@ async function loadData() {
     const {
         data,
         error
-    } = await supabaseClient
+    } =
+        await supabaseClient
 
         .from("Data_Sensor")
 
@@ -1471,10 +1614,14 @@ async function loadData() {
         );
 
         return;
+
     }
 
 
-    if (!data || data.length === 0) {
+    if (
+        !data ||
+        data.length === 0
+    ) {
 
         setStatus(
             false,
@@ -1482,12 +1629,9 @@ async function loadData() {
         );
 
         return;
+
     }
 
-
-    /*
-       Data terbaru berada di index pertama.
-    */
 
     updateMonitoring(
         data[0]
@@ -1526,9 +1670,12 @@ function startRealtime() {
 
         .on(
             "postgres_changes",
+
             {
                 event: "INSERT",
+
                 schema: "public",
+
                 table: "Data_Sensor"
             },
 
@@ -1544,18 +1691,18 @@ function startRealtime() {
                     payload.new;
 
 
-                /* =============================
-                   UPDATE GAUGE
-                   ============================= */
+                /* =========================
+                   GAUGE
+                   ========================= */
 
                 updateMonitoring(
                     newData
                 );
 
 
-                /* =============================
-                   UPDATE TABEL
-                   ============================= */
+                /* =========================
+                   TABEL
+                   ========================= */
 
                 const tbody =
                     document.getElementById(
@@ -1606,21 +1753,27 @@ function startRealtime() {
                     </td>
 
                     <td>
-                        ${Number.isFinite(volume)
+                        ${
+                            Number.isFinite(volume)
                             ? volume.toFixed(2)
-                            : "-"} L
+                            : "-"
+                        } L
                     </td>
 
                     <td>
-                        ${Number.isFinite(suhu)
+                        ${
+                            Number.isFinite(suhu)
                             ? suhu.toFixed(1)
-                            : "-"} °C
+                            : "-"
+                        } °C
                     </td>
 
                     <td>
-                        ${Number.isFinite(udara)
+                        ${
+                            Number.isFinite(udara)
                             ? udara.toFixed(1)
-                            : "-"} %
+                            : "-"
+                        } %
                     </td>
 
                     <td>
@@ -1630,18 +1783,11 @@ function startRealtime() {
                 `;
 
 
-                /*
-                   Data terbaru di paling atas.
-                */
-
-                tbody.prepend(
-                    tr
-                );
+                tbody.prepend(tr);
 
 
                 /*
-                   Batasi tabel menjadi
-                   100 data terbaru.
+                   Maksimal 100 data
                 */
 
                 while (
@@ -1655,18 +1801,14 @@ function startRealtime() {
                 }
 
 
-                /* =============================
-                   UPDATE GRAFIK
-                   ============================= */
+                /* =========================
+                   GRAFIK
+                   ========================= */
 
                 chartData.push(
                     newData
                 );
 
-
-                /*
-                   Maksimal 100 titik grafik.
-                */
 
                 if (
                     chartData.length > 100
@@ -1695,8 +1837,7 @@ function startRealtime() {
 
 
                 if (
-                    status ===
-                    "SUBSCRIBED"
+                    status === "SUBSCRIBED"
                 ) {
 
                     setStatus(
@@ -1713,7 +1854,7 @@ function startRealtime() {
 
 
 /* =====================================================
-   MULAI
+   MULAI SISTEM
    ===================================================== */
 
 async function mulai() {
@@ -1721,15 +1862,10 @@ async function mulai() {
     await loadData();
 
 
-    /*
-       Simpan data awal untuk grafik.
-       Ambil lagi agar chartData memiliki
-       data yang sama dengan grafik.
-    */
-
     const {
         data
-    } = await supabaseClient
+    } =
+        await supabaseClient
 
         .from("Data_Sensor")
 
