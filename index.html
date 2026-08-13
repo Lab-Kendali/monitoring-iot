@@ -8,7 +8,7 @@
 <meta name="viewport"
       content="width=device-width, initial-scale=1.0">
 
-<title>Monitoring IoT ESP32</title>
+<title>Sistem Monitoring Komposter</title>
 
 
 <!-- =====================================================
@@ -664,12 +664,12 @@ tr:hover {
 <header class="header">
 
     <h1>
-        Monitoring IoT ESP32
+        Sistem Monitoring Komposter
     </h1>
 
 
     <p>
-        Monitoring Sensor Secara Real-Time
+        Monitoring Real-Time
     </p>
 
 
@@ -941,13 +941,13 @@ tr:hover {
 
 
 <!-- =====================================================
-     KELEMBAPAN TANAH
+     KELEMBAPAN Padatan
 ===================================================== -->
 
 <div class="card">
 
     <h2>
-        Kelembapan Tanah
+        Kelembapan Padatan
     </h2>
 
 
@@ -955,13 +955,13 @@ tr:hover {
 
 
         <div
-            id="gaugeTanah"
+            id="gaugePadatan"
             class="gauge-ring">
         </div>
 
 
         <div
-            id="needleTanah"
+            id="needlePadatan"
             class="needle">
         </div>
 
@@ -974,7 +974,7 @@ tr:hover {
         <div class="gauge-value">
 
             <div
-                id="tanahValue"
+                id="PadatanValue"
                 class="gauge-number">
 
                 0
@@ -1008,7 +1008,7 @@ tr:hover {
 
 
     <div
-        id="tanahUpdate"
+        id="padatanUpdate"
         class="update-time">
 
         Update: -
@@ -1088,7 +1088,7 @@ tr:hover {
 
 
                 <th>
-                    Kelembapan Tanah (%)
+                    Kelembapan Padatan (%)
                 </th>
 
             </tr>
@@ -1449,31 +1449,31 @@ function updateDisplay(data) {
 
 
     /* =================================================
-       KELEMBAPAN TANAH
+       KELEMBAPAN Padatan
     ================================================= */
 
-    const tanah =
+    const padatan =
         Number(
             data[
-                "Kelembapan Tanah (%)"
+                "Kelembapan Padatan (%)"
             ]
         ) || 0;
 
 
     document.getElementById(
-        "tanahValue"
+        "padatanValue"
     ).textContent =
 
-        tanah.toFixed(0);
+        padatan.toFixed(0);
 
 
     updateGauge(
 
-        "gaugeTanah",
+        "gaugePadatan",
 
-        "needleTanah",
+        "needlePadatan",
 
-        tanah,
+        padatan,
 
         MAX_KELEMBAPAN
 
@@ -1512,7 +1512,7 @@ function updateDisplay(data) {
 
 
     document.getElementById(
-        "tanahUpdate"
+        "padatanUpdate"
     ).textContent =
 
         "Update: " + waktu;
@@ -1649,13 +1649,13 @@ function buatChart() {
 
 
                         /* =================================
-                           KELEMBAPAN TANAH
+                           KELEMBAPAN Padatan
                         ================================= */
 
                         {
 
                             label:
-                                "Kelembapan Tanah (%)",
+                                "Kelembapan Padatan (%)",
 
                             data:
                                 [],
@@ -1961,7 +1961,7 @@ function updateChart() {
 
 
     /*
-       KELEMBAPAN TANAH
+       KELEMBAPAN PADATAN
     */
 
     chart.data.datasets[3].data =
@@ -1972,7 +1972,7 @@ function updateChart() {
 
                 Number(
                     item[
-                        "Kelembapan Tanah (%)"
+                        "Kelembapan Padatan (%)"
                     ]
                 ) || 0
 
@@ -2055,10 +2055,10 @@ function updateTable() {
                 ) || 0;
 
 
-            const tanah =
+            const padatan =
                 Number(
                     data[
-                        "Kelembapan Tanah (%)"
+                        "Kelembapan Padatan (%)"
                     ]
                 ) || 0;
 
@@ -2093,7 +2093,7 @@ function updateTable() {
                 </td>
 
                 <td>
-                    ${tanah.toFixed(0)}
+                    ${padatan.toFixed(0)}
                     %
                 </td>
 
@@ -2235,7 +2235,7 @@ async function ambilData() {
 
             .select(
 
-                'No,Waktu,"Volume (cm3)","Suhu (°C)","Kelembapan Udara (%)","Kelembapan Tanah (%)"'
+                'No,Waktu,"Volume (cm3)","Suhu (°C)","Kelembapan Udara (%)","Kelembapan Padatan (%)"'
 
             )
 
