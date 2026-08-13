@@ -1,12 +1,26 @@
 <!DOCTYPE html>
 <html lang="id">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Sistem Monitoring Komposter</title>
+<head>
+
+<meta charset="UTF-8">
+
+<meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+>
+
+<title>
+    Sistem Monitoring Komposter
+</title>
+
+
+<!-- =====================================================
+     CHART.JS
+     ===================================================== -->
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
 
 <style>
 
@@ -19,9 +33,16 @@
 }
 
 body {
+
     margin: 0;
-    font-family: Arial, Helvetica, sans-serif;
+
+    font-family:
+        Arial,
+        Helvetica,
+        sans-serif;
+
     background: #eef2f7;
+
     color: #1f2937;
 }
 
@@ -31,24 +52,32 @@ body {
    ===================================================== */
 
 .header {
-    background: linear-gradient(
-        135deg,
-        #172554,
-        #2563eb
-    );
+
+    background:
+        linear-gradient(
+            135deg,
+            #172554,
+            #2563eb
+        );
 
     color: white;
+
     text-align: center;
+
     padding: 25px 20px;
 }
 
 .header h1 {
+
     margin: 0;
+
     font-size: 30px;
 }
 
 .header p {
+
     margin: 8px 0;
+
     opacity: 0.9;
 }
 
@@ -58,23 +87,35 @@ body {
    ===================================================== */
 
 .status {
+
     display: inline-flex;
+
     align-items: center;
+
     gap: 8px;
 
     margin-top: 10px;
 
-    padding: 7px 15px;
+    padding:
+        7px 15px;
 
     border-radius: 20px;
 
-    background: rgba(255,255,255,0.15);
+    background:
+        rgba(
+            255,
+            255,
+            255,
+            0.15
+        );
 
     font-size: 14px;
 }
 
 .status-dot {
+
     width: 10px;
+
     height: 10px;
 
     border-radius: 50%;
@@ -88,9 +129,13 @@ body {
    ===================================================== */
 
 .container {
+
     max-width: 1250px;
+
     margin: auto;
-    padding: 30px 20px;
+
+    padding:
+        30px 20px;
 }
 
 
@@ -99,12 +144,16 @@ body {
    ===================================================== */
 
 .gauge-grid {
+
     display: grid;
 
     grid-template-columns:
         repeat(
             2,
-            minmax(280px, 1fr)
+            minmax(
+                280px,
+                1fr
+            )
         );
 
     gap: 25px;
@@ -127,10 +176,16 @@ body {
 
     box-shadow:
         0 8px 25px
-        rgba(0,0,0,0.08);
+        rgba(
+            0,
+            0,
+            0,
+            0.08
+        );
 }
 
 .card {
+
     text-align: center;
 }
 
@@ -138,7 +193,8 @@ body {
 .chart-card h2,
 .table-card h2 {
 
-    margin: 0 0 18px;
+    margin:
+        0 0 18px;
 
     font-size: 20px;
 }
@@ -146,8 +202,6 @@ body {
 
 /* =====================================================
    GAUGE
-   3/4 LINGKARAN
-   BAGIAN KOSONG DI BAWAH
    ===================================================== */
 
 .gauge-wrap {
@@ -155,6 +209,7 @@ body {
     position: relative;
 
     width: 260px;
+
     height: 225px;
 
     margin: auto;
@@ -166,9 +221,11 @@ body {
     position: absolute;
 
     width: 220px;
+
     height: 220px;
 
     left: 20px;
+
     top: 0;
 
     border-radius: 50%;
@@ -182,10 +239,10 @@ body {
             #2563eb 0deg,
 
             #2563eb
-            var(--progress, 0deg),
+                var(--progress, 0deg),
 
             #e5e7eb
-            var(--progress, 0deg),
+                var(--progress, 0deg),
 
             #e5e7eb 270deg,
 
@@ -195,7 +252,7 @@ body {
 
 
 /* =====================================================
-   LUBANG TENGAH GAUGE
+   LUBANG TENGAH
    ===================================================== */
 
 .gauge::before {
@@ -205,9 +262,11 @@ body {
     position: absolute;
 
     width: 170px;
+
     height: 170px;
 
     left: 25px;
+
     top: 25px;
 
     background: white;
@@ -219,7 +278,7 @@ body {
 
 
 /* =====================================================
-   NILAI DI TENGAH GAUGE
+   NILAI GAUGE
    ===================================================== */
 
 .gauge-center {
@@ -229,6 +288,7 @@ body {
     z-index: 4;
 
     left: 0;
+
     right: 0;
 
     top: 120px;
@@ -240,14 +300,12 @@ body {
     align-items: center;
 }
 
-
 .gauge-value {
 
     font-size: 34px;
 
     font-weight: bold;
 }
-
 
 .gauge-unit {
 
@@ -260,7 +318,7 @@ body {
 
 
 /* =====================================================
-   JARUM GAUGE
+   JARUM
    ===================================================== */
 
 .needle {
@@ -270,11 +328,13 @@ body {
     z-index: 5;
 
     width: 4px;
+
     height: 72px;
 
     background: #1f2937;
 
     left: 50%;
+
     top: 50%;
 
     transform-origin:
@@ -301,6 +361,7 @@ body {
     position: absolute;
 
     width: 16px;
+
     height: 16px;
 
     border-radius: 50%;
@@ -317,7 +378,7 @@ body {
 
 
 /* =====================================================
-   MIN MAX GAUGE
+   MIN MAX
    ===================================================== */
 
 .gauge-minmax {
@@ -341,10 +402,6 @@ body {
 }
 
 
-/* =====================================================
-   WAKTU UPDATE
-   ===================================================== */
-
 .last-update {
 
     margin-top: 10px;
@@ -356,7 +413,7 @@ body {
 
 
 /* =====================================================
-   GRAFIK
+   GRAFIK CARD
    ===================================================== */
 
 .chart-card {
@@ -364,6 +421,69 @@ body {
     margin-top: 30px;
 }
 
+
+/* =====================================================
+   FILTER GRAFIK
+   ===================================================== */
+
+.chart-control {
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content:
+        space-between;
+
+    gap: 15px;
+
+    margin-bottom: 20px;
+
+    flex-wrap: wrap;
+}
+
+
+.chart-control label {
+
+    font-weight: bold;
+}
+
+
+.chart-control select {
+
+    padding:
+        9px 14px;
+
+    border:
+        1px solid #d1d5db;
+
+    border-radius: 8px;
+
+    background: white;
+
+    font-size: 14px;
+
+    cursor: pointer;
+}
+
+
+/* =====================================================
+   INFO GRAFIK
+   ===================================================== */
+
+.chart-info {
+
+    font-size: 13px;
+
+    color: #6b7280;
+
+    margin-bottom: 10px;
+}
+
+
+/* =====================================================
+   CONTAINER GRAFIK
+   ===================================================== */
 
 .chart-container {
 
@@ -376,7 +496,7 @@ body {
 
 
 /* =====================================================
-   TABEL
+   TABLE CARD
    ===================================================== */
 
 .table-card {
@@ -384,6 +504,39 @@ body {
     margin-top: 30px;
 }
 
+
+/* =====================================================
+   TABLE INFO
+   ===================================================== */
+
+.table-top {
+
+    display: flex;
+
+    justify-content:
+        space-between;
+
+    align-items: center;
+
+    gap: 15px;
+
+    flex-wrap: wrap;
+
+    margin-bottom: 15px;
+}
+
+
+.table-info {
+
+    font-size: 14px;
+
+    color: #6b7280;
+}
+
+
+/* =====================================================
+   TABLE
+   ===================================================== */
 
 .table-wrapper {
 
@@ -404,11 +557,14 @@ table {
 
 th {
 
-    background: #f3f4f6;
+    background:
+        #f3f4f6;
 
     padding: 13px;
 
     text-align: center;
+
+    white-space: nowrap;
 }
 
 
@@ -425,7 +581,75 @@ td {
 
 tr:hover {
 
-    background: #f9fafb;
+    background:
+        #f9fafb;
+}
+
+
+/* =====================================================
+   PAGINATION
+   ===================================================== */
+
+.pagination {
+
+    display: flex;
+
+    justify-content:
+        center;
+
+    align-items: center;
+
+    gap: 6px;
+
+    margin-top: 20px;
+
+    flex-wrap: wrap;
+}
+
+
+.pagination button {
+
+    border:
+        1px solid #d1d5db;
+
+    background: white;
+
+    padding:
+        8px 12px;
+
+    border-radius: 7px;
+
+    cursor: pointer;
+
+    font-size: 14px;
+}
+
+
+.pagination button:hover {
+
+    background:
+        #f3f4f6;
+}
+
+
+.pagination button.active {
+
+    background:
+        #2563eb;
+
+    color: white;
+
+    border-color:
+        #2563eb;
+}
+
+
+.pagination button:disabled {
+
+    opacity: 0.45;
+
+    cursor:
+        not-allowed;
 }
 
 
@@ -433,11 +657,12 @@ tr:hover {
    RESPONSIVE
    ===================================================== */
 
-@media(max-width:700px) {
+@media(max-width: 700px) {
 
     .gauge-grid {
 
-        grid-template-columns: 1fr;
+        grid-template-columns:
+            1fr;
     }
 
     .header h1 {
@@ -455,9 +680,11 @@ tr:hover {
 
         height: 330px;
     }
+
 }
 
 </style>
+
 </head>
 
 
@@ -506,7 +733,9 @@ tr:hover {
 <div class="gauge-grid">
 
 
-<!-- ================= VOLUME ================= -->
+<!-- =====================================================
+     VOLUME
+     ===================================================== -->
 
 <div class="card">
 
@@ -519,12 +748,13 @@ tr:hover {
 
         <div
             class="gauge"
-            id="gaugeVolume">
-
+            id="gaugeVolume"
+        >
 
             <div
                 class="needle"
-                id="needleVolume">
+                id="needleVolume"
+            >
             </div>
 
 
@@ -532,17 +762,13 @@ tr:hover {
 
                 <div
                     class="gauge-value"
-                    id="volumeValue">
-
+                    id="volumeValue"
+                >
                     --
-
                 </div>
 
-
                 <div class="gauge-unit">
-
                     cm³
-
                 </div>
 
             </div>
@@ -567,17 +793,18 @@ tr:hover {
 
     <div
         class="last-update"
-        id="waktuVolume">
-
+        id="waktuVolume"
+    >
         Menunggu data...
-
     </div>
 
 </div>
 
 
 
-<!-- ================= SUHU ================= -->
+<!-- =====================================================
+     SUHU
+     ===================================================== -->
 
 <div class="card">
 
@@ -590,12 +817,13 @@ tr:hover {
 
         <div
             class="gauge"
-            id="gaugeSuhu">
-
+            id="gaugeSuhu"
+        >
 
             <div
                 class="needle"
-                id="needleSuhu">
+                id="needleSuhu"
+            >
             </div>
 
 
@@ -603,17 +831,13 @@ tr:hover {
 
                 <div
                     class="gauge-value"
-                    id="suhuValue">
-
+                    id="suhuValue"
+                >
                     --
-
                 </div>
 
-
                 <div class="gauge-unit">
-
                     °C
-
                 </div>
 
             </div>
@@ -638,17 +862,18 @@ tr:hover {
 
     <div
         class="last-update"
-        id="waktuSuhu">
-
+        id="waktuSuhu"
+    >
         Menunggu data...
-
     </div>
 
 </div>
 
 
 
-<!-- ================= KELEMBAPAN UDARA ================= -->
+<!-- =====================================================
+     KELEMBAPAN UDARA
+     ===================================================== -->
 
 <div class="card">
 
@@ -661,12 +886,13 @@ tr:hover {
 
         <div
             class="gauge"
-            id="gaugeUdara">
-
+            id="gaugeUdara"
+        >
 
             <div
                 class="needle"
-                id="needleUdara">
+                id="needleUdara"
+            >
             </div>
 
 
@@ -674,17 +900,13 @@ tr:hover {
 
                 <div
                     class="gauge-value"
-                    id="udaraValue">
-
+                    id="udaraValue"
+                >
                     --
-
                 </div>
 
-
                 <div class="gauge-unit">
-
                     %
-
                 </div>
 
             </div>
@@ -709,17 +931,18 @@ tr:hover {
 
     <div
         class="last-update"
-        id="waktuUdara">
-
+        id="waktuUdara"
+    >
         Menunggu data...
-
     </div>
 
 </div>
 
 
 
-<!-- ================= KELEMBAPAN PADATAN ================ -->
+<!-- =====================================================
+     KELEMBAPAN PADATAN
+     ===================================================== -->
 
 <div class="card">
 
@@ -732,12 +955,13 @@ tr:hover {
 
         <div
             class="gauge"
-            id="gaugePadatan">
-
+            id="gaugePadatan"
+        >
 
             <div
                 class="needle"
-                id="needlePadatan">
+                id="needlePadatan"
+            >
             </div>
 
 
@@ -745,17 +969,13 @@ tr:hover {
 
                 <div
                     class="gauge-value"
-                    id="padatanValue">
-
+                    id="padatanValue"
+                >
                     --
-
                 </div>
 
-
                 <div class="gauge-unit">
-
                     %
-
                 </div>
 
             </div>
@@ -780,10 +1000,9 @@ tr:hover {
 
     <div
         class="last-update"
-        id="waktuPadatan">
-
+        id="waktuPadatan"
+    >
         Menunggu data...
-
     </div>
 
 </div>
@@ -804,10 +1023,72 @@ tr:hover {
     </h2>
 
 
+    <div class="chart-control">
+
+        <div>
+
+            <label
+                for="periodeGrafik"
+            >
+                Periode Grafik:
+            </label>
+
+
+            <select
+                id="periodeGrafik"
+            >
+
+                <option value="1">
+                    1 Jam
+                </option>
+
+                <option value="6">
+                    6 Jam
+                </option>
+
+                <option value="12">
+                    12 Jam
+                </option>
+
+                <option
+                    value="24"
+                    selected
+                >
+                    1 Hari
+                </option>
+
+                <option value="168">
+                    7 Hari
+                </option>
+
+                <option value="720">
+                    30 Hari
+                </option>
+
+                <option value="all">
+                    Semua Data
+                </option>
+
+            </select>
+
+        </div>
+
+
+        <div
+            class="chart-info"
+            id="chartInfo"
+        >
+            Memuat grafik...
+        </div>
+
+    </div>
+
+
     <div class="chart-container">
 
         <canvas
-            id="sensorChart">
+            id="sensorChart"
+        >
         </canvas>
 
     </div>
@@ -817,7 +1098,7 @@ tr:hover {
 
 
 <!-- =====================================================
-     TABEL
+     TABEL RIWAYAT
      ===================================================== -->
 
 <div class="table-card">
@@ -825,6 +1106,18 @@ tr:hover {
     <h2>
         Riwayat Data Sensor
     </h2>
+
+
+    <div class="table-top">
+
+        <div
+            class="table-info"
+            id="tableInfo"
+        >
+            Memuat data...
+        </div>
+
+    </div>
 
 
     <div class="table-wrapper">
@@ -865,11 +1158,19 @@ tr:hover {
 
 
             <tbody
-                id="dataTable">
+                id="dataTable"
+            >
             </tbody>
 
         </table>
 
+    </div>
+
+
+    <div
+        class="pagination"
+        id="pagination"
+    >
     </div>
 
 </div>
@@ -898,18 +1199,18 @@ from
 
 
 const SUPABASE_URL =
-"https://dbodgclttbalohgpanpk.supabase.co";
+    "https://dbodgclttbalohgpanpk.supabase.co";
 
 
 const SUPABASE_KEY =
-"sb_publishable_0b3vY7OTUEoI5nyM0wmvVQ_V0CUS4HA";
+    "sb_publishable_0b3vY7OTUEoI5nyM0wmvVQ_V0CUS4HA";
 
 
 const supabase =
-createClient(
-    SUPABASE_URL,
-    SUPABASE_KEY
-);
+    createClient(
+        SUPABASE_URL,
+        SUPABASE_KEY
+    );
 
 
 
@@ -918,33 +1219,53 @@ createClient(
    ===================================================== */
 
 const VOLUME_MAX =
-54000;
+    54000;
 
 
 const SUHU_MAX =
-50;
+    50;
 
 
-const PERSEN_MAX =
-100;
+const DATA_PER_PAGE =
+    50;
 
 
 /*
-   Website mengecek database
-   setiap 10 detik sebagai
-   cadangan Realtime.
+   Polling cadangan:
+
+   60 detik.
 */
 
 const POLLING_INTERVAL =
-10000;
+    60000;
 
 
 
 /* =====================================================
-   FUNGSI MENCARI ELEMENT
+   VARIABEL
    ===================================================== */
 
-function el(id) {
+let halamanSekarang =
+    1;
+
+
+let totalData =
+    0;
+
+
+let dataGrafik =
+    [];
+
+
+let chart =
+    null;
+
+
+/* =====================================================
+   HELPER ELEMENT
+   ===================================================== */
+
+function $(id) {
 
     return document.getElementById(id);
 
@@ -953,7 +1274,7 @@ function el(id) {
 
 
 /* =====================================================
-   FORMAT ANGKA
+   KONVERSI ANGKA
    ===================================================== */
 
 function angka(
@@ -987,23 +1308,23 @@ function angka(
    ===================================================== */
 
 function formatWaktu(
-    waktu
+    value
 ) {
 
-    if (!waktu) {
+    if (!value) {
 
         return "-";
 
     }
 
 
-    const d =
-        new Date(waktu);
+    const date =
+        new Date(value);
 
 
     if (
         isNaN(
-            d.getTime()
+            date.getTime()
         )
     ) {
 
@@ -1012,7 +1333,7 @@ function formatWaktu(
     }
 
 
-    return d.toLocaleString(
+    return date.toLocaleString(
         "id-ID",
         {
 
@@ -1048,41 +1369,26 @@ function formatWaktu(
    GAUGE
    ===================================================== */
 
-function setGauge(
+function updateGauge(
     gaugeId,
     needleId,
     value,
-    min,
-    max
+    minimum,
+    maximum
 ) {
 
-
     const gauge =
-        el(gaugeId);
+        $(gaugeId);
 
 
     const needle =
-        el(needleId);
+        $(needleId);
 
-
-    /*
-       Pengaman.
-
-       Kalau element tidak ditemukan,
-       fungsi tidak akan membuat
-       JavaScript berhenti.
-    */
 
     if (
         !gauge ||
         !needle
     ) {
-
-        console.warn(
-            "Gauge tidak ditemukan:",
-            gaugeId,
-            needleId
-        );
 
         return;
 
@@ -1091,49 +1397,40 @@ function setGauge(
 
     let persen =
         (
-            (value - min) /
-            (max - min)
-        ) * 100;
+            value -
+            minimum
+        )
+        /
+        (
+            maximum -
+            minimum
+        );
 
 
     persen =
         Math.max(
             0,
             Math.min(
-                100,
+                1,
                 persen
             )
         );
 
 
-    /*
-       Gauge memiliki
-       270 derajat.
-    */
-
-    const progress =
-        (
-            persen /
-            100
-        ) * 270;
+    const derajat =
+        persen *
+        270;
 
 
     gauge.style.setProperty(
         "--progress",
-        progress + "deg"
+        derajat + "deg"
     );
 
 
-    /*
-       Posisi jarum.
-    */
-
-    const angle =
+    const jarum =
         225 +
-        (
-            persen *
-            2.7
-        );
+        derajat;
 
 
     needle.style.transform =
@@ -1142,7 +1439,7 @@ function setGauge(
             -100%
         )
         rotate(
-            ${angle}deg
+            ${jarum}deg
         )`;
 
 }
@@ -1150,20 +1447,18 @@ function setGauge(
 
 
 /* =====================================================
-   UPDATE DISPLAY
+   UPDATE GAUGE TERBARU
    ===================================================== */
 
 function updateDisplay(
-    sensor
+    data
 ) {
 
-
-    if (!sensor) {
+    if (!data) {
 
         return;
 
     }
-
 
 
     /* =================================================
@@ -1172,7 +1467,7 @@ function updateDisplay(
 
     let volume =
         angka(
-            sensor[
+            data[
                 "Volume (cm3)"
             ],
             0
@@ -1182,7 +1477,6 @@ function updateDisplay(
     if (
         volume !== null
     ) {
-
 
         volume =
             Math.max(
@@ -1194,15 +1488,13 @@ function updateDisplay(
             );
 
 
-        const volumeElement =
-            el("volumeValue");
+        const element =
+            $("volumeValue");
 
 
-        if (
-            volumeElement
-        ) {
+        if (element) {
 
-            volumeElement.textContent =
+            element.textContent =
                 volume.toLocaleString(
                     "id-ID"
                 );
@@ -1210,7 +1502,7 @@ function updateDisplay(
         }
 
 
-        setGauge(
+        updateGauge(
             "gaugeVolume",
             "needleVolume",
             volume,
@@ -1228,7 +1520,7 @@ function updateDisplay(
 
     const suhu =
         angka(
-            sensor[
+            data[
                 "Suhu (°C)"
             ],
             1
@@ -1239,22 +1531,19 @@ function updateDisplay(
         suhu !== null
     ) {
 
+        const element =
+            $("suhuValue");
 
-        const suhuElement =
-            el("suhuValue");
 
+        if (element) {
 
-        if (
-            suhuElement
-        ) {
-
-            suhuElement.textContent =
+            element.textContent =
                 suhu.toFixed(1);
 
         }
 
 
-        setGauge(
+        updateGauge(
             "gaugeSuhu",
             "needleSuhu",
             suhu,
@@ -1272,7 +1561,7 @@ function updateDisplay(
 
     const udara =
         angka(
-            sensor[
+            data[
                 "Kelembapan Udara (%)"
             ],
             1
@@ -1283,27 +1572,24 @@ function updateDisplay(
         udara !== null
     ) {
 
+        const element =
+            $("udaraValue");
 
-        const udaraElement =
-            el("udaraValue");
 
+        if (element) {
 
-        if (
-            udaraElement
-        ) {
-
-            udaraElement.textContent =
+            element.textContent =
                 udara.toFixed(1);
 
         }
 
 
-        setGauge(
+        updateGauge(
             "gaugeUdara",
             "needleUdara",
             udara,
             0,
-            PERSEN_MAX
+            100
         );
 
     }
@@ -1316,7 +1602,7 @@ function updateDisplay(
 
     const padatan =
         angka(
-            sensor[
+            data[
                 "Kelembapan Padatan (%)"
             ],
             0
@@ -1327,27 +1613,24 @@ function updateDisplay(
         padatan !== null
     ) {
 
+        const element =
+            $("padatanValue");
 
-        const padatanElement =
-            el("padatanValue");
 
+        if (element) {
 
-        if (
-            padatanElement
-        ) {
-
-            padatanElement.textContent =
+            element.textContent =
                 padatan.toFixed(0);
 
         }
 
 
-        setGauge(
+        updateGauge(
             "gaugePadatan",
             "needlePadatan",
             padatan,
             0,
-            PERSEN_MAX
+            100
         );
 
     }
@@ -1358,36 +1641,30 @@ function updateDisplay(
        WAKTU
        ================================================= */
 
-    const waktu =
+    const teksWaktu =
         "Update: " +
         formatWaktu(
-            sensor["Waktu"]
+            data["Waktu"]
         );
 
 
-    const waktuIds = [
-
+    [
         "waktuVolume",
         "waktuSuhu",
         "waktuUdara",
         "waktuPadatan"
-
-    ];
-
-
-    waktuIds.forEach(
+    ]
+    .forEach(
         id => {
 
             const element =
-                el(id);
+                $(id);
 
 
-            if (
-                element
-            ) {
+            if (element) {
 
                 element.textContent =
-                    waktu;
+                    teksWaktu;
 
             }
 
@@ -1399,313 +1676,490 @@ function updateDisplay(
 
 
 /* =====================================================
-   CHART
+   BUAT CHART
    ===================================================== */
 
-const canvas =
-    el("sensorChart");
+function buatChart() {
+
+    const canvas =
+        $("sensorChart");
 
 
-const ctx =
-    canvas.getContext(
-        "2d"
-    );
+    if (!canvas) {
+
+        return;
+
+    }
 
 
-const sensorChart =
-new Chart(
-    ctx,
-    {
-
-        type:
-            "line",
+    const ctx =
+        canvas.getContext(
+            "2d"
+        );
 
 
-        data:
-        {
-
-            labels: [],
-
-
-            datasets:
-            [
-
-                /* =========================
-                   VOLUME
-                   ========================= */
-
-                {
-
-                    label:
-                        "Volume (cm³)",
-
-                    data: [],
-
-                    yAxisID:
-                        "yVolume",
-
-                    borderWidth:
-                        2,
-
-                    tension:
-                        0.25,
-
-                    pointRadius:
-                        3,
-
-                    fill:
-                        false
-
-                },
-
-
-                /* =========================
-                   SUHU
-                   ========================= */
-
-                {
-
-                    label:
-                        "Suhu (°C)",
-
-                    data: [],
-
-                    yAxisID:
-                        "yPersen",
-
-                    borderWidth:
-                        2,
-
-                    tension:
-                        0.25,
-
-                    pointRadius:
-                        3,
-
-                    fill:
-                        false
-
-                },
-
-
-                /* =========================
-                   KELEMBAPAN UDARA
-                   ========================= */
-
-                {
-
-                    label:
-                        "Kelembapan Udara (%)",
-
-                    data: [],
-
-                    yAxisID:
-                        "yPersen",
-
-                    borderWidth:
-                        2,
-
-                    tension:
-                        0.25,
-
-                    pointRadius:
-                        3,
-
-                    fill:
-                        false
-
-                },
-
-
-                /* =========================
-                   KELEMBAPAN PADATAN
-                   ========================= */
-
-                {
-
-                    label:
-                        "Kelembapan padatan (%)",
-
-                    data: [],
-
-                    yAxisID:
-                        "yPersen",
-
-                    borderWidth:
-                        2,
-
-                    tension:
-                        0.25,
-
-                    pointRadius:
-                        3,
-
-                    fill:
-                        false
-
-                }
-
-            ]
-
-        },
-
-
-        options:
-        {
-
-            responsive:
-                true,
-
-            maintainAspectRatio:
-                false,
-
-
-            interaction:
+    chart =
+        new Chart(
+            ctx,
             {
 
-                mode:
-                    "index",
-
-                intersect:
-                    false
-
-            },
+                type:
+                    "line",
 
 
-            plugins:
-            {
-
-                legend:
+                data:
                 {
 
-                    position:
-                        "top"
-
-                }
-
-            },
+                    labels: [],
 
 
-            scales:
-            {
+                    datasets:
+                    [
+
+                        {
+                            label:
+                                "Volume (cm³)",
+
+                            data: [],
+
+                            yAxisID:
+                                "volumeAxis",
+
+                            borderWidth:
+                                2,
+
+                            tension:
+                                0.25,
+
+                            pointRadius:
+                                2,
+
+                            fill:
+                                false
+                        },
 
 
-                /* =========================
-                   SUMBU X
-                   ========================= */
+                        {
+                            label:
+                                "Suhu (°C)",
 
-                x:
-                {
+                            data: [],
 
-                    title:
-                    {
+                            yAxisID:
+                                "persenAxis",
 
-                        display:
-                            true,
+                            borderWidth:
+                                2,
 
-                        text:
-                            "Data ke-"
+                            tension:
+                                0.25,
 
-                    }
+                            pointRadius:
+                                2,
+
+                            fill:
+                                false
+                        },
+
+
+                        {
+                            label:
+                                "Kelembapan Udara (%)",
+
+                            data: [],
+
+                            yAxisID:
+                                "persenAxis",
+
+                            borderWidth:
+                                2,
+
+                            tension:
+                                0.25,
+
+                            pointRadius:
+                                2,
+
+                            fill:
+                                false
+                        },
+
+
+                        {
+                            label:
+                                "Kelembapan Padatan (%)",
+
+                            data: [],
+
+                            yAxisID:
+                                "persenAxis",
+
+                            borderWidth:
+                                2,
+
+                            tension:
+                                0.25,
+
+                            pointRadius:
+                                2,
+
+                            fill:
+                                false
+                        }
+
+                    ]
 
                 },
 
 
-                /* =========================
-                   SUMBU Y KIRI
-                   VOLUME
-                   ========================= */
-
-                yVolume:
+                options:
                 {
 
-                    type:
-                        "linear",
+                    responsive:
+                        true,
 
-                    position:
-                        "left",
+                    maintainAspectRatio:
+                        false,
 
-                    min:
-                        0,
 
-                    max:
-                        54000,
-
-                    title:
+                    interaction:
                     {
 
-                        display:
-                            true,
+                        mode:
+                            "index",
 
-                        text:
-                            "Volume (cm³)"
-
-                    }
-
-                },
-
-
-                /* =========================
-                   SUMBU Y KANAN
-                   ========================= */
-
-                yPersen:
-                {
-
-                    type:
-                        "linear",
-
-                    position:
-                        "right",
-
-                    min:
-                        0,
-
-                    max:
-                        100,
-
-                    title:
-                    {
-
-                        display:
-                            true,
-
-                        text:
-                            "Suhu / Kelembapan (%)"
+                        intersect:
+                            false
 
                     },
 
 
-                    grid:
+                    plugins:
                     {
 
-                        drawOnChartArea:
-                            false
+                        legend:
+                        {
+
+                            position:
+                                "top"
+
+                        }
+
+                    },
+
+
+                    scales:
+                    {
+
+                        x:
+                        {
+
+                            title:
+                            {
+
+                                display:
+                                    true,
+
+                                text:
+                                    "Waktu"
+
+                            }
+
+                        },
+
+
+                        volumeAxis:
+                        {
+
+                            type:
+                                "linear",
+
+                            position:
+                                "left",
+
+                            min:
+                                0,
+
+                            max:
+                                54000,
+
+                            title:
+                            {
+
+                                display:
+                                    true,
+
+                                text:
+                                    "Volume (cm³)"
+
+                            }
+
+                        },
+
+
+                        persenAxis:
+                        {
+
+                            type:
+                                "linear",
+
+                            position:
+                                "right",
+
+                            min:
+                                0,
+
+                            max:
+                                100,
+
+                            title:
+                            {
+
+                                display:
+                                    true,
+
+                                text:
+                                    "Suhu / Kelembapan (%)"
+
+                            },
+
+
+                            grid:
+                            {
+
+                                drawOnChartArea:
+                                    false
+
+                            }
+
+                        }
 
                     }
 
                 }
 
             }
+        );
 
-        }
-
-    }
-);
+}
 
 
 
 /* =====================================================
-   UPDATE GRAFIK
+   AMBIL DATA GRAFIK
+   ===================================================== */
+
+async function ambilDataGrafik()
+{
+
+    const pilihan =
+        $("periodeGrafik").value;
+
+
+    let data =
+        [];
+
+
+    /*
+       Jika "Semua Data",
+       ambil secara bertahap
+       1000 baris per request.
+    */
+
+    if (
+        pilihan === "all"
+    ) {
+
+        let mulai =
+            0;
+
+
+        const ukuran =
+            1000;
+
+
+        while (true) {
+
+            const {
+                data: batch,
+                error
+            } =
+            await supabase
+
+                .from(
+                    "Data_Sensor"
+                )
+
+                .select(
+                    "*"
+                )
+
+                .order(
+                    "No",
+                    {
+                        ascending:
+                            true
+                    }
+                )
+
+                .range(
+                    mulai,
+                    mulai +
+                    ukuran -
+                    1
+                );
+
+
+            if (error) {
+
+                console.error(
+                    "Error grafik:",
+                    error
+                );
+
+                break;
+
+            }
+
+
+            if (
+                !batch ||
+                batch.length === 0
+            ) {
+
+                break;
+
+            }
+
+
+            data =
+                data.concat(
+                    batch
+                );
+
+
+            if (
+                batch.length <
+                ukuran
+            ) {
+
+                break;
+
+            }
+
+
+            mulai +=
+                ukuran;
+
+        }
+
+    }
+
+    else {
+
+        /*
+           Periode dalam jam.
+        */
+
+        const jam =
+            Number(
+                pilihan
+            );
+
+
+        const sejak =
+            new Date(
+                Date.now() -
+                (
+                    jam *
+                    60 *
+                    60 *
+                    1000
+                )
+            )
+            .toISOString();
+
+
+        const {
+            data: hasil,
+            error
+        } =
+        await supabase
+
+            .from(
+                "Data_Sensor"
+            )
+
+            .select(
+                "*"
+            )
+
+            .gte(
+                "Waktu",
+                sejak
+            )
+
+            .order(
+                "No",
+                {
+                    ascending:
+                        true
+                }
+            );
+
+
+        if (error) {
+
+            console.error(
+                "Error grafik:",
+                error
+            );
+
+            return;
+
+        }
+
+
+        data =
+            hasil || [];
+
+    }
+
+
+    dataGrafik =
+        data;
+
+
+    updateChart(
+        data
+    );
+
+
+    const info =
+        $("chartInfo");
+
+
+    if (info) {
+
+        info.textContent =
+            `Menampilkan ${data.length.toLocaleString("id-ID")} data`;
+
+    }
+
+}
+
+
+
+/* =====================================================
+   UPDATE CHART
    ===================================================== */
 
 function updateChart(
     data
 ) {
 
-
     if (
-        !Array.isArray(data)
+        !chart
     ) {
 
         return;
@@ -1713,15 +2167,12 @@ function updateChart(
     }
 
 
-    /*
-       Urutkan berdasarkan No.
-    */
-
     const sorted =
         [
             ...data
-        ].sort(
-            (a,b) =>
+        ]
+        .sort(
+            (a, b) =>
                 Number(
                     a.No || 0
                 )
@@ -1732,28 +2183,16 @@ function updateChart(
         );
 
 
-    /*
-       Label X.
-    */
-
-    sensorChart
-        .data
-        .labels =
+    chart.data.labels =
         sorted.map(
-            (row,index) =>
-                row.No ??
-                (index + 1)
+            row =>
+                formatWaktu(
+                    row["Waktu"]
+                )
         );
 
 
-    /*
-       Volume.
-    */
-
-    sensorChart
-        .data
-        .datasets[0]
-        .data =
+    chart.data.datasets[0].data =
         sorted.map(
             row =>
                 angka(
@@ -1765,14 +2204,7 @@ function updateChart(
         );
 
 
-    /*
-       Suhu.
-    */
-
-    sensorChart
-        .data
-        .datasets[1]
-        .data =
+    chart.data.datasets[1].data =
         sorted.map(
             row =>
                 angka(
@@ -1784,14 +2216,7 @@ function updateChart(
         );
 
 
-    /*
-       Kelembapan udara.
-    */
-
-    sensorChart
-        .data
-        .datasets[2]
-        .data =
+    chart.data.datasets[2].data =
         sorted.map(
             row =>
                 angka(
@@ -1803,14 +2228,7 @@ function updateChart(
         );
 
 
-    /*
-       Kelembapan padatan.
-    */
-
-    sensorChart
-        .data
-        .datasets[3]
-        .data =
+    chart.data.datasets[3].data =
         sorted.map(
             row =>
                 angka(
@@ -1822,11 +2240,7 @@ function updateChart(
         );
 
 
-    /*
-       Refresh grafik.
-    */
-
-    sensorChart.update(
+    chart.update(
         "none"
     );
 
@@ -1835,16 +2249,97 @@ function updateChart(
 
 
 /* =====================================================
-   UPDATE TABEL
+   AMBIL DATA TABEL
    ===================================================== */
 
-function updateTable(
+async function ambilDataTabel()
+{
+
+    const mulai =
+        (
+            halamanSekarang -
+            1
+        )
+        *
+        DATA_PER_PAGE;
+
+
+    const sampai =
+        mulai +
+        DATA_PER_PAGE -
+        1;
+
+
+    const {
+        data,
+        error,
+        count
+    } =
+    await supabase
+
+        .from(
+            "Data_Sensor"
+        )
+
+        .select(
+            "*",
+            {
+                count:
+                    "exact"
+            }
+        )
+
+        .order(
+            "No",
+            {
+                ascending:
+                    true
+            }
+        )
+
+        .range(
+            mulai,
+            sampai
+        );
+
+
+    if (error) {
+
+        console.error(
+            "Error tabel:",
+            error
+        );
+
+        return;
+
+    }
+
+
+    totalData =
+        count || 0;
+
+
+    tampilkanTabel(
+        data || []
+    );
+
+
+    tampilkanPagination();
+
+}
+
+
+
+/* =====================================================
+   TAMPILKAN TABEL
+   ===================================================== */
+
+function tampilkanTabel(
     data
 ) {
 
-
     const table =
-        el("dataTable");
+        $("dataTable");
 
 
     if (!table) {
@@ -1858,18 +2353,8 @@ function updateTable(
         "";
 
 
-    if (
-        !Array.isArray(data)
-    ) {
-
-        return;
-
-    }
-
-
     data.forEach(
         row => {
-
 
             const tr =
                 document.createElement(
@@ -1921,50 +2406,50 @@ function updateTable(
 
                 <td>
                     ${formatWaktu(
-                        row["Waktu"]
+                        row.Waktu
                     )}
                 </td>
 
                 <td>
                     ${
-                        volume !== null
+                        volume === null
                         ?
+                        "-"
+                        :
                         volume.toLocaleString(
                             "id-ID"
                         )
-                        :
-                        "-"
                     }
                 </td>
 
                 <td>
                     ${
-                        suhu !== null
+                        suhu === null
                         ?
+                        "-"
+                        :
                         suhu.toFixed(1)
-                        :
-                        "-"
-                    } °C
+                    }
                 </td>
 
                 <td>
                     ${
-                        udara !== null
+                        udara === null
                         ?
+                        "-"
+                        :
                         udara.toFixed(1)
-                        :
-                        "-"
-                    } %
+                    }
                 </td>
 
                 <td>
                     ${
-                        padatan !== null
+                        padatan === null
                         ?
-                        padatan.toFixed(0)
-                        :
                         "-"
-                    } %
+                        :
+                        padatan.toFixed(0)
+                    }
                 </td>
 
             `;
@@ -1977,22 +2462,81 @@ function updateTable(
         }
     );
 
+
+    const awal =
+        totalData === 0
+        ?
+        0
+        :
+        (
+            (
+                halamanSekarang -
+                1
+            )
+            *
+            DATA_PER_PAGE
+        )
+        + 1;
+
+
+    const akhir =
+        Math.min(
+            halamanSekarang *
+            DATA_PER_PAGE,
+            totalData
+        );
+
+
+    const info =
+        $("tableInfo");
+
+
+    if (info) {
+
+        info.textContent =
+            totalData === 0
+            ?
+            "Belum ada data"
+            :
+            `Menampilkan ${awal.toLocaleString("id-ID")}–${akhir.toLocaleString("id-ID")} dari ${totalData.toLocaleString("id-ID")} data`;
+
+    }
+
 }
 
 
 
 /* =====================================================
-   PROSES DATA
+   PAGINATION
    ===================================================== */
 
-function prosesData(
-    data
-) {
+function tampilkanPagination()
+{
+
+    const pagination =
+        $("pagination");
+
+
+    if (!pagination) {
+
+        return;
+
+    }
+
+
+    pagination.innerHTML =
+        "";
+
+
+    const totalHalaman =
+        Math.ceil(
+            totalData /
+            DATA_PER_PAGE
+        );
 
 
     if (
-        !Array.isArray(data) ||
-        data.length === 0
+        totalHalaman <= 1
     ) {
 
         return;
@@ -2001,53 +2545,205 @@ function prosesData(
 
 
     /*
-       Data terbaru
-       berada paling atas.
+       Tombol sebelumnya.
     */
 
-    const sorted =
-        [
-            ...data
-        ].sort(
-            (a,b) =>
-                Number(
-                    b.No || 0
-                )
-                -
-                Number(
-                    a.No || 0
-                )
+    const sebelumnya =
+        document.createElement(
+            "button"
         );
 
 
-    const terbaru =
-        sorted[0];
+    sebelumnya.textContent =
+        "← Sebelumnya";
 
 
-    /*
-       Update gauge.
-    */
+    sebelumnya.disabled =
+        halamanSekarang <= 1;
 
-    updateDisplay(
-        terbaru
+
+    sebelumnya.onclick =
+        () => {
+
+            if (
+                halamanSekarang >
+                1
+            ) {
+
+                halamanSekarang--;
+
+                ambilDataTabel();
+
+                window.scrollTo(
+                    {
+                        top:
+                            document.querySelector(
+                                ".table-card"
+                            ).offsetTop,
+
+                        behavior:
+                            "smooth"
+                    }
+                );
+
+            }
+
+        };
+
+
+    pagination.appendChild(
+        sebelumnya
     );
 
 
-    /*
-       Update tabel.
-    */
-
-    updateTable(
-        sorted
-    );
-
 
     /*
-       Update grafik.
+       Tentukan halaman
+       yang ditampilkan.
     */
 
-    updateChart(
-        data
+    let mulai =
+        Math.max(
+            1,
+            halamanSekarang -
+            2
+        );
+
+
+    let akhir =
+        Math.min(
+            totalHalaman,
+            halamanSekarang +
+            2
+        );
+
+
+    if (
+        halamanSekarang <= 3
+    ) {
+
+        akhir =
+            Math.min(
+                5,
+                totalHalaman
+            );
+
+    }
+
+
+    if (
+        halamanSekarang >
+        totalHalaman -
+        2
+    ) {
+
+        mulai =
+            Math.max(
+                1,
+                totalHalaman -
+                4
+            );
+
+    }
+
+
+    for (
+        let i = mulai;
+        i <= akhir;
+        i++
+    ) {
+
+        const button =
+            document.createElement(
+                "button"
+            );
+
+
+        button.textContent =
+            i;
+
+
+        if (
+            i ===
+            halamanSekarang
+        ) {
+
+            button.classList.add(
+                "active"
+            );
+
+        }
+
+
+        button.onclick =
+            () => {
+
+                halamanSekarang =
+                    i;
+
+                ambilDataTabel();
+
+            };
+
+
+        pagination.appendChild(
+            button
+        );
+
+    }
+
+
+
+    /*
+       Tombol berikutnya.
+    */
+
+    const berikutnya =
+        document.createElement(
+            "button"
+        );
+
+
+    berikutnya.textContent =
+        "Berikutnya →";
+
+
+    berikutnya.disabled =
+        halamanSekarang >=
+        totalHalaman;
+
+
+    berikutnya.onclick =
+        () => {
+
+            if (
+                halamanSekarang <
+                totalHalaman
+            ) {
+
+                halamanSekarang++;
+
+                ambilDataTabel();
+
+                window.scrollTo(
+                    {
+                        top:
+                            document.querySelector(
+                                ".table-card"
+                            ).offsetTop,
+
+                        behavior:
+                            "smooth"
+                    }
+                );
+
+            }
+
+        };
+
+
+    pagination.appendChild(
+        berikutnya
     );
 
 }
@@ -2055,109 +2751,94 @@ function prosesData(
 
 
 /* =====================================================
-   AMBIL DATA DARI SUPABASE
+   UPDATE SEMUA
    ===================================================== */
 
-async function ambilData()
+async function updateSemua()
 {
 
     console.log(
-        "Mengambil data dari Supabase..."
+        "Mengambil data..."
     );
 
 
-    const {
-        data,
-        error
-    } =
-    await supabase
+    try {
 
-        .from(
-            "Data_Sensor"
-        )
+        /*
+           Ambil satu data
+           terbaru untuk gauge.
+        */
 
-        .select("*")
-
-        .order(
-            "No",
-            {
-                ascending:
-                    false
-            }
-        );
-
-
-    /*
-       Jika error.
-    */
-
-    if (
-        error
-    ) {
-
-
-        console.error(
-            "Supabase error:",
+        const {
+            data: terbaru,
             error
-        );
+        } =
+        await supabase
+
+            .from(
+                "Data_Sensor"
+            )
+
+            .select(
+                "*"
+            )
+
+            .order(
+                "No",
+                {
+                    ascending:
+                        false
+                }
+            )
+
+            .limit(
+                1
+            );
 
 
-        const status =
-            el("status");
+        if (error) {
 
-
-        const dot =
-            el("statusDot");
-
-
-        if (status) {
-
-            status.textContent =
-                "Gagal membaca database";
+            throw error;
 
         }
 
 
-        if (dot) {
+        if (
+            terbaru &&
+            terbaru.length > 0
+        ) {
 
-            dot.style.background =
-                "#ef4444";
+            updateDisplay(
+                terbaru[0]
+            );
 
         }
 
 
-        return;
+        /*
+           Update tabel.
+        */
 
-    }
-
-
-    console.log(
-        "Jumlah data:",
-        data?.length || 0
-    );
+        await ambilDataTabel();
 
 
-    /*
-       Jika ada data.
-    */
+        /*
+           Update grafik.
+        */
 
-    if (
-        data &&
-        data.length > 0
-    ) {
+        await ambilDataGrafik();
 
 
-        prosesData(
-            data
-        );
-
+        /*
+           Status online.
+        */
 
         const status =
-            el("status");
+            $("status");
 
 
         const dot =
-            el("statusDot");
+            $("statusDot");
 
 
         if (status) {
@@ -2177,103 +2858,173 @@ async function ambilData()
 
     }
 
+    catch (error) {
+
+        console.error(
+            "Gagal mengambil data:",
+            error
+        );
+
+
+        const status =
+            $("status");
+
+
+        const dot =
+            $("statusDot");
+
+
+        if (status) {
+
+            status.textContent =
+                "Gagal membaca database";
+
+        }
+
+
+        if (dot) {
+
+            dot.style.background =
+                "#ef4444";
+
+        }
+
+    }
+
 }
 
 
 
 /* =====================================================
-   SUPABASE REALTIME
+   PERUBAHAN PERIODE GRAFIK
    ===================================================== */
 
-const channel =
-    supabase
+$("periodeGrafik")
+    .addEventListener(
+        "change",
+        () => {
 
-        .channel(
-            "monitoring-realtime-final"
-        )
+            ambilDataGrafik();
 
-        .on(
-
-            "postgres_changes",
-
-            {
-
-                event:
-                    "INSERT",
-
-                schema:
-                    "public",
-
-                table:
-                    "Data_Sensor"
-
-            },
+        }
+    );
 
 
-            async payload => {
+
+/* =====================================================
+   REALTIME SUPABASE
+   ===================================================== */
+
+supabase
+
+    .channel(
+        "monitoring-realtime-final"
+    )
+
+    .on(
+
+        "postgres_changes",
+
+        {
+
+            event:
+                "INSERT",
+
+            schema:
+                "public",
+
+            table:
+                "Data_Sensor"
+
+        },
+
+        async payload => {
+
+            console.log(
+                "Data baru:",
+                payload.new
+            );
 
 
-                console.log(
-                    "Data baru:",
-                    payload.new
-                );
+            /*
+               Gauge langsung berubah.
+            */
+
+            updateDisplay(
+                payload.new
+            );
 
 
-                /*
-                   Update gauge langsung.
-                */
+            /*
+               Kembali ke halaman 1
+               agar data terbaru
+               langsung terlihat.
+            */
 
-                updateDisplay(
-                    payload.new
-                );
-
-
-                /*
-                   Ambil ulang database
-                   agar tabel dan grafik
-                   juga ikut berubah.
-                */
-
-                await ambilData();
-
-            }
-
-        )
+            halamanSekarang =
+                1;
 
 
-        .subscribe(
-            status => {
+            /*
+               Update tabel.
+            */
+
+            await ambilDataTabel();
 
 
-                console.log(
-                    "Realtime:",
-                    status
-                );
+            /*
+               Update grafik
+               sesuai periode
+               yang sedang dipilih.
+            */
+
+            await ambilDataGrafik();
+
+        }
+
+    )
+
+    .subscribe(
+        status => {
+
+            console.log(
+                "Realtime:",
+                status
+            );
 
 
-                if (
-                    status ===
-                    "SUBSCRIBED"
-                ) {
+            const statusElement =
+                $("status");
 
 
-                    const statusElement =
-                        el("status");
+            const dot =
+                $("statusDot");
 
 
-                    if (
-                        statusElement
-                    ) {
+            if (
+                status ===
+                "SUBSCRIBED"
+            ) {
 
-                        statusElement.textContent =
-                            "● ONLINE • REALTIME";
+                if (statusElement) {
 
-                    }
+                    statusElement.textContent =
+                        "● ONLINE • REALTIME";
+
+                }
+
+
+                if (dot) {
+
+                    dot.style.background =
+                        "#22c55e";
 
                 }
 
             }
-        );
+
+        }
+    );
 
 
 
@@ -2281,37 +3032,30 @@ const channel =
    POLLING CADANGAN
    ===================================================== */
 
-/*
-   Setiap 10 detik website
-   mengecek database.
-
-   Jadi jika Realtime terputus,
-   website masih dapat
-   memperbarui data.
-*/
-
 setInterval(
-
     () => {
 
-        ambilData();
+        updateSemua();
 
     },
-
     POLLING_INTERVAL
-
 );
 
 
 
 /* =====================================================
-   JALANKAN PERTAMA KALI
+   INISIALISASI
    ===================================================== */
 
-ambilData();
+buatChart();
+
+
+updateSemua();
 
 
 </script>
 
+
 </body>
+
 </html>
