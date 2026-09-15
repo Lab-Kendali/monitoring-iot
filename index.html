@@ -715,7 +715,8 @@ tr:hover {
 }
 
 
-KONTROL MOTOR
+/* =====================================================
+   KONTROL MOTOR AUTO / MANUAL
    ===================================================== */
 .motor-control-card {
     margin-top: 30px;
@@ -724,84 +725,21 @@ KONTROL MOTOR
     padding: 25px;
     box-shadow: 0 8px 25px rgba(0,0,0,0.08);
 }
-
-.motor-control-card h2 {
-    margin: 0 0 18px;
-    font-size: 20px;
-}
-
-.motor-control-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 18px;
-}
-
-.motor-panel {
-    border: 1px solid #e5e7eb;
-    border-radius: 14px;
-    padding: 18px;
-}
-
-.motor-panel-title {
-    font-weight: bold;
-    margin-bottom: 12px;
-}
-
-.motor-select,
-.motor-button {
-    width: 100%;
-    padding: 11px 14px;
-    border-radius: 9px;
-    font-size: 14px;
-    cursor: pointer;
-}
-
-.motor-select {
-    border: 1px solid #d1d5db;
-    background: white;
-}
-
-.motor-button {
-    border: none;
-    font-weight: bold;
-    color: white;
-    margin-top: 10px;
-}
-
-.motor-button-on { background: #22c55e; }
+.motor-control-card h2 { margin: 0 0 18px; font-size: 20px; }
+.motor-control-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+.motor-panel { border: 1px solid #e5e7eb; border-radius: 14px; padding: 18px; }
+.motor-panel-title { font-weight: bold; margin-bottom: 12px; }
+.motor-select, .motor-button { width: 100%; padding: 11px 14px; border-radius: 9px; font-size: 14px; cursor: pointer; }
+.motor-select { border: 1px solid #d1d5db; background: white; }
+.motor-button { border: none; font-weight: bold; color: white; margin-top: 10px; }
+.motor-button-start, .motor-button-on { background: #22c55e; }
 .motor-button-off { background: #ef4444; }
 .motor-button:disabled { opacity: .5; cursor: not-allowed; }
-
-.motor-status {
-    margin-top: 14px;
-    padding: 12px;
-    border-radius: 10px;
-    background: #f3f4f6;
-    font-weight: bold;
-    text-align: center;
-}
-
-.motor-status.on {
-    background: #dcfce7;
-    color: #166534;
-}
-
-.motor-status.off {
-    background: #fee2e2;
-    color: #991b1b;
-}
-
-.motor-note {
-    margin-top: 10px;
-    color: #6b7280;
-    font-size: 13px;
-}
-
-@media(max-width:700px) {
-    .motor-control-grid {
-        grid-template-columns: 1fr;
-    }
-}
+.motor-status { margin-top: 14px; padding: 12px; border-radius: 10px; background: #f3f4f6; font-weight: bold; text-align: center; }
+.motor-status.on { background: #dcfce7; color: #166534; }
+.motor-status.off { background: #fee2e2; color: #991b1b; }
+.motor-note { margin-top: 10px; color: #6b7280; font-size: 13px; }
+@media(max-width:700px) { .motor-control-grid { grid-template-columns: 1fr; } }
 
 </style>
 
@@ -1138,23 +1076,20 @@ KONTROL MOTOR
 
 
 
-<!-- ===================KONTROL MOTOR
+<!-- =====================================================
+     KONTROL MOTOR
      ===================================================== -->
 <div class="motor-control-card">
     <h2>Kontrol Motor</h2>
-
     <div class="motor-control-grid">
-
         <div class="motor-panel">
             <div class="motor-panel-title">Mode Kontrol</div>
-
             <select id="motorMode" class="motor-select">
                 <option value="AUTO">AUTO</option>
                 <option value="MANUAL">MANUAL</option>
             </select>
-
-            <div id="autoDurationPanel" class="motor-note">
-                <strong>Durasi AUTO:</strong><br>
+            <div id="autoDurationPanel">
+                <div class="motor-panel-title" style="margin-top:14px;">Durasi AUTO</div>
                 <select id="motorDuration" class="motor-select">
                     <option value="1">1 menit</option>
                     <option value="2">2 menit</option>
@@ -1165,42 +1100,22 @@ KONTROL MOTOR
                     <option value="20">20 menit</option>
                     <option value="30">30 menit</option>
                 </select>
-                <button id="motorAutoStartButton" class="motor-button motor-button-on" type="button">
-                    MULAI AUTO
-                </button>
+                <button id="motorAutoStartButton" class="motor-button motor-button-start" type="button">MULAI AUTO</button>
             </div>
-
-            <div class="motor-note">
-                AUTO: motor aktif satu kali sesuai durasi yang dipilih.
-                Setelah durasi selesai, motor otomatis OFF dan tidak mengulang sampai tombol MULAI AUTO ditekan lagi.
-                MANUAL: motor dikendalikan menggunakan tombol ON/OFF.
-            </div>
+            <div class="motor-note">AUTO menjalankan motor satu kali sesuai durasi yang dipilih. Setelah selesai, motor OFF dan tidak mengulang otomatis.</div>
         </div>
-
         <div class="motor-panel">
             <div class="motor-panel-title">Kontrol Manual</div>
-
-            <button id="motorOnButton" class="motor-button motor-button-on" type="button">
-                MOTOR ON
-            </button>
-
-            <button id="motorOffButton" class="motor-button motor-button-off" type="button">
-                MOTOR OFF
-            </button>
-
-            <div id="motorStatus" class="motor-status">
-                Membaca status motor...
-            </div>
+            <button id="motorOnButton" class="motor-button motor-button-on" type="button">MOTOR ON</button>
+            <button id="motorOffButton" class="motor-button motor-button-off" type="button">MOTOR OFF</button>
+            <div id="motorStatus" class="motor-status off">MOTOR OFF</div>
         </div>
-
     </div>
-
-    <div class="motor-note" id="motorControlInfo">
-        Menghubungkan ke kontrol motor...
-    </div>
+    <div class="motor-note" id="motorControlInfo">Membaca status motor...</div>
 </div>
 
-==================================
+
+<!-- =====================================================
      GRAFIK
      ===================================================== -->
 
@@ -3200,6 +3115,215 @@ $("periodeGrafik")
 
 
 /* =====================================================
+   KONTROL MOTOR AUTO / MANUAL
+   ===================================================== */
+
+const MOTOR_TABLE = "Kontrol_Motor";
+const MOTOR_ID = 1;
+const DURASI_MOTOR_VALID = [1, 2, 3, 4, 5, 10, 20, 30];
+
+let kontrolMotor = { mode: "AUTO", status: false, durasi_auto: 1 };
+let motorAutoCountdownTimer = null;
+let motorAutoSisaDetik = 0;
+
+function formatDurasiMotor(totalDetik) {
+    const d = Math.max(0, Math.floor(totalDetik));
+    return `${String(Math.floor(d / 60)).padStart(2,"0")}:${String(d % 60).padStart(2,"0")}`;
+}
+
+function tampilkanKontrolMotor() {
+    const mode = $("motorMode");
+    const duration = $("motorDuration");
+    const status = $("motorStatus");
+    const info = $("motorControlInfo");
+    const on = $("motorOnButton");
+    const off = $("motorOffButton");
+    const start = $("motorAutoStartButton");
+    const panel = $("autoDurationPanel");
+
+    if (mode) mode.value = kontrolMotor.mode;
+    if (duration) duration.value = String(kontrolMotor.durasi_auto);
+    if (status) {
+        status.textContent = kontrolMotor.status ? "MOTOR ON" : "MOTOR OFF";
+        status.classList.toggle("on", kontrolMotor.status);
+        status.classList.toggle("off", !kontrolMotor.status);
+    }
+    const manual = kontrolMotor.mode === "MANUAL";
+    if (on) on.disabled = !manual;
+    if (off) off.disabled = !manual;
+    if (start) start.disabled = manual || kontrolMotor.status;
+    if (duration) duration.disabled = manual || kontrolMotor.status;
+    if (panel) panel.style.display = manual ? "none" : "block";
+
+    if (info) {
+        if (manual) info.textContent = `Mode MANUAL • Motor ${kontrolMotor.status ? "ON" : "OFF"}`;
+        else if (kontrolMotor.status) info.textContent = `Mode AUTO • Motor ON • Sisa ${formatDurasiMotor(motorAutoSisaDetik)}`;
+        else info.textContent = `Mode AUTO • Durasi ${kontrolMotor.durasi_auto} menit • Motor OFF • Siap dijalankan.`;
+    }
+}
+
+function mulaiCountdownMotor() {
+    clearInterval(motorAutoCountdownTimer);
+    motorAutoSisaDetik = kontrolMotor.durasi_auto * 60;
+    tampilkanKontrolMotor();
+
+    motorAutoCountdownTimer = setInterval(async () => {
+        if (!kontrolMotor.status || kontrolMotor.mode !== "AUTO") {
+            clearInterval(motorAutoCountdownTimer);
+            motorAutoCountdownTimer = null;
+            motorAutoSisaDetik = 0;
+            tampilkanKontrolMotor();
+            return;
+        }
+
+        motorAutoSisaDetik--;
+        tampilkanKontrolMotor();
+
+        if (motorAutoSisaDetik <= 0) {
+            clearInterval(motorAutoCountdownTimer);
+            motorAutoCountdownTimer = null;
+            motorAutoSisaDetik = 0;
+
+            // Matikan siklus AUTO di database agar tidak dimulai ulang oleh polling.
+            const { error } = await supabase
+                .from(MOTOR_TABLE)
+                .update({ status: false })
+                .eq("id", MOTOR_ID);
+
+            if (error) console.error("Gagal mematikan AUTO motor:", error);
+            kontrolMotor.status = false;
+            tampilkanKontrolMotor();
+        }
+    }, 1000);
+}
+
+async function ambilKontrolMotor() {
+    const { data, error } = await supabase
+        .from(MOTOR_TABLE)
+        .select("id,mode,status,durasi_auto")
+        .eq("id", MOTOR_ID)
+        .maybeSingle();
+
+    if (error) {
+        console.error("Gagal membaca Kontrol_Motor:", error);
+        const info = $("motorControlInfo");
+        if (info) info.textContent = "Gagal membaca kontrol motor. Periksa tabel/RLS Supabase.";
+        return;
+    }
+
+    if (!data) {
+        const info = $("motorControlInfo");
+        if (info) info.textContent = "Data Kontrol_Motor id=1 belum tersedia.";
+        return;
+    }
+
+    kontrolMotor.mode = String(data.mode || "AUTO").toUpperCase() === "MANUAL" ? "MANUAL" : "AUTO";
+    kontrolMotor.status = Boolean(data.status);
+    const d = Number(data.durasi_auto);
+    kontrolMotor.durasi_auto = DURASI_MOTOR_VALID.includes(d) ? d : 1;
+
+    if (kontrolMotor.status && kontrolMotor.mode === "AUTO") {
+        if (!motorAutoCountdownTimer) mulaiCountdownMotor();
+    } else {
+        clearInterval(motorAutoCountdownTimer);
+        motorAutoCountdownTimer = null;
+        motorAutoSisaDetik = 0;
+    }
+    tampilkanKontrolMotor();
+}
+
+async function ubahModeMotor(mode) {
+    mode = mode === "MANUAL" ? "MANUAL" : "AUTO";
+    const { error } = await supabase.from(MOTOR_TABLE).upsert({
+        id: MOTOR_ID, mode, status: false, durasi_auto: kontrolMotor.durasi_auto
+    }, { onConflict: "id" });
+    if (error) {
+        console.error("Gagal mengubah mode motor:", error);
+        alert("Mode motor gagal diubah. Periksa tabel Kontrol_Motor dan RLS Supabase.");
+        return;
+    }
+    kontrolMotor.mode = mode;
+    kontrolMotor.status = false;
+    clearInterval(motorAutoCountdownTimer);
+    motorAutoCountdownTimer = null;
+    motorAutoSisaDetik = 0;
+    tampilkanKontrolMotor();
+}
+
+async function ubahDurasiMotor(durasi) {
+    durasi = Number(durasi);
+    if (!DURASI_MOTOR_VALID.includes(durasi) || kontrolMotor.status) return;
+    const { error } = await supabase.from(MOTOR_TABLE)
+        .update({ durasi_auto: durasi }).eq("id", MOTOR_ID);
+    if (error) {
+        console.error("Gagal mengubah durasi motor:", error);
+        alert("Durasi AUTO gagal diubah. Periksa tabel/RLS Supabase.");
+        return;
+    }
+    kontrolMotor.durasi_auto = durasi;
+    tampilkanKontrolMotor();
+}
+
+async function mulaiMotorAuto() {
+    if (kontrolMotor.mode !== "AUTO" || kontrolMotor.status) return;
+    const durasi = Number($("motorDuration")?.value || kontrolMotor.durasi_auto);
+    if (!DURASI_MOTOR_VALID.includes(durasi)) return;
+
+    const { error } = await supabase.from(MOTOR_TABLE)
+        .update({ status: true, durasi_auto: durasi }).eq("id", MOTOR_ID);
+    if (error) {
+        console.error("Gagal memulai AUTO motor:", error);
+        alert("Motor AUTO gagal dimulai. Periksa tabel/RLS Supabase.");
+        return;
+    }
+    kontrolMotor.status = true;
+    kontrolMotor.durasi_auto = durasi;
+    mulaiCountdownMotor();
+}
+
+async function ubahStatusMotor(statusBaru) {
+    if (kontrolMotor.mode !== "MANUAL") return;
+    const { error } = await supabase.from(MOTOR_TABLE)
+        .update({ status: Boolean(statusBaru) }).eq("id", MOTOR_ID);
+    if (error) {
+        console.error("Gagal mengubah status motor:", error);
+        alert("Status motor gagal diubah. Periksa RLS Supabase.");
+        return;
+    }
+    kontrolMotor.status = Boolean(statusBaru);
+    tampilkanKontrolMotor();
+}
+
+$("motorMode")?.addEventListener("change", e => ubahModeMotor(e.target.value));
+$("motorDuration")?.addEventListener("change", e => ubahDurasiMotor(e.target.value));
+$("motorAutoStartButton")?.addEventListener("click", mulaiMotorAuto);
+$("motorOnButton")?.addEventListener("click", () => ubahStatusMotor(true));
+$("motorOffButton")?.addEventListener("click", () => ubahStatusMotor(false));
+
+ambilKontrolMotor();
+setInterval(ambilKontrolMotor, 5000);
+
+supabase.channel("kontrol-motor-realtime")
+    .on("postgres_changes", {
+        event: "*", schema: "public", table: MOTOR_TABLE, filter: "id=eq.1"
+    }, payload => {
+        if (!payload.new) return;
+        kontrolMotor.mode = String(payload.new.mode || "AUTO").toUpperCase() === "MANUAL" ? "MANUAL" : "AUTO";
+        kontrolMotor.status = Boolean(payload.new.status);
+        const d = Number(payload.new.durasi_auto);
+        if (DURASI_MOTOR_VALID.includes(d)) kontrolMotor.durasi_auto = d;
+        if (kontrolMotor.status && kontrolMotor.mode === "AUTO") mulaiCountdownMotor();
+        else {
+            clearInterval(motorAutoCountdownTimer);
+            motorAutoCountdownTimer = null;
+            motorAutoSisaDetik = 0;
+        }
+        tampilkanKontrolMotor();
+    })
+    .subscribe(status => console.log("Realtime Kontrol Motor:", status));
+
+
+/* =====================================================
    REALTIME SUPABASE
    ===================================================== */
 
@@ -3276,275 +3400,7 @@ supabase
         status => {
 
             console.log(
-                "/* =====================================================
-   KONTROL MOTOR AUTO / MANUAL
-   ===================================================== */
-
-const MOTOR_TABLE = "Kontrol_Motor";
-const MOTOR_ID = 1;
-const DURASI_MOTOR_VALID = [1, 2, 3, 4, 5, 10, 20, 30];
-
-let kontrolMotor = {
-    mode: "AUTO",
-    status: false,
-    durasi_auto: 1
-};
-
-let motorAutoCountdownTimer = null;
-let motorAutoSisaDetik = 0;
-
-function statusMotorText(status) {
-    return status ? "MOTOR ON" : "MOTOR OFF";
-}
-
-function tampilkanKontrolMotor() {
-    const mode = $("motorMode");
-    const duration = $("motorDuration");
-    const status = $("motorStatus");
-    const info = $("motorControlInfo");
-    const tombolOn = $("motorOnButton");
-    const tombolOff = $("motorOffButton");
-    const tombolStart = $("motorAutoStartButton");
-
-    if (mode) mode.value = kontrolMotor.mode;
-    if (duration) duration.value = String(kontrolMotor.durasi_auto);
-
-    if (status) {
-        status.textContent = statusMotorText(kontrolMotor.status);
-        status.classList.toggle("on", kontrolMotor.status);
-        status.classList.toggle("off", !kontrolMotor.status);
-    }
-
-    const manual = kontrolMotor.mode === "MANUAL";
-    if (tombolOn) tombolOn.disabled = !manual;
-    if (tombolOff) tombolOff.disabled = !manual;
-    if (tombolStart) tombolStart.disabled = manual || kontrolMotor.status;
-
-    const durationPanel = $("autoDurationPanel");
-    if (durationPanel) durationPanel.style.display = manual ? "none" : "block";
-
-    if (info) {
-        if (manual) {
-            info.textContent = `Mode MANUAL • Motor ${kontrolMotor.status ? "aktif" : "mati"}`;
-        } else if (kontrolMotor.status) {
-            info.textContent = `Mode AUTO • Motor sedang aktif • Durasi ${kontrolMotor.durasi_auto} menit${motorAutoSisaDetik > 0 ? ` • Sisa ${formatDurasi(motorAutoSisaDetik)}` : ""}`;
-        } else {
-            info.textContent = `Mode AUTO • Durasi ${kontrolMotor.durasi_auto} menit • Motor OFF • Tekan MULAI AUTO untuk menjalankan satu siklus.`;
-        }
-    }
-}
-
-function formatDurasi(totalDetik) {
-    const d = Math.max(0, Math.floor(totalDetik));
-    const menit = Math.floor(d / 60);
-    const detik = d % 60;
-    return `${String(menit).padStart(2, "0")}:${String(detik).padStart(2, "0")}`;
-}
-
-function mulaiCountdownMotor() {
-    clearInterval(motorAutoCountdownTimer);
-    motorAutoSisaDetik = kontrolMotor.durasi_auto * 60;
-
-    motorAutoCountdownTimer = setInterval(() => {
-        if (!kontrolMotor.status || kontrolMotor.mode !== "AUTO") {
-            clearInterval(motorAutoCountdownTimer);
-            motorAutoCountdownTimer = null;
-            motorAutoSisaDetik = 0;
-            tampilkanKontrolMotor();
-            return;
-        }
-
-        motorAutoSisaDetik--;
-        tampilkanKontrolMotor();
-
-        if (motorAutoSisaDetik <= 0) {
-            clearInterval(motorAutoCountdownTimer);
-            motorAutoCountdownTimer = null;
-        }
-    }, 1000);
-}
-
-async function ambilKontrolMotor() {
-    const { data, error } = await supabase
-        .from(MOTOR_TABLE)
-        .select("id,mode,status,durasi_auto")
-        .eq("id", MOTOR_ID)
-        .maybeSingle();
-
-    if (error) {
-        console.error("Gagal membaca Kontrol_Motor:", error);
-        const info = $("motorControlInfo");
-        if (info) info.textContent = "Gagal membaca kontrol motor. Periksa tabel/RLS Supabase.";
-        return;
-    }
-
-    if (data) {
-        kontrolMotor.mode = String(data.mode || "AUTO").toUpperCase() === "MANUAL" ? "MANUAL" : "AUTO";
-        kontrolMotor.status = Boolean(data.status);
-        const d = Number(data.durasi_auto);
-        kontrolMotor.durasi_auto = DURASI_MOTOR_VALID.includes(d) ? d : 1;
-
-        if (kontrolMotor.status && kontrolMotor.mode === "AUTO") {
-            if (!motorAutoCountdownTimer) mulaiCountdownMotor();
-        } else {
-            clearInterval(motorAutoCountdownTimer);
-            motorAutoCountdownTimer = null;
-            motorAutoSisaDetik = 0;
-        }
-
-        tampilkanKontrolMotor();
-    }
-}
-
-async function ubahModeMotor(mode) {
-    mode = mode === "MANUAL" ? "MANUAL" : "AUTO";
-
-    // Saat mengganti mode, motor dimatikan terlebih dahulu.
-    const { error } = await supabase
-        .from(MOTOR_TABLE)
-        .upsert({
-            id: MOTOR_ID,
-            mode: mode,
-            status: false,
-            durasi_auto: kontrolMotor.durasi_auto
-        }, { onConflict: "id" });
-
-    if (error) {
-        console.error("Gagal mengubah mode motor:", error);
-        alert("Mode motor gagal diubah. Periksa tabel Kontrol_Motor dan RLS Supabase.");
-        return;
-    }
-
-    kontrolMotor.mode = mode;
-    kontrolMotor.status = false;
-    clearInterval(motorAutoCountdownTimer);
-    motorAutoCountdownTimer = null;
-    motorAutoSisaDetik = 0;
-    tampilkanKontrolMotor();
-}
-
-async function ubahDurasiMotor(durasi) {
-    durasi = Number(durasi);
-    if (!DURASI_MOTOR_VALID.includes(durasi)) return;
-    if (kontrolMotor.status) return;
-
-    const { error } = await supabase
-        .from(MOTOR_TABLE)
-        .update({ durasi_auto: durasi })
-        .eq("id", MOTOR_ID);
-
-    if (error) {
-        console.error("Gagal mengubah durasi motor:", error);
-        alert("Durasi AUTO gagal diubah. Periksa RLS Supabase.");
-        return;
-    }
-
-    kontrolMotor.durasi_auto = durasi;
-    tampilkanKontrolMotor();
-}
-
-async function mulaiMotorAuto() {
-    if (kontrolMotor.mode !== "AUTO") return;
-    if (kontrolMotor.status) return;
-
-    const durasi = Number($("motorDuration")?.value || kontrolMotor.durasi_auto);
-    if (!DURASI_MOTOR_VALID.includes(durasi)) return;
-
-    const { error } = await supabase
-        .from(MOTOR_TABLE)
-        .update({ status: true, durasi_auto: durasi })
-        .eq("id", MOTOR_ID);
-
-    if (error) {
-        console.error("Gagal memulai AUTO motor:", error);
-        alert("Motor AUTO gagal dimulai. Periksa RLS Supabase.");
-        return;
-    }
-
-    kontrolMotor.status = true;
-    kontrolMotor.durasi_auto = durasi;
-    mulaiCountdownMotor();
-    tampilkanKontrolMotor();
-}
-
-async function ubahStatusMotor(statusBaru) {
-    if (kontrolMotor.mode !== "MANUAL") return;
-
-    const { error } = await supabase
-        .from(MOTOR_TABLE)
-        .update({ status: Boolean(statusBaru) })
-        .eq("id", MOTOR_ID);
-
-    if (error) {
-        console.error("Gagal mengubah status motor:", error);
-        alert("Status motor gagal diubah. Periksa RLS Supabase.");
-        return;
-    }
-
-    kontrolMotor.status = Boolean(statusBaru);
-    tampilkanKontrolMotor();
-}
-
-const motorModeElement = $("motorMode");
-if (motorModeElement) {
-    motorModeElement.addEventListener("change", event => {
-        ubahModeMotor(event.target.value);
-    });
-}
-
-const motorDurationElement = $("motorDuration");
-if (motorDurationElement) {
-    motorDurationElement.addEventListener("change", event => {
-        ubahDurasiMotor(event.target.value);
-    });
-}
-
-const motorAutoStartElement = $("motorAutoStartButton");
-if (motorAutoStartElement) {
-    motorAutoStartElement.addEventListener("click", mulaiMotorAuto);
-}
-
-const motorOnElement = $("motorOnButton");
-if (motorOnElement) motorOnElement.addEventListener("click", () => ubahStatusMotor(true));
-
-const motorOffElement = $("motorOffButton");
-if (motorOffElement) motorOffElement.addEventListener("click", () => ubahStatusMotor(false));
-
-ambilKontrolMotor();
-setInterval(ambilKontrolMotor, 5000);
-
-supabase
-    .channel("kontrol-motor-realtime")
-    .on(
-        "postgres_changes",
-        {
-            event: "*",
-            schema: "public",
-            table: MOTOR_TABLE,
-            filter: "id=eq.1"
-        },
-        payload => {
-            if (payload.new) {
-                kontrolMotor.mode = String(payload.new.mode || "AUTO").toUpperCase() === "MANUAL" ? "MANUAL" : "AUTO";
-                kontrolMotor.status = Boolean(payload.new.status);
-                const d = Number(payload.new.durasi_auto);
-                kontrolMotor.durasi_auto = DURASI_MOTOR_VALID.includes(d) ? d : kontrolMotor.durasi_auto;
-
-                if (kontrolMotor.status && kontrolMotor.mode === "AUTO") mulaiCountdownMotor();
-                else {
-                    clearInterval(motorAutoCountdownTimer);
-                    motorAutoCountdownTimer = null;
-                    motorAutoSisaDetik = 0;
-                }
-                tampilkanKontrolMotor();
-            }
-        }
-    )
-    .subscribe(status => console.log("Realtime Kontrol Motor:", status));
-
-
-
-Realtime:",
+                "Realtime:",
                 status
             );
 
