@@ -714,6 +714,96 @@ tr:hover {
 
 }
 
+
+/* =====================================================
+   KONTROL LED
+   ===================================================== */
+.led-control-card {
+    margin-top: 30px;
+    background: white;
+    border-radius: 20px;
+    padding: 25px;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.08);
+}
+
+.led-control-card h2 {
+    margin: 0 0 18px;
+    font-size: 20px;
+}
+
+.led-control-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 18px;
+}
+
+.led-panel {
+    border: 1px solid #e5e7eb;
+    border-radius: 14px;
+    padding: 18px;
+}
+
+.led-panel-title {
+    font-weight: bold;
+    margin-bottom: 12px;
+}
+
+.led-select,
+.led-button {
+    width: 100%;
+    padding: 11px 14px;
+    border-radius: 9px;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+.led-select {
+    border: 1px solid #d1d5db;
+    background: white;
+}
+
+.led-button {
+    border: none;
+    font-weight: bold;
+    color: white;
+    margin-top: 10px;
+}
+
+.led-button-on { background: #22c55e; }
+.led-button-off { background: #ef4444; }
+.led-button:disabled { opacity: .5; cursor: not-allowed; }
+
+.led-status {
+    margin-top: 14px;
+    padding: 12px;
+    border-radius: 10px;
+    background: #f3f4f6;
+    font-weight: bold;
+    text-align: center;
+}
+
+.led-status.on {
+    background: #dcfce7;
+    color: #166534;
+}
+
+.led-status.off {
+    background: #fee2e2;
+    color: #991b1b;
+}
+
+.led-note {
+    margin-top: 10px;
+    color: #6b7280;
+    font-size: 13px;
+}
+
+@media(max-width:700px) {
+    .led-control-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
 </style>
 
 </head>
@@ -1047,6 +1137,60 @@ tr:hover {
 
 </div>
 
+
+
+<!-- =====================================================
+     KONTROL LED
+     ===================================================== -->
+<div class="led-control-card">
+    <h2>Kontrol LED</h2>
+
+    <div class="led-control-grid">
+
+        <div class="led-panel">
+            <div class="led-panel-title">Mode Kontrol</div>
+
+            <select id="ledMode" class="led-select">
+                <option value="AUTO">AUTO</option>
+                <option value="MANUAL">MANUAL</option>
+            </select>
+
+            <div class="led-note">
+                AUTO: LED aktif pukul 06.00–18.00 WITA.
+                MANUAL: LED dikendalikan menggunakan tombol ON/OFF.
+            </div>
+        </div>
+
+        <div class="led-panel">
+            <div class="led-panel-title">Kontrol Manual</div>
+
+            <button
+                id="ledOnButton"
+                class="led-button led-button-on"
+                type="button"
+            >
+                LED ON
+            </button>
+
+            <button
+                id="ledOffButton"
+                class="led-button led-button-off"
+                type="button"
+            >
+                LED OFF
+            </button>
+
+            <div id="ledStatus" class="led-status">
+                Membaca status LED...
+            </div>
+        </div>
+
+    </div>
+
+    <div class="led-note" id="ledControlInfo">
+        Menghubungkan ke kontrol LED...
+    </div>
+</div>
 
 <!-- =====================================================
      GRAFIK
