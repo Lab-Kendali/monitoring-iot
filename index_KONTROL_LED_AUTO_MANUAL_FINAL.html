@@ -1,0 +1,3341 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+>
+
+<title>
+    Sistem Monitoring Komposter
+</title>
+
+
+<!-- =====================================================
+     CHART.JS
+     ===================================================== -->
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+
+<style>
+
+/* =====================================================
+   DASAR
+   ===================================================== */
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+
+    margin: 0;
+
+    font-family:
+        Arial,
+        Helvetica,
+        sans-serif;
+
+    background: #eef2f7;
+
+    color: #1f2937;
+}
+
+
+/* =====================================================
+   HEADER
+   ===================================================== */
+
+.header {
+
+    background:
+        linear-gradient(
+            135deg,
+            #172554,
+            #2563eb
+        );
+
+    color: white;
+
+    text-align: center;
+
+    padding: 25px 20px;
+}
+
+.header h1 {
+
+    margin: 0;
+
+    font-size: 30px;
+}
+
+.header p {
+
+    margin: 8px 0;
+
+    opacity: 0.9;
+}
+
+
+/* =====================================================
+   STATUS
+   ===================================================== */
+
+.status {
+
+    display: inline-flex;
+
+    align-items: center;
+
+    gap: 8px;
+
+    margin-top: 10px;
+
+    padding:
+        7px 15px;
+
+    border-radius: 20px;
+
+    background:
+        rgba(
+            255,
+            255,
+            255,
+            0.15
+        );
+
+    font-size: 14px;
+}
+
+.status-dot {
+
+    width: 10px;
+
+    height: 10px;
+
+    border-radius: 50%;
+
+    background: #22c55e;
+}
+
+
+/* =====================================================
+   CONTAINER
+   ===================================================== */
+
+.container {
+
+    max-width: 1250px;
+
+    margin: auto;
+
+    padding:
+        30px 20px;
+}
+
+
+/* =====================================================
+   GAUGE GRID
+   ===================================================== */
+
+.gauge-grid {
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(
+            4,
+            minmax(
+                250px,
+                1fr
+            )
+        );
+
+    gap: 25px;
+}
+
+
+/* =====================================================
+   CARD
+   ===================================================== */
+
+.card,
+.chart-card,
+.table-card {
+
+    background: white;
+
+    border-radius: 20px;
+
+    padding: 25px;
+
+    box-shadow:
+        0 8px 25px
+        rgba(
+            0,
+            0,
+            0,
+            0.08
+        );
+}
+
+.card {
+
+    text-align: center;
+}
+
+.card h2,
+.chart-card h2,
+.table-card h2 {
+
+    margin:
+        0 0 18px;
+
+    font-size: 20px;
+}
+
+
+/* =====================================================
+   GAUGE
+   ===================================================== */
+
+.gauge-wrap {
+
+    position: relative;
+
+    width: 260px;
+
+    height: 225px;
+
+    margin: auto;
+}
+
+
+
+.gauge {
+    --gauge-color: #2563eb;
+}
+#gaugeVolume { --gauge-color: #2563eb; }
+#gaugeSuhu { --gauge-color: #ef4444; }
+#gaugeUdara { --gauge-color: #22c55e; }
+#gaugePadatan { --gauge-color: #f59e0b; }
+#gaugePH { --gauge-color: #8b5cf6; }
+#gaugeCO2 { --gauge-color: #06b6d4; }
+#gaugeMetana1 { --gauge-color: #ec4899; }
+#gaugeMetana2 { --gauge-color: #f97316; }
+
+.gauge {
+
+    position: absolute;
+
+    width: 220px;
+
+    height: 220px;
+
+    left: 20px;
+
+    top: 0;
+
+    border-radius: 50%;
+
+    background:
+
+        conic-gradient(
+
+            from 225deg,
+
+            var(--gauge-color) 0deg,
+
+            var(--gauge-color)
+                var(--progress, 0deg),
+
+            #e5e7eb
+                var(--progress, 0deg),
+
+            #e5e7eb 270deg,
+
+            transparent 270deg 360deg
+        );
+}
+
+
+/* =====================================================
+   LUBANG TENGAH
+   ===================================================== */
+
+.gauge::before {
+
+    content: "";
+
+    position: absolute;
+
+    width: 170px;
+
+    height: 170px;
+
+    left: 25px;
+
+    top: 25px;
+
+    background: white;
+
+    border-radius: 50%;
+
+    z-index: 1;
+}
+
+
+/* =====================================================
+   NILAI GAUGE
+   ===================================================== */
+
+.gauge-center {
+
+    position: absolute;
+
+    z-index: 4;
+
+    left: 0;
+
+    right: 0;
+
+    top: 120px;
+
+    display: flex;
+
+    flex-direction: column;
+
+    align-items: center;
+}
+
+.gauge-value {
+
+    font-size: 34px;
+
+    font-weight: bold;
+}
+
+.gauge-unit {
+
+    margin-top: 5px;
+
+    font-size: 14px;
+
+    color: #6b7280;
+}
+
+
+/* =====================================================
+   JARUM
+   ===================================================== */
+
+.needle {
+
+    --gauge-color: inherit;
+
+    position: absolute;
+
+    z-index: 5;
+
+    width: 4px;
+
+    height: 72px;
+
+    background: var(--gauge-color, #1f2937);
+
+    left: 50%;
+
+    top: 50%;
+
+    transform-origin:
+        50% 100%;
+
+    transform:
+        translate(
+            -50%,
+            -100%
+        )
+        rotate(225deg);
+
+    border-radius: 5px;
+
+    transition:
+        transform 0.6s ease;
+}
+
+
+.needle::after {
+
+    content: "";
+
+    position: absolute;
+
+    width: 16px;
+
+    height: 16px;
+
+    border-radius: 50%;
+
+    background: var(--gauge-color, #1f2937);
+
+    left: 50%;
+
+    bottom: -8px;
+
+    transform:
+        translateX(-50%);
+}
+
+
+/* =====================================================
+   MIN MAX
+   ===================================================== */
+
+.gauge-minmax {
+
+    position: absolute;
+
+    left: 20px;
+
+    width: 220px;
+
+    bottom: 0;
+
+    display: flex;
+
+    justify-content:
+        space-between;
+
+    font-size: 13px;
+
+    color: #6b7280;
+}
+
+
+.last-update {
+
+    margin-top: 10px;
+
+    font-size: 13px;
+
+    color: #6b7280;
+}
+
+
+/* =====================================================
+   GRAFIK CARD
+   ===================================================== */
+
+.chart-card {
+
+    margin-top: 30px;
+}
+
+
+/* =====================================================
+   FILTER GRAFIK
+   ===================================================== */
+
+.chart-control {
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content:
+        space-between;
+
+    gap: 15px;
+
+    margin-bottom: 20px;
+
+    flex-wrap: wrap;
+}
+
+
+.chart-control label {
+
+    font-weight: bold;
+}
+
+
+.chart-control select {
+
+    padding:
+        9px 14px;
+
+    border:
+        1px solid #d1d5db;
+
+    border-radius: 8px;
+
+    background: white;
+
+    font-size: 14px;
+
+    cursor: pointer;
+}
+
+
+/* =====================================================
+   INFO GRAFIK
+   ===================================================== */
+
+.chart-info {
+
+    font-size: 13px;
+
+    color: #6b7280;
+
+    margin-bottom: 10px;
+}
+
+
+/* =====================================================
+   CONTAINER GRAFIK
+   ===================================================== */
+
+.chart-container {
+
+    position: relative;
+
+    width: 100%;
+
+    height: 420px;
+}
+
+
+/* =====================================================
+   TABLE CARD
+   ===================================================== */
+
+.table-card {
+
+    margin-top: 30px;
+}
+
+
+/* =====================================================
+   TABLE INFO
+   ===================================================== */
+
+.table-top {
+
+    display: flex;
+
+    justify-content:
+        space-between;
+
+    align-items: center;
+
+    gap: 15px;
+
+    flex-wrap: wrap;
+
+    margin-bottom: 15px;
+}
+
+
+.table-info {
+
+    font-size: 14px;
+
+    color: #6b7280;
+}
+
+
+/* =====================================================
+   TABLE
+   ===================================================== */
+
+.table-wrapper {
+
+    overflow-x: auto;
+}
+
+
+table {
+
+    width: 100%;
+
+    border-collapse:
+        collapse;
+
+    min-width: 1300px;
+}
+
+
+th {
+
+    background:
+        #f3f4f6;
+
+    padding: 13px;
+
+    text-align: center;
+
+    white-space: nowrap;
+}
+
+
+td {
+
+    padding: 12px;
+
+    border-bottom:
+        1px solid #e5e7eb;
+
+    text-align: center;
+}
+
+
+tr:hover {
+
+    background:
+        #f9fafb;
+}
+
+
+/* =====================================================
+   PAGINATION
+   ===================================================== */
+
+.pagination {
+
+    display: flex;
+
+    justify-content:
+        center;
+
+    align-items: center;
+
+    gap: 6px;
+
+    margin-top: 20px;
+
+    flex-wrap: wrap;
+}
+
+
+.pagination button {
+
+    border:
+        1px solid #d1d5db;
+
+    background: white;
+
+    padding:
+        8px 12px;
+
+    border-radius: 7px;
+
+    cursor: pointer;
+
+    font-size: 14px;
+}
+
+
+.pagination button:hover {
+
+    background:
+        #f3f4f6;
+}
+
+
+.pagination button.active {
+
+    background:
+        #2563eb;
+
+    color: white;
+
+    border-color:
+        #2563eb;
+}
+
+
+.pagination button:disabled {
+
+    opacity: 0.45;
+
+    cursor:
+        not-allowed;
+}
+
+
+/* =====================================================
+   RESPONSIVE
+   ===================================================== */
+
+@media(max-width: 1050px) {
+
+    .gauge-grid {
+
+        grid-template-columns:
+            repeat(
+                2,
+                minmax(
+                    280px,
+                    1fr
+                )
+            );
+    }
+}
+
+
+@media(max-width: 700px) {
+
+    .gauge-grid {
+
+        grid-template-columns:
+            1fr;
+    }
+
+    .header h1 {
+
+        font-size: 24px;
+    }
+
+    .container {
+
+        padding:
+            20px 12px;
+    }
+
+    .chart-container {
+
+        height: 330px;
+    }
+
+}
+
+
+/* =====================================================
+   KONTROL LED
+   ===================================================== */
+.led-control-card {
+    margin-top: 30px;
+    background: white;
+    border-radius: 20px;
+    padding: 25px;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.08);
+}
+
+.led-control-card h2 {
+    margin: 0 0 18px;
+    font-size: 20px;
+}
+
+.led-control-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 18px;
+}
+
+.led-panel {
+    border: 1px solid #e5e7eb;
+    border-radius: 14px;
+    padding: 18px;
+}
+
+.led-panel-title {
+    font-weight: bold;
+    margin-bottom: 12px;
+}
+
+.led-select,
+.led-button {
+    width: 100%;
+    padding: 11px 14px;
+    border-radius: 9px;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+.led-select {
+    border: 1px solid #d1d5db;
+    background: white;
+}
+
+.led-button {
+    border: none;
+    font-weight: bold;
+    color: white;
+    margin-top: 10px;
+}
+
+.led-button-on { background: #22c55e; }
+.led-button-off { background: #ef4444; }
+.led-button:disabled { opacity: .5; cursor: not-allowed; }
+
+.led-status {
+    margin-top: 14px;
+    padding: 12px;
+    border-radius: 10px;
+    background: #f3f4f6;
+    font-weight: bold;
+    text-align: center;
+}
+
+.led-status.on {
+    background: #dcfce7;
+    color: #166534;
+}
+
+.led-status.off {
+    background: #fee2e2;
+    color: #991b1b;
+}
+
+.led-note {
+    margin-top: 10px;
+    color: #6b7280;
+    font-size: 13px;
+}
+
+@media(max-width:700px) {
+    .led-control-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+</style>
+
+</head>
+
+
+<body>
+
+
+<!-- =====================================================
+     HEADER
+     ===================================================== -->
+
+<div class="header">
+
+    <h1>
+        Sistem Monitoring Komposter
+    </h1>
+
+    <p>
+        Monitoring Real-Time Berbasis ESP32
+    </p>
+
+
+    <div class="status">
+
+        <span
+            class="status-dot"
+            id="statusDot">
+        </span>
+
+        <span id="status">
+            Menghubungkan...
+        </span>
+
+    </div>
+
+</div>
+
+
+
+<div class="container">
+
+
+<!-- =====================================================
+     GAUGE
+     ===================================================== -->
+
+<div class="gauge-grid">
+
+
+<!-- =====================================================
+     VOLUME
+     ===================================================== -->
+
+<div class="card">
+
+    <h2>
+        Volume
+    </h2>
+
+
+    <div class="gauge-wrap">
+
+        <div
+            class="gauge"
+            id="gaugeVolume"
+        >
+
+            <div
+                class="needle"
+                id="needleVolume"
+            >
+            </div>
+
+
+            <div class="gauge-center">
+
+                <div
+                    class="gauge-value"
+                    id="volumeValue"
+                >
+                    --
+                </div>
+
+                <div class="gauge-unit">
+                    cm³
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="gauge-minmax">
+
+            <span>
+                0 cm³
+            </span>
+
+            <span>
+                54.000 cm³
+            </span>
+
+        </div>
+
+    </div>
+
+
+    <div
+        class="last-update"
+        id="waktuVolume"
+    >
+        Menunggu data...
+    </div>
+
+</div>
+
+
+
+<!-- =====================================================
+     SUHU
+     ===================================================== -->
+
+<div class="card">
+
+    <h2>
+        Suhu
+    </h2>
+
+
+    <div class="gauge-wrap">
+
+        <div
+            class="gauge"
+            id="gaugeSuhu"
+        >
+
+            <div
+                class="needle"
+                id="needleSuhu"
+            >
+            </div>
+
+
+            <div class="gauge-center">
+
+                <div
+                    class="gauge-value"
+                    id="suhuValue"
+                >
+                    --
+                </div>
+
+                <div class="gauge-unit">
+                    °C
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="gauge-minmax">
+
+            <span>
+                0 °C
+            </span>
+
+            <span>
+                50 °C
+            </span>
+
+        </div>
+
+    </div>
+
+
+    <div
+        class="last-update"
+        id="waktuSuhu"
+    >
+        Menunggu data...
+    </div>
+
+</div>
+
+
+
+<!-- =====================================================
+     KELEMBAPAN UDARA
+     ===================================================== -->
+
+<div class="card">
+
+    <h2>
+        Kelembapan Udara
+    </h2>
+
+
+    <div class="gauge-wrap">
+
+        <div
+            class="gauge"
+            id="gaugeUdara"
+        >
+
+            <div
+                class="needle"
+                id="needleUdara"
+            >
+            </div>
+
+
+            <div class="gauge-center">
+
+                <div
+                    class="gauge-value"
+                    id="udaraValue"
+                >
+                    --
+                </div>
+
+                <div class="gauge-unit">
+                    %
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="gauge-minmax">
+
+            <span>
+                0 %
+            </span>
+
+            <span>
+                100 %
+            </span>
+
+        </div>
+
+    </div>
+
+
+    <div
+        class="last-update"
+        id="waktuUdara"
+    >
+        Menunggu data...
+    </div>
+
+</div>
+
+
+
+<!-- =====================================================
+     KELEMBAPAN PADATAN
+     ===================================================== -->
+
+<div class="card">
+
+    <h2>
+        Kelembapan Padatan
+    </h2>
+
+
+    <div class="gauge-wrap">
+
+        <div
+            class="gauge"
+            id="gaugePadatan"
+        >
+
+            <div
+                class="needle"
+                id="needlePadatan"
+            >
+            </div>
+
+
+            <div class="gauge-center">
+
+                <div
+                    class="gauge-value"
+                    id="padatanValue"
+                >
+                    --
+                </div>
+
+                <div class="gauge-unit">
+                    %
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="gauge-minmax">
+
+            <span>
+                0 %
+            </span>
+
+            <span>
+                100 %
+            </span>
+
+        </div>
+
+    </div>
+
+
+    <div
+        class="last-update"
+        id="waktuPadatan"
+    >
+        Menunggu data...
+    </div>
+
+</div>
+
+
+<div class="card"><h2>pH Padatan</h2><div class="gauge-wrap"><div class="gauge" id="gaugePH"><div class="needle" id="needlePH"></div><div class="gauge-center"><div class="gauge-value" id="phValue">--</div><div class="gauge-unit">pH</div></div></div><div class="gauge-minmax"><span>0</span><span>14</span></div></div><div class="last-update" id="waktuPH">Menunggu data...</div></div>
+<div class="card"><h2>CO₂ / eCO₂</h2><div class="gauge-wrap"><div class="gauge" id="gaugeCO2"><div class="needle" id="needleCO2"></div><div class="gauge-center"><div class="gauge-value" id="co2Value">--</div><div class="gauge-unit">ppm</div></div></div><div class="gauge-minmax"><span>400</span><span>5000</span></div></div><div class="last-update" id="waktuCO2">Menunggu data...</div></div>
+<div class="card"><h2>Gas Metana 1</h2><div class="gauge-wrap"><div class="gauge" id="gaugeMetana1"><div class="needle" id="needleMetana1"></div><div class="gauge-center"><div class="gauge-value" id="metana1Value">--</div><div class="gauge-unit">ppm</div></div></div><div class="gauge-minmax"><span>0</span><span>20.000</span></div></div><div class="last-update" id="waktuMetana1">Menunggu data...</div></div>
+<div class="card"><h2>Gas Metana 2</h2><div class="gauge-wrap"><div class="gauge" id="gaugeMetana2"><div class="needle" id="needleMetana2"></div><div class="gauge-center"><div class="gauge-value" id="metana2Value">--</div><div class="gauge-unit">ppm</div></div></div><div class="gauge-minmax"><span>0</span><span>20.000</span></div></div><div class="last-update" id="waktuMetana2">Menunggu data...</div></div>
+
+
+</div>
+
+
+
+<!-- =====================================================
+     KONTROL LED
+     ===================================================== -->
+<div class="led-control-card">
+    <h2>Kontrol LED</h2>
+
+    <div class="led-control-grid">
+
+        <div class="led-panel">
+            <div class="led-panel-title">Mode Kontrol</div>
+
+            <select id="ledMode" class="led-select">
+                <option value="AUTO">AUTO</option>
+                <option value="MANUAL">MANUAL</option>
+            </select>
+
+            <div class="led-note">
+                AUTO: LED aktif pukul 06.00–18.00 WITA.
+                MANUAL: LED dikendalikan menggunakan tombol ON/OFF.
+            </div>
+        </div>
+
+        <div class="led-panel">
+            <div class="led-panel-title">Kontrol Manual</div>
+
+            <button
+                id="ledOnButton"
+                class="led-button led-button-on"
+                type="button"
+            >
+                LED ON
+            </button>
+
+            <button
+                id="ledOffButton"
+                class="led-button led-button-off"
+                type="button"
+            >
+                LED OFF
+            </button>
+
+            <div id="ledStatus" class="led-status">
+                Membaca status LED...
+            </div>
+        </div>
+
+    </div>
+
+    <div class="led-note" id="ledControlInfo">
+        Menghubungkan ke kontrol LED...
+    </div>
+</div>
+
+<!-- =====================================================
+     GRAFIK
+     ===================================================== -->
+
+<div class="chart-card">
+
+    <h2>
+        Grafik Monitoring Sensor
+    </h2>
+
+
+    <div class="chart-control">
+
+        <div>
+
+            <label
+                for="periodeGrafik"
+            >
+                Periode Grafik:
+            </label>
+
+
+            <select
+                id="periodeGrafik"
+            >
+
+                <option value="1">
+                    1 Jam
+                </option>
+
+                <option value="6">
+                    6 Jam
+                </option>
+
+                <option value="12">
+                    12 Jam
+                </option>
+
+                <option
+                    value="24"
+                    selected
+                >
+                    1 Hari
+                </option>
+
+                <option value="168">
+                    7 Hari
+                </option>
+
+                <option value="720">
+                    30 Hari
+                </option>
+
+                <option value="all">
+                    Semua Data
+                </option>
+
+            </select>
+
+        </div>
+
+
+        <div
+            class="chart-info"
+            id="chartInfo"
+        >
+            Memuat grafik...
+        </div>
+
+    </div>
+
+
+    <div class="chart-container">
+
+        <canvas
+            id="sensorChart"
+        >
+        </canvas>
+
+    </div>
+
+</div>
+
+
+
+<!-- =====================================================
+     TABEL RIWAYAT
+     ===================================================== -->
+
+<div class="table-card">
+
+    <h2>
+        Riwayat Data Sensor
+    </h2>
+
+
+    <div class="table-top">
+
+        <div
+            class="table-info"
+            id="tableInfo"
+        >
+            Memuat data...
+        </div>
+
+    </div>
+
+
+    <div class="table-wrapper">
+
+        <table>
+
+            <thead>
+
+                <tr>
+
+                    <th>
+                        No
+                    </th>
+
+                    <th>
+                        Waktu
+                    </th>
+
+                    <th>
+                        Volume (cm³)
+                    </th>
+
+                    <th>
+                        Suhu (°C)
+                    </th>
+
+                    <th>
+                        Kelembapan Udara (%)
+                    </th>
+
+                    <th>
+                        Kelembapan Padatan (%)
+                    </th>
+                    <th>pH Padatan</th>
+                    <th>CO₂ (ppm)</th>
+                    <th>Gas Metana 1 (ppm)</th>
+                    <th>Gas Metana 2 (ppm)</th>
+
+                </tr>
+
+            </thead>
+
+
+            <tbody
+                id="dataTable"
+            >
+            </tbody>
+
+        </table>
+
+    </div>
+
+
+    <div
+        class="pagination"
+        id="pagination"
+    >
+    </div>
+
+</div>
+
+
+</div>
+
+
+
+<!-- =====================================================
+     JAVASCRIPT
+     ===================================================== -->
+
+<script type="module">
+
+
+/* =====================================================
+   SUPABASE
+   ===================================================== */
+
+import {
+    createClient
+}
+from
+"https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
+
+
+const SUPABASE_URL =
+    "https://dbodgclttbalohgpanpk.supabase.co";
+
+
+const SUPABASE_KEY =
+    "sb_publishable_0b3vY7OTUEoI5nyM0wmvVQ_V0CUS4HA";
+
+
+const supabase =
+    createClient(
+        SUPABASE_URL,
+        SUPABASE_KEY
+    );
+
+
+
+/* =====================================================
+   KONSTANTA
+   ===================================================== */
+
+const VOLUME_MAX =
+    54000;
+
+
+const SUHU_MAX =
+    50;
+
+
+const DATA_PER_PAGE =
+    50;
+
+
+/*
+   Polling cadangan:
+
+   60 detik.
+*/
+
+const POLLING_INTERVAL =
+    60000;
+
+
+
+/* =====================================================
+   VARIABEL
+   ===================================================== */
+
+let halamanSekarang =
+    1;
+
+
+let totalData =
+    0;
+
+
+let dataGrafik =
+    [];
+
+
+let chart =
+    null;
+
+
+/* =====================================================
+   HELPER ELEMENT
+   ===================================================== */
+
+function $(id) {
+
+    return document.getElementById(id);
+
+}
+
+
+
+/* =====================================================
+   KONVERSI ANGKA
+   ===================================================== */
+
+function angka(
+    value,
+    digit = 1
+) {
+
+    const n =
+        Number(value);
+
+
+    if (
+        !Number.isFinite(n)
+    ) {
+
+        return null;
+
+    }
+
+
+    return Number(
+        n.toFixed(digit)
+    );
+
+}
+
+
+
+/* =====================================================
+   FORMAT WAKTU WITA
+   ===================================================== */
+
+function formatWaktu(
+    value
+) {
+
+    if (!value) {
+
+        return "-";
+
+    }
+
+
+    const date =
+        new Date(value);
+
+
+    if (
+        isNaN(
+            date.getTime()
+        )
+    ) {
+
+        return "-";
+
+    }
+
+
+    return date.toLocaleString(
+        "id-ID",
+        {
+
+            timeZone:
+                "Asia/Makassar",
+
+            day:
+                "2-digit",
+
+            month:
+                "2-digit",
+
+            year:
+                "numeric",
+
+            hour:
+                "2-digit",
+
+            minute:
+                "2-digit",
+
+            second:
+                "2-digit"
+
+        }
+    );
+
+}
+
+
+
+/* =====================================================
+   GAUGE
+   ===================================================== */
+
+function updateGauge(
+    gaugeId,
+    needleId,
+    value,
+    minimum,
+    maximum
+) {
+
+    const gauge =
+        $(gaugeId);
+
+
+    const needle =
+        $(needleId);
+
+
+    if (
+        !gauge ||
+        !needle
+    ) {
+
+        return;
+
+    }
+
+
+    let persen =
+        (
+            value -
+            minimum
+        )
+        /
+        (
+            maximum -
+            minimum
+        );
+
+
+    persen =
+        Math.max(
+            0,
+            Math.min(
+                1,
+                persen
+            )
+        );
+
+
+    const derajat =
+        persen *
+        270;
+
+
+    gauge.style.setProperty(
+        "--progress",
+        derajat + "deg"
+    );
+
+
+    const jarum =
+        225 +
+        derajat;
+
+
+    needle.style.transform =
+        `translate(
+            -50%,
+            -100%
+        )
+        rotate(
+            ${jarum}deg
+        )`;
+
+}
+
+
+
+/* =====================================================
+   UPDATE GAUGE TERBARU
+   ===================================================== */
+
+function updateDisplay(
+    data
+) {
+
+    if (!data) {
+
+        return;
+
+    }
+
+
+    /* =================================================
+       VOLUME
+       ================================================= */
+
+    let volume =
+        angka(
+            data[
+                "Volume (cm3)"
+            ],
+            0
+        );
+
+
+    if (
+        volume !== null
+    ) {
+
+        volume =
+            Math.max(
+                0,
+                Math.min(
+                    VOLUME_MAX,
+                    volume
+                )
+            );
+
+
+        const element =
+            $("volumeValue");
+
+
+        if (element) {
+
+            element.textContent =
+                volume.toLocaleString(
+                    "id-ID"
+                );
+
+        }
+
+
+        updateGauge(
+            "gaugeVolume",
+            "needleVolume",
+            volume,
+            0,
+            VOLUME_MAX
+        );
+
+    }
+
+
+
+    /* =================================================
+       SUHU
+       ================================================= */
+
+    const suhu =
+        angka(
+            data[
+                "Suhu (°C)"
+            ],
+            1
+        );
+
+
+    if (
+        suhu !== null
+    ) {
+
+        const element =
+            $("suhuValue");
+
+
+        if (element) {
+
+            element.textContent =
+                suhu.toFixed(1);
+
+        }
+
+
+        updateGauge(
+            "gaugeSuhu",
+            "needleSuhu",
+            suhu,
+            0,
+            SUHU_MAX
+        );
+
+    }
+
+
+
+    /* =================================================
+       KELEMBAPAN UDARA
+       ================================================= */
+
+    const udara =
+        angka(
+            data[
+                "Kelembapan Udara (%)"
+            ],
+            1
+        );
+
+
+    if (
+        udara !== null
+    ) {
+
+        const element =
+            $("udaraValue");
+
+
+        if (element) {
+
+            element.textContent =
+                udara.toFixed(1);
+
+        }
+
+
+        updateGauge(
+            "gaugeUdara",
+            "needleUdara",
+            udara,
+            0,
+            100
+        );
+
+    }
+
+
+
+    /* =================================================
+       KELEMBAPAN PADATAN
+       ================================================= */
+
+    const padatan =
+        angka(
+            data[
+                "Kelembapan Padatan (%)"
+            ],
+            0
+        );
+
+
+    if (
+        padatan !== null
+    ) {
+
+        const element =
+            $("padatanValue");
+
+
+        if (element) {
+
+            element.textContent =
+                padatan.toFixed(0);
+
+        }
+
+
+        updateGauge(
+            "gaugePadatan",
+            "needlePadatan",
+            padatan,
+            0,
+            100
+        );
+
+    }
+
+
+
+    /* =================================================
+       pH PADATAN
+       ================================================= */
+    const ph = angka(data["pH Padatan"], 2);
+    if (ph !== null) {
+        const el = $("phValue");
+        if (el) el.textContent = ph.toFixed(2);
+        updateGauge("gaugePH", "needlePH", ph, 0, 14);
+    }
+
+    /* =================================================
+       CO2 / eCO2
+       ================================================= */
+    const co2 = angka(data["CO2 (ppm)"], 0);
+    if (co2 !== null) {
+        const el = $("co2Value");
+        if (el) el.textContent = co2.toLocaleString("id-ID");
+        updateGauge("gaugeCO2", "needleCO2", co2, 400, 5000);
+    }
+
+    /* =================================================
+       GAS METANA 1
+       ================================================= */
+    const metana1 = angka(data["Gas Metana 1 (ppm)"], 0);
+    if (metana1 !== null) {
+        const el = $("metana1Value");
+        if (el) el.textContent = metana1.toLocaleString("id-ID");
+        updateGauge("gaugeMetana1", "needleMetana1", metana1, 0, 20000);
+    }
+
+    /* =================================================
+       GAS METANA 2
+       ================================================= */
+    const metana2 = angka(data["Gas Metana 2 (ppm)"], 0);
+    if (metana2 !== null) {
+        const el = $("metana2Value");
+        if (el) el.textContent = metana2.toLocaleString("id-ID");
+        updateGauge("gaugeMetana2", "needleMetana2", metana2, 0, 20000);
+    }
+
+    /* =================================================
+       WAKTU
+       ================================================= */
+
+    const teksWaktu =
+        "Update: " +
+        formatWaktu(
+            data["Waktu"]
+        );
+
+
+    [
+        "waktuVolume",
+        "waktuSuhu",
+        "waktuUdara",
+        "waktuPadatan",
+        "waktuPH",
+        "waktuCO2",
+        "waktuMetana1",
+        "waktuMetana2"
+    ]
+    .forEach(
+        id => {
+
+            const element =
+                $(id);
+
+
+            if (element) {
+
+                element.textContent =
+                    teksWaktu;
+
+            }
+
+        }
+    );
+
+}
+
+
+
+/* =====================================================
+   BUAT CHART
+   ===================================================== */
+
+function buatChart() {
+
+    const canvas =
+        $("sensorChart");
+
+
+    if (!canvas) {
+
+        return;
+
+    }
+
+
+    const ctx =
+        canvas.getContext(
+            "2d"
+        );
+
+
+    chart =
+        new Chart(
+            ctx,
+            {
+
+                type:
+                    "line",
+
+
+                data:
+                {
+
+                    labels: [],
+
+
+                    datasets:
+                    [
+
+                        {
+                            label:
+                                "Volume (cm³)",
+
+                            borderColor:
+                                "#2563eb",
+
+                            backgroundColor:
+                                "#2563eb",
+
+                            data: [],
+
+                            yAxisID:
+                                "volumeAxis",
+
+                            borderWidth:
+                                2,
+
+                            borderCapStyle:
+                                "round",
+
+                            tension:
+                                0.25,
+
+                            pointRadius:
+                                2,
+
+                            fill:
+                                false
+                        },
+
+
+                        {
+                            label:
+                                "Suhu (°C)",
+
+                            borderColor:
+                                "#ef4444",
+
+                            backgroundColor:
+                                "#ef4444",
+
+                            data: [],
+
+                            yAxisID:
+                                "persenAxis",
+
+                            borderWidth:
+                                2,
+
+                            borderCapStyle:
+                                "round",
+
+                            tension:
+                                0.25,
+
+                            pointRadius:
+                                2,
+
+                            fill:
+                                false
+                        },
+
+
+                        {
+                            label:
+                                "Kelembapan Udara (%)",
+
+                            borderColor:
+                                "#22c55e",
+
+                            backgroundColor:
+                                "#22c55e",
+
+                            data: [],
+
+                            yAxisID:
+                                "persenAxis",
+
+                            borderWidth:
+                                2,
+
+                            borderCapStyle:
+                                "round",
+
+                            tension:
+                                0.25,
+
+                            pointRadius:
+                                2,
+
+                            fill:
+                                false
+                        },
+
+
+                        {
+                            label:
+                                "Kelembapan Padatan (%)",
+
+                            borderColor:
+                                "#f59e0b",
+
+                            backgroundColor:
+                                "#f59e0b",
+
+                            data: [],
+
+                            yAxisID:
+                                "persenAxis",
+
+                            borderWidth:
+                                2,
+
+                            borderCapStyle:
+                                "round",
+
+                            tension:
+                                0.25,
+
+                            pointRadius:
+                                2,
+
+                            fill:
+                                false
+                        },
+                        { label: "pH Padatan", borderColor: "#8b5cf6", backgroundColor: "#8b5cf6", data: [], yAxisID: "phAxis", borderWidth: 2, tension: 0.25, pointRadius: 2, fill: false },
+                        { label: "CO₂ (ppm)", borderColor: "#06b6d4", backgroundColor: "#06b6d4", data: [], yAxisID: "co2Axis", borderWidth: 2, tension: 0.25, pointRadius: 2, fill: false },
+                        { label: "Gas Metana 1 (ppm)", borderColor: "#ec4899", backgroundColor: "#ec4899", data: [], yAxisID: "metanaAxis", borderWidth: 2, tension: 0.25, pointRadius: 2, fill: false },
+                        { label: "Gas Metana 2 (ppm)", borderColor: "#f97316", backgroundColor: "#f97316", data: [], yAxisID: "metanaAxis", borderWidth: 2, tension: 0.25, pointRadius: 2, fill: false }
+
+                    ]
+
+                },
+
+
+                options:
+                {
+
+                    responsive:
+                        true,
+
+                    maintainAspectRatio:
+                        false,
+
+
+                    interaction:
+                    {
+
+                        mode:
+                            "index",
+
+                        intersect:
+                            false
+
+                    },
+
+
+                    plugins:
+                    {
+
+                        legend:
+                        {
+
+                            position:
+                                "top"
+
+                        }
+
+                    },
+
+
+                    scales:
+                    {
+
+                        x:
+                        {
+
+                            title:
+                            {
+
+                                display:
+                                    true,
+
+                                text:
+                                    "Waktu"
+
+                            }
+
+                        },
+
+
+                        volumeAxis:
+                        {
+
+                            type:
+                                "linear",
+
+                            position:
+                                "left",
+
+                            min:
+                                0,
+
+                            max:
+                                54000,
+
+                            title:
+                            {
+
+                                display:
+                                    true,
+
+                                text:
+                                    "Volume (cm³)"
+
+                            }
+
+                        },
+
+
+                        persenAxis:
+                        {
+
+                            type:
+                                "linear",
+
+                            position:
+                                "right",
+
+                            min:
+                                0,
+
+                            max:
+                                100,
+
+                            title:
+                            {
+
+                                display:
+                                    true,
+
+                                text:
+                                    "Suhu / Kelembapan (%)"
+
+                            },
+
+
+                            grid:
+                            {
+
+                                drawOnChartArea:
+                                    false
+
+                            }
+
+                        },
+                        phAxis: { type: "linear", position: "right", min: 0, max: 14, title: { display: true, text: "pH" }, grid: { drawOnChartArea: false } },
+                        co2Axis: { type: "linear", position: "right", min: 400, max: 5000, title: { display: true, text: "CO₂ (ppm)" }, grid: { drawOnChartArea: false } },
+                        metanaAxis: { type: "linear", position: "right", min: 0, max: 20000, title: { display: true, text: "Gas Metana (ppm)" }, grid: { drawOnChartArea: false } }
+
+                    }
+
+                }
+
+            }
+        );
+
+}
+
+
+
+/* =====================================================
+   AMBIL DATA GRAFIK
+   ===================================================== */
+
+async function ambilDataGrafik()
+{
+
+    const pilihan =
+        $("periodeGrafik").value;
+
+
+    let data =
+        [];
+
+
+    /*
+       Jika "Semua Data",
+       ambil secara bertahap
+       1000 baris per request.
+    */
+
+    if (
+        pilihan === "all"
+    ) {
+
+        let mulai =
+            0;
+
+
+        const ukuran =
+            1000;
+
+
+        while (true) {
+
+            const {
+                data: batch,
+                error
+            } =
+            await supabase
+
+                .from(
+                    "Data_Sensor"
+                )
+
+                .select(
+                    "*"
+                )
+
+                .order(
+                    "No",
+                    {
+                        ascending:
+                            true
+                    }
+                )
+
+                .range(
+                    mulai,
+                    mulai +
+                    ukuran -
+                    1
+                );
+
+
+            if (error) {
+
+                console.error(
+                    "Error grafik:",
+                    error
+                );
+
+                break;
+
+            }
+
+
+            if (
+                !batch ||
+                batch.length === 0
+            ) {
+
+                break;
+
+            }
+
+
+            data =
+                data.concat(
+                    batch
+                );
+
+
+            if (
+                batch.length <
+                ukuran
+            ) {
+
+                break;
+
+            }
+
+
+            mulai +=
+                ukuran;
+
+        }
+
+    }
+
+    else {
+
+        /*
+           Periode dalam jam.
+        */
+
+        const jam =
+            Number(
+                pilihan
+            );
+
+
+        const sejak =
+            new Date(
+                Date.now() -
+                (
+                    jam *
+                    60 *
+                    60 *
+                    1000
+                )
+            )
+            .toISOString();
+
+
+        const {
+            data: hasil,
+            error
+        } =
+        await supabase
+
+            .from(
+                "Data_Sensor"
+            )
+
+            .select(
+                "*"
+            )
+
+            .gte(
+                "Waktu",
+                sejak
+            )
+
+            .order(
+                "No",
+                {
+                    ascending:
+                        true
+                }
+            );
+
+
+        if (error) {
+
+            console.error(
+                "Error grafik:",
+                error
+            );
+
+            return;
+
+        }
+
+
+        data =
+            hasil || [];
+
+    }
+
+
+    dataGrafik =
+        data;
+
+
+    updateChart(
+        data
+    );
+
+
+    const info =
+        $("chartInfo");
+
+
+    if (info) {
+
+        info.textContent =
+            `Menampilkan ${data.length.toLocaleString("id-ID")} data`;
+
+    }
+
+}
+
+
+
+/* =====================================================
+   UPDATE CHART
+   ===================================================== */
+
+function updateChart(
+    data
+) {
+
+    if (
+        !chart
+    ) {
+
+        return;
+
+    }
+
+
+    const sorted =
+        [
+            ...data
+        ]
+        .sort(
+            (a, b) =>
+                Number(
+                    a.No || 0
+                )
+                -
+                Number(
+                    b.No || 0
+                )
+        );
+
+
+    chart.data.labels =
+        sorted.map(
+            row =>
+                formatWaktu(
+                    row["Waktu"]
+                )
+        );
+
+
+    chart.data.datasets[0].data =
+        sorted.map(
+            row =>
+                angka(
+                    row[
+                        "Volume (cm3)"
+                    ],
+                    0
+                )
+        );
+
+
+    chart.data.datasets[1].data =
+        sorted.map(
+            row =>
+                angka(
+                    row[
+                        "Suhu (°C)"
+                    ],
+                    1
+                )
+        );
+
+
+    chart.data.datasets[2].data =
+        sorted.map(
+            row =>
+                angka(
+                    row[
+                        "Kelembapan Udara (%)"
+                    ],
+                    1
+                )
+        );
+
+
+    chart.data.datasets[3].data =
+        sorted.map(
+            row =>
+                angka(
+                    row[
+                        "Kelembapan Padatan (%)"
+                    ],
+                    0
+                )
+        );
+
+    chart.data.datasets[4].data = sorted.map(row => angka(row["pH Padatan"], 2));
+    chart.data.datasets[5].data = sorted.map(row => angka(row["CO2 (ppm)"], 0));
+    chart.data.datasets[6].data = sorted.map(row => angka(row["Gas Metana 1 (ppm)"], 0));
+    chart.data.datasets[7].data = sorted.map(row => angka(row["Gas Metana 2 (ppm)"], 0));
+
+
+    chart.update(
+        "none"
+    );
+
+}
+
+
+
+/* =====================================================
+   AMBIL DATA TABEL
+   ===================================================== */
+
+async function ambilDataTabel()
+{
+
+    const mulai =
+        (
+            halamanSekarang -
+            1
+        )
+        *
+        DATA_PER_PAGE;
+
+
+    const sampai =
+        mulai +
+        DATA_PER_PAGE -
+        1;
+
+
+    const {
+        data,
+        error,
+        count
+    } =
+    await supabase
+
+        .from(
+            "Data_Sensor"
+        )
+
+        .select(
+            "*",
+            {
+                count:
+                    "exact"
+            }
+        )
+
+        .order(
+            "No",
+            {
+                ascending:
+                    true
+            }
+        )
+
+        .range(
+            mulai,
+            sampai
+        );
+
+
+    if (error) {
+
+        console.error(
+            "Error tabel:",
+            error
+        );
+
+        return;
+
+    }
+
+
+    totalData =
+        count || 0;
+
+
+    tampilkanTabel(
+        data || []
+    );
+
+
+    tampilkanPagination();
+
+}
+
+
+
+/* =====================================================
+   TAMPILKAN TABEL
+   ===================================================== */
+
+function tampilkanTabel(
+    data
+) {
+
+    const table =
+        $("dataTable");
+
+
+    if (!table) {
+
+        return;
+
+    }
+
+
+    table.innerHTML =
+        "";
+
+
+    data.forEach(
+        row => {
+
+            const tr =
+                document.createElement(
+                    "tr"
+                );
+
+
+            const volume =
+                angka(
+                    row[
+                        "Volume (cm3)"
+                    ],
+                    0
+                );
+
+
+            const suhu =
+                angka(
+                    row[
+                        "Suhu (°C)"
+                    ],
+                    1
+                );
+
+
+            const udara =
+                angka(
+                    row[
+                        "Kelembapan Udara (%)"
+                    ],
+                    1
+                );
+
+
+            const padatan =
+                angka(
+                    row[
+                        "Kelembapan Padatan (%)"
+                    ],
+                    0
+                );
+
+
+            tr.innerHTML = `
+
+                <td>
+                    ${row.No ?? "-"}
+                </td>
+
+                <td>
+                    ${formatWaktu(
+                        row.Waktu
+                    )}
+                </td>
+
+                <td>
+                    ${
+                        volume === null
+                        ?
+                        "-"
+                        :
+                        volume.toLocaleString(
+                            "id-ID"
+                        )
+                    }
+                </td>
+
+                <td>
+                    ${
+                        suhu === null
+                        ?
+                        "-"
+                        :
+                        suhu.toFixed(1)
+                    }
+                </td>
+
+                <td>
+                    ${
+                        udara === null
+                        ?
+                        "-"
+                        :
+                        udara.toFixed(1)
+                    }
+                </td>
+
+                <td>
+                    ${
+                        padatan === null
+                        ?
+                        "-"
+                        :
+                        padatan.toFixed(0)
+                    }
+                </td>
+                <td>${angka(row["pH Padatan"], 2) === null ? "-" : angka(row["pH Padatan"], 2).toFixed(2)}</td>
+                <td>${angka(row["CO2 (ppm)"], 0) === null ? "-" : angka(row["CO2 (ppm)"], 0).toLocaleString("id-ID")}</td>
+                <td>${angka(row["Gas Metana 1 (ppm)"], 0) === null ? "-" : angka(row["Gas Metana 1 (ppm)"], 0).toLocaleString("id-ID")}</td>
+                <td>${angka(row["Gas Metana 2 (ppm)"], 0) === null ? "-" : angka(row["Gas Metana 2 (ppm)"], 0).toLocaleString("id-ID")}</td>
+
+            `;
+
+
+            table.appendChild(
+                tr
+            );
+
+        }
+    );
+
+
+    const awal =
+        totalData === 0
+        ?
+        0
+        :
+        (
+            (
+                halamanSekarang -
+                1
+            )
+            *
+            DATA_PER_PAGE
+        )
+        + 1;
+
+
+    const akhir =
+        Math.min(
+            halamanSekarang *
+            DATA_PER_PAGE,
+            totalData
+        );
+
+
+    const info =
+        $("tableInfo");
+
+
+    if (info) {
+
+        info.textContent =
+            totalData === 0
+            ?
+            "Belum ada data"
+            :
+            `Menampilkan ${awal.toLocaleString("id-ID")}–${akhir.toLocaleString("id-ID")} dari ${totalData.toLocaleString("id-ID")} data`;
+
+    }
+
+}
+
+
+
+/* =====================================================
+   PAGINATION
+   ===================================================== */
+
+function tampilkanPagination()
+{
+
+    const pagination =
+        $("pagination");
+
+
+    if (!pagination) {
+
+        return;
+
+    }
+
+
+    pagination.innerHTML =
+        "";
+
+
+    const totalHalaman =
+        Math.ceil(
+            totalData /
+            DATA_PER_PAGE
+        );
+
+
+    if (
+        totalHalaman <= 1
+    ) {
+
+        return;
+
+    }
+
+
+    /*
+       Tombol sebelumnya.
+    */
+
+    const sebelumnya =
+        document.createElement(
+            "button"
+        );
+
+
+    sebelumnya.textContent =
+        "← Sebelumnya";
+
+
+    sebelumnya.disabled =
+        halamanSekarang <= 1;
+
+
+    sebelumnya.onclick =
+        () => {
+
+            if (
+                halamanSekarang >
+                1
+            ) {
+
+                halamanSekarang--;
+
+                ambilDataTabel();
+
+                window.scrollTo(
+                    {
+                        top:
+                            document.querySelector(
+                                ".table-card"
+                            ).offsetTop,
+
+                        behavior:
+                            "smooth"
+                    }
+                );
+
+            }
+
+        };
+
+
+    pagination.appendChild(
+        sebelumnya
+    );
+
+
+
+    /*
+       Tentukan halaman
+       yang ditampilkan.
+    */
+
+    let mulai =
+        Math.max(
+            1,
+            halamanSekarang -
+            2
+        );
+
+
+    let akhir =
+        Math.min(
+            totalHalaman,
+            halamanSekarang +
+            2
+        );
+
+
+    if (
+        halamanSekarang <= 3
+    ) {
+
+        akhir =
+            Math.min(
+                5,
+                totalHalaman
+            );
+
+    }
+
+
+    if (
+        halamanSekarang >
+        totalHalaman -
+        2
+    ) {
+
+        mulai =
+            Math.max(
+                1,
+                totalHalaman -
+                4
+            );
+
+    }
+
+
+    for (
+        let i = mulai;
+        i <= akhir;
+        i++
+    ) {
+
+        const button =
+            document.createElement(
+                "button"
+            );
+
+
+        button.textContent =
+            i;
+
+
+        if (
+            i ===
+            halamanSekarang
+        ) {
+
+            button.classList.add(
+                "active"
+            );
+
+        }
+
+
+        button.onclick =
+            () => {
+
+                halamanSekarang =
+                    i;
+
+                ambilDataTabel();
+
+            };
+
+
+        pagination.appendChild(
+            button
+        );
+
+    }
+
+
+
+    /*
+       Tombol berikutnya.
+    */
+
+    const berikutnya =
+        document.createElement(
+            "button"
+        );
+
+
+    berikutnya.textContent =
+        "Berikutnya →";
+
+
+    berikutnya.disabled =
+        halamanSekarang >=
+        totalHalaman;
+
+
+    berikutnya.onclick =
+        () => {
+
+            if (
+                halamanSekarang <
+                totalHalaman
+            ) {
+
+                halamanSekarang++;
+
+                ambilDataTabel();
+
+                window.scrollTo(
+                    {
+                        top:
+                            document.querySelector(
+                                ".table-card"
+                            ).offsetTop,
+
+                        behavior:
+                            "smooth"
+                    }
+                );
+
+            }
+
+        };
+
+
+    pagination.appendChild(
+        berikutnya
+    );
+
+}
+
+
+
+/* =====================================================
+   UPDATE SEMUA
+   ===================================================== */
+
+async function updateSemua()
+{
+
+    console.log(
+        "Mengambil data..."
+    );
+
+
+    try {
+
+        /*
+           Ambil satu data
+           terbaru untuk gauge.
+        */
+
+        const {
+            data: terbaru,
+            error
+        } =
+        await supabase
+
+            .from(
+                "Data_Sensor"
+            )
+
+            .select(
+                "*"
+            )
+
+            .order(
+                "No",
+                {
+                    ascending:
+                        false
+                }
+            )
+
+            .limit(
+                1
+            );
+
+
+        if (error) {
+
+            throw error;
+
+        }
+
+
+        if (
+            terbaru &&
+            terbaru.length > 0
+        ) {
+
+            updateDisplay(
+                terbaru[0]
+            );
+
+        }
+
+
+        /*
+           Update tabel.
+        */
+
+        await ambilDataTabel();
+
+
+        /*
+           Update grafik.
+        */
+
+        await ambilDataGrafik();
+
+
+        /*
+           Status online.
+        */
+
+        const status =
+            $("status");
+
+
+        const dot =
+            $("statusDot");
+
+
+        if (status) {
+
+            status.textContent =
+                "● ONLINE • DATA TERBARU";
+
+        }
+
+
+        if (dot) {
+
+            dot.style.background =
+                "#22c55e";
+
+        }
+
+    }
+
+    catch (error) {
+
+        console.error(
+            "Gagal mengambil data:",
+            error
+        );
+
+
+        const status =
+            $("status");
+
+
+        const dot =
+            $("statusDot");
+
+
+        if (status) {
+
+            status.textContent =
+                "Gagal membaca database";
+
+        }
+
+
+        if (dot) {
+
+            dot.style.background =
+                "#ef4444";
+
+        }
+
+    }
+
+}
+
+
+
+/* =====================================================
+   PERUBAHAN PERIODE GRAFIK
+   ===================================================== */
+
+$("periodeGrafik")
+    .addEventListener(
+        "change",
+        () => {
+
+            ambilDataGrafik();
+
+        }
+    );
+
+
+
+/* =====================================================
+   REALTIME SUPABASE
+   ===================================================== */
+
+supabase
+
+    .channel(
+        "monitoring-realtime-final"
+    )
+
+    .on(
+
+        "postgres_changes",
+
+        {
+
+            event:
+                "INSERT",
+
+            schema:
+                "public",
+
+            table:
+                "Data_Sensor"
+
+        },
+
+        async payload => {
+
+            console.log(
+                "Data baru:",
+                payload.new
+            );
+
+
+            /*
+               Gauge langsung berubah.
+            */
+
+            updateDisplay(
+                payload.new
+            );
+
+
+            /*
+               Kembali ke halaman 1
+               agar data terbaru
+               langsung terlihat.
+            */
+
+            halamanSekarang =
+                1;
+
+
+            /*
+               Update tabel.
+            */
+
+            await ambilDataTabel();
+
+
+            /*
+               Update grafik
+               sesuai periode
+               yang sedang dipilih.
+            */
+
+            await ambilDataGrafik();
+
+        }
+
+    )
+
+    .subscribe(
+        status => {
+
+            console.log(
+                "Realtime:",
+                status
+            );
+
+
+            const statusElement =
+                $("status");
+
+
+            const dot =
+                $("statusDot");
+
+
+            if (
+                status ===
+                "SUBSCRIBED"
+            ) {
+
+                if (statusElement) {
+
+                    statusElement.textContent =
+                        "● ONLINE • REALTIME";
+
+                }
+
+
+                if (dot) {
+
+                    dot.style.background =
+                        "#22c55e";
+
+                }
+
+            }
+
+        }
+    );
+
+
+
+/* =====================================================
+   POLLING CADANGAN
+   ===================================================== */
+
+setInterval(
+    () => {
+
+        updateSemua();
+
+    },
+    POLLING_INTERVAL
+);
+
+
+
+/* =====================================================
+   INISIALISASI
+   ===================================================== */
+
+buatChart();
+
+
+updateSemua();
+
+
+</script>
+
+
+</body>
+
+</html>
