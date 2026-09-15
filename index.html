@@ -3466,3 +3466,14 @@ supabase
         }
     )
     .subscribe(status => console.log("Realtime Kontrol Motor:", status));
+
+/* =====================================================
+   INISIALISASI MONITORING
+   ===================================================== */
+
+// Ambil data pertama saat halaman dibuka.
+updateSemua();
+
+// Perbarui data monitoring setiap 10 detik.
+setInterval(updateSemua, 10000);
+
