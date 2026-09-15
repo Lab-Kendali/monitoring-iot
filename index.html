@@ -715,8 +715,7 @@ tr:hover {
 }
 
 
-/* =====================================================
-   KONTROL MOTOR
+KONTROL MOTOR
    ===================================================== */
 .motor-control-card {
     margin-top: 30px;
@@ -1139,8 +1138,7 @@ tr:hover {
 
 
 
-<!-- =====================================================
-     KONTROL MOTOR
+<!-- ===================KONTROL MOTOR
      ===================================================== -->
 <div class="motor-control-card">
     <h2>Kontrol Motor</h2>
@@ -1202,7 +1200,7 @@ tr:hover {
     </div>
 </div>
 
-<!-- =====================================================
+==================================
      GRAFIK
      ===================================================== -->
 
@@ -3202,6 +3200,83 @@ $("periodeGrafik")
 
 
 /* =====================================================
+   REALTIME SUPABASE
+   ===================================================== */
+
+supabase
+
+    .channel(
+        "monitoring-realtime-final"
+    )
+
+    .on(
+
+        "postgres_changes",
+
+        {
+
+            event:
+                "INSERT",
+
+            schema:
+                "public",
+
+            table:
+                "Data_Sensor"
+
+        },
+
+        async payload => {
+
+            console.log(
+                "Data baru:",
+                payload.new
+            );
+
+
+            /*
+               Gauge langsung berubah.
+            */
+
+            updateDisplay(
+                payload.new
+            );
+
+
+            /*
+               Kembali ke halaman 1
+               agar data terbaru
+               langsung terlihat.
+            */
+
+            halamanSekarang =
+                1;
+
+
+            /*
+               Update tabel.
+            */
+
+            await ambilDataTabel();
+
+
+            /*
+               Update grafik
+               sesuai periode
+               yang sedang dipilih.
+            */
+
+            await ambilDataGrafik();
+
+        }
+
+    )
+
+    .subscribe(
+        status => {
+
+            console.log(
+                "/* =====================================================
    KONTROL MOTOR AUTO / MANUAL
    ===================================================== */
 
@@ -3467,13 +3542,76 @@ supabase
     )
     .subscribe(status => console.log("Realtime Kontrol Motor:", status));
 
+
+
+Realtime:",
+                status
+            );
+
+
+            const statusElement =
+                $("status");
+
+
+            const dot =
+                $("statusDot");
+
+
+            if (
+                status ===
+                "SUBSCRIBED"
+            ) {
+
+                if (statusElement) {
+
+                    statusElement.textContent =
+                        "● ONLINE • REALTIME";
+
+                }
+
+
+                if (dot) {
+
+                    dot.style.background =
+                        "#22c55e";
+
+                }
+
+            }
+
+        }
+    );
+
+
+
 /* =====================================================
-   INISIALISASI MONITORING
+   POLLING CADANGAN
    ===================================================== */
 
-// Ambil data pertama saat halaman dibuka.
+setInterval(
+    () => {
+
+        updateSemua();
+
+    },
+    POLLING_INTERVAL
+);
+
+
+
+/* =====================================================
+   INISIALISASI
+   ===================================================== */
+
+buatChart();
+
+
 updateSemua();
 
-// Perbarui data monitoring setiap 10 detik.
-setInterval(updateSemua, 10000);
 
+</script>
+
+
+</body>
+
+</html>
